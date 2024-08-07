@@ -9,7 +9,7 @@ export const siteConfig = {
     description:
         "Safeguard your properties with SubletGuard! Detect unauthorized subleasing and keep your rentals secure with our advanced monitoring system.",
     orgImage:
-        "https://utfs.io/f/60cf06de-eaab-432c-99e1-dc91ae5ffe33-967wl6.png",
+        "https://utfs.io/f/30ef05da-6556-4b2f-9428-bf5b706f3bd4-xt0cyj.png",
     contactEmail: "hello@subletguard.com",
     noReplyEmail: "no-reply@subletguard.com",
     catchyPhrases: [
