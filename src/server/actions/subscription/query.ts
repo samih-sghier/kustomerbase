@@ -59,7 +59,7 @@ export async function getCheckoutURL(variantId?: number, embed = false) {
                     siteUrls.organization.plansAndBilling,
                 ),
                 receiptButtonText: "Go to Dashboard",
-                receiptThankYouNote: "Thank you for signing up to RapidLaunch!",
+                receiptThankYouNote: "Thank you for signing up to SubletGuard!",
             },
             testMode: true,
         },

@@ -18,35 +18,35 @@ export type Feature = {
 
 export const features: Feature[] = [
     {
-        title: "Dashboard",
+        title: "Comprehensive Dashboard",
         description:
-            "Rapidlaunch provides a powerful dashboard that allows you to manage your SaaS project. With our starterkits, components, and building guides, you can quickly set up a robust dashboard for your project.",
-        image: "https://utfs.io/f/43bbc3c8-cf3c-4fae-a0eb-9183f1779489-294m81.png",
+            "Our platform offers a comprehensive dashboard that provides landlords with an overview of property status, lease agreements, and tenant activities. Easily track and manage multiple properties from one central location.",
+        image: "https://utfs.io/f/02eb2bb2-9910-422d-bc56-1d7e8dcac1ac-5w20ij.png",
         imageDark:
-            "https://utfs.io/f/fddea366-51c6-45f4-bd54-84d273ad9fb9-1ly324.png",
+            "https://utfs.io/f/77743ecd-cb78-4a3b-b07e-4516baf51827-i57epb.png",
     },
     {
-        title: "Authentication",
+        title: "Lease Breach Alerts",
         description:
-            "Rapidlaunch provides a secure authentication system that allows users to sign up and log in to your SaaS. With our starterkits, components, and building guides, you can quickly set up a robust authentication system for your project.",
-        image: "https://utfs.io/f/805616c1-22b8-4508-9890-9ba9e2867a41-p24dnn.png",
+            "Set up customizable alerts to notify you of any potential breaches of lease agreements. Our system monitors lease conditions and sends timely notifications when discrepancies or violations are detected.",
+        image: "https://utfs.io/f/30ef05da-6556-4b2f-9428-bf5b706f3bd4-xt0cyj.png",
         imageDark:
-            "https://utfs.io/f/9074c0de-d9ea-4c0b-9d49-55dca1253a3f-6ig3yq.png",
+            "https://utfs.io/f/ed512354-67c6-43ba-808a-d0deefbef2ba-1ml5w4.png",
     },
     {
-        title: "Organizational level Payments",
+        title: "Lease Compliance Management",
         description:
-            "Rapidlaunch provides a flexible payment system that allows you to manage your SaaS project's payments. With our starterkits, components, and building guides, you can quickly set up a robust payment system for your project.",
-        image: "https://utfs.io/f/43bbc3c8-cf3c-4fae-a0eb-9183f1779489-294m81.png",
+            "Facilitate company-wide tracking and management of lease compliance. Our platform allows for centralized oversight, ensuring that all lease breaches are monitored and resolved efficiently across your organization.",
+        image: "https://utfs.io/f/fcb52926-361c-4495-a790-3b5ee194ac62-aylp7x.png",
         imageDark:
-            "https://utfs.io/f/fddea366-51c6-45f4-bd54-84d273ad9fb9-1ly324.png",
+            "https://utfs.io/f/b2dc6e98-3d27-4608-95ff-e017906a47e7-kyyxmn.png",
     },
     {
-        title: "User Management",
+        title: "Property and Tenant Oversight",
         description:
-            "Rapidlaunch provides a user management system that allows you to manage your SaaS project's users. With our starterkits, components, and building guides, you can quickly set up a robust user management system for your project.",
-        image: "https://utfs.io/f/72a2c035-69e0-46ca-84a8-446e4dabf77c-3koi6e.png",
+            "Enable your entire team to efficiently manage and monitor multiple properties and tenants. Our platform supports bulk uploads and provides tools for effective tracking and oversight, ensuring streamlined operations and improved management.",
+        image: "https://utfs.io/f/cdbaa3d7-59aa-43b2-aa89-e3c60066eb31-r1zhx8.png",
         imageDark:
-            "https://utfs.io/f/89099112-4273-4375-9e44-1b3394600e21-c6ikq1.png",
-    },
+            "https://utfs.io/f/92ca74f3-5b59-4d1c-a6cf-b701ca4ae866-h5eiiu.png",
+    }
 ];

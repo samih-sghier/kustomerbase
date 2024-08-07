@@ -1,84 +1,70 @@
+import { useEffect, useState } from "react";
 import { AppPageShell } from "@/app/(app)/_components/page-shell";
 import { tenantsPageConfig } from "@/app/(app)/(user)/tenants/_constants/page-config";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-    ActivityIcon,
-    CreditCardIcon,
-    DollarSignIcon,
-    Users2Icon,
-} from "lucide-react";
+import { CreateTenantForm } from "@/app/(app)/(user)/tenants/_components/create-tenants-form";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { TenantDropdown } from "@/app/(app)/(user)/tenants/_components/tenants-dropdown";
+import Balancer from "react-wrap-balancer";
+import { toast } from "sonner";
+import { getOrgTenantsQuery } from "@/server/actions/tenants/queries";
 
-export default function DashboardPage() {
+export default async function UserTenantPage() {
+    const tenants = await getOrgTenantsQuery();
+
     return (
         <AppPageShell
             title={tenantsPageConfig.title}
             description={tenantsPageConfig.description}
         >
-            <div className="grid gap-6">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Total Revenue
-                            </CardTitle>
-                            <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">$45,231.89</div>
-                            <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Subscriptions
-                            </CardTitle>
-                            <Users2Icon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">+3402</div>
-                            <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Active Now
-                            </CardTitle>
-                            <ActivityIcon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">+304</div>
-                            <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Sales
-                            </CardTitle>
-                            <CreditCardIcon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">+102304</div>
-                            <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
-                            </p>
-                        </CardContent>
-                    </Card>
-                </div>
+            <div className="flex w-full items-start justify-between mb-6">
+                <h2 className="text-base font-medium sm:text-lg">
+                    {tenants.length} tenants you have added.
+                </h2>
 
-                <div className="flex min-h-44 w-full items-center justify-center rounded-md border-2 border-dashed border-border p-4">
-                    <p className="text-sm text-muted-foreground">
-                        Your Content here, Above is a dummy data
-                    </p>
-                </div>
+                <CreateTenantForm />
+            </div>
+
+            <div className={tenants.length > 0 ? "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid gap-4"}>
+                {tenants.length > 0 ? (
+                    tenants.map((tenant) => (
+                        <Card key={tenant.id} className="relative shadow-md">
+                            <TenantDropdown {...tenant} />
+                            <CardContent className="p-4 flex flex-col justify-between h-full">
+                                <div>
+                                    <CardTitle className="text-xl font-semibold mb-2">{tenant.firstName}</CardTitle>
+                                    <CardDescription className="text-sm mb-2">{tenant.email}</CardDescription>
+                                    <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
+                                        <p>Tenant since {format(new Date(tenant.createdAt), "PPP")}</p>
+                                        {tenant.type && <Badge variant="background" className="w-fit">{tenant.type}</Badge>}
+                                    </div>
+                                </div>
+                                <div className="flex justify-between items-end mt-auto">
+                                    <Badge
+                                        variant={
+                                            tenant.status === "Active"
+                                                ? "success"
+                                                : tenant.status === "Inactive"
+                                                    ? "secondary"
+                                                    : "info"
+                                        }
+                                        className="w-fit"
+                                    >
+                                        {tenant.status}
+                                    </Badge>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))
+                ) : (
+                    <div className="flex w-full flex-col items-center justify-center gap-4 py-10">
+                        <p className="font-medium text-muted-foreground">No tenants found.</p>
+                        <Balancer as="p" className="text-center text-muted-foreground">
+                            Add a tenant using the form above, your tenants are important to us. 🏠
+                        </Balancer>
+                    </div>
+                )}
             </div>
         </AppPageShell>
     );

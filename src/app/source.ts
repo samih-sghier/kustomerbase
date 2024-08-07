@@ -24,6 +24,23 @@ export const blogs = loader({
     }),
 });
 
+
+export const privacy = loader({
+    baseUrl: "/privacy",
+    rootDir: "privacy",
+    source: createMDXSource(map, {
+        schema: { frontmatter: blogsFronmatterSchema },
+    }),
+});
+
+export const terms = loader({
+    baseUrl: "/terms",
+    rootDir: "terms",
+    source: createMDXSource(map, {
+        schema: { frontmatter: blogsFronmatterSchema },
+    }),
+});
+
 const changelogsFronmatterSchema = defaultSchemas.frontmatter.extend({
     version: z.string(),
     publishedAt: z.date(),

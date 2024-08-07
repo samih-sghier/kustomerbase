@@ -9,7 +9,7 @@
 
 export const siteUrls = {
     publicUrl: "https://subletguard.com",
-    github: "https://github.com/alifarooq9/rapidlaunch",
+    github: "https://github.com/subletguard",
     home: "/",
     pricing: "/pricing",
     features: "/features",
@@ -19,7 +19,7 @@ export const siteUrls = {
     changelogs: "/changelogs",
     maintenance: "/maintenance",
     waitlist: "/waitlist",
-    rapidlaunch: "https://www.rapidlaunch.xyz",
+    subletguard: "https://subletguard.com",
     privacy: "/privacy",
     terms: "/terms",
     contact: "/contact",
@@ -50,7 +50,7 @@ export const siteUrls = {
         settings: "/admin/settings",
         waitlist: "/admin/waitlist",
         feedbacks: "/admin/feedbacks",
-        analytics: "https://us.posthog.com/project/12312/dashboard",
+        analytics: "https://us.posthog.com/project/83824/dashboard",
     },
     profile: {
         settings: "/profile/settings",
@@ -69,7 +69,7 @@ export const publicRoutes: string[] = [
     siteUrls.changelogs,
     siteUrls.maintenance,
     siteUrls.waitlist,
-    siteUrls.rapidlaunch,
+    siteUrls.subletguard,
 ];
 
 export const protectedRoutes: string[] = [

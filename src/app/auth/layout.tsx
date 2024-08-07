@@ -15,19 +15,19 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             <section className="col-span-1 hidden flex-col items-start justify-center gap-6 border-l border-border bg-muted/30 p-10 lg:flex">
                 <Icons.logo as="h3" />
                 <h2 className="text-3xl font-medium">
-                    Build and launch your SaaS this weekend
+                    Smart Monitoring
                 </h2>
                 <p className="font-light text-muted-foreground">
-                    Say goodbye to long development cycles. Build and launch
-                    your SaaS faster with our elite boilerplate. Start today!{" "}
+                    Say goodbye to the hassle of tracking lease breaches, government complaints, and illegal subleasing. Stay ahead with SubletGuard’s comprehensive alert system. Simplify your alert management and ensure compliance today!{" "}
                     <Link
-                        href={siteUrls.rapidlaunch}
+                        href={siteUrls.subletguard}
                         className="font-medium text-foreground underline underline-offset-4"
                     >
-                        Rapidlaunch.xyz
+                        SubletGuard.com
                     </Link>
                 </p>
             </section>
+
         </div>
     );
 }

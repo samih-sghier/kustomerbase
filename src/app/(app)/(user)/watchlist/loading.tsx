@@ -1,12 +1,12 @@
 import { AppPageLoading } from "@/app/(app)/_components/page-loading";
 import { Skeleton } from "@/components/ui/skeleton";
-import { propertiesPageConfig } from "./_constants/page-config";
+import { watchListPageConfig } from "./_constants/page-config";
 
-export default function DashboardLoading() {
+export default function OrgMembersLoading() {
     return (
         <AppPageLoading
-            title={propertiesPageConfig.title}
-            description={propertiesPageConfig.description}
+            title={watchListPageConfig.title}
+            description={watchListPageConfig.description}
         >
             <Skeleton className="h-96 w-full" />
         </AppPageLoading>

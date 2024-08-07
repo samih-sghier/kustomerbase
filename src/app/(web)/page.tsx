@@ -13,6 +13,7 @@ import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 import type { Metadata } from "next";
 import { ArrowRightIcon } from "lucide-react";
+import HowItWorks from "@/app/(web)/_components/howitworks";
 
 export const metadata: Metadata = {
     title: "Build Your MVP in Days, not weeks. Next.js Starter Kit",
@@ -59,7 +60,7 @@ export default async function HomePage() {
             <div className="-m-2 w-full rounded-xl bg-foreground/5 p-2 ring-1 ring-inset ring-foreground/10 lg:-m-4 lg:rounded-2xl lg:p-4">
                 <div className="relative aspect-video w-full rounded-md bg-muted">
                     <Image
-                        src="https://utfs.io/f/43bbc3c8-cf3c-4fae-a0eb-9183f1779489-294m81.png"
+                        src="https://utfs.io/f/02eb2bb2-9910-422d-bc56-1d7e8dcac1ac-5w20ij.png"
                         alt="dashboard preview"
                         fill
                         className="block rounded-md border border-border dark:hidden"
@@ -67,7 +68,7 @@ export default async function HomePage() {
                     />
 
                     <Image
-                        src="https://utfs.io/f/fddea366-51c6-45f4-bd54-84d273ad9fb9-1ly324.png"
+                        src="https://utfs.io/f/77743ecd-cb78-4a3b-b07e-4516baf51827-i57epb.png"
                         alt="dashboard preview"
                         fill
                         className="hidden rounded-md border border-border dark:block"
@@ -77,7 +78,7 @@ export default async function HomePage() {
             </div>
 
             <Promotion />
-
+            <HowItWorks />
             <Features />
 
             <Testimonials />

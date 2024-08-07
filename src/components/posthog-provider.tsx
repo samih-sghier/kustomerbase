@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 if (typeof window !== "undefined") {
     posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
-        api_host: "/ingest",
+        api_host: env.NEXT_PUBLIC_POSTHOG_HOST,
         rate_limiting: {
             events_burst_limit: 10,
             events_per_second: 5,

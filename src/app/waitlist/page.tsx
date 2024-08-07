@@ -18,8 +18,8 @@ export default function Waitlist() {
                 Join the waitlist
             </h1>
             <p className=" z-10 mx-auto max-w-lg text-center text-sm text-muted-foreground">
-                Welcome to {siteConfig.name}, a platform which provides
-                resources for building applications faster. We&apos;re currently
+                Welcome to {siteConfig.name}, a platform dedicated to detecting illegal subleasing and managing property complaints.
+                We&apos;re currently
                 working on adding more features and improving the user
                 experience. In the meantime, you can join our waitlist!
             </p>

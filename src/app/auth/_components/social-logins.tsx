@@ -49,7 +49,7 @@ export function SocialLogins() {
 
     return (
         <div className="flex flex-col space-y-2">
-            <Button
+            {/* <Button
                 onClick={githubLogin}
                 variant="outline"
                 className="w-full gap-2"
@@ -57,7 +57,7 @@ export function SocialLogins() {
             >
                 <Icons.gitHub className="h-3.5 w-3.5 fill-foreground" />
                 <span>Continue with Github</span>
-            </Button>
+            </Button> */}
             <Button
                 onClick={googleLogin}
                 variant="outline"

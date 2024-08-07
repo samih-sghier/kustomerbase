@@ -25,10 +25,14 @@ import { getOrganizations } from "../organization/queries";
 const propertyFormSchema = propertyInsertSchema.pick({
     title: true,
     address: true,
-    status: true,
     price: true,
+    status: true,
     description: true,
-    organizationId: true
+    organizationId: true,
+    placeId: true, // Ensure placeId is included and properly set
+    type: true, // Add property type
+    unitNumber: true, // Add unit or house number
+    tenantCapacity: true // Add tenant capacity
 });
 
 type CreatePropertyProps = z.infer<typeof propertyFormSchema>;

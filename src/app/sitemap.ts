@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const publicRoutesWithoutPublicUrl = publicRoutes.filter(
         (route) =>
-            route !== siteUrls.publicUrl && route !== siteUrls.rapidlaunch,
+            route !== siteUrls.publicUrl && route !== siteUrls.subletguard,
     );
 
     const routes = publicRoutesWithoutPublicUrl.map((route) => ({

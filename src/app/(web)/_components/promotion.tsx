@@ -8,7 +8,7 @@ export function Promotion() {
                 as="h2"
                 className="text-center font-heading text-3xl font-bold md:text-5xl"
             >
-                Prevent Illegal Subleasing Before It Happens 🔒
+                Prevent Lease Breaches Before It Happens
             </Balancer>
             <Balancer
                 as="p"
@@ -17,9 +17,9 @@ export function Promotion() {
                 Detect and prevent unauthorized subleasing effortlessly with SubletGuard. Our platform offers real-time monitoring, proactive alerts, and detailed reports, ensuring your rental properties stay secure and compliant.
                 <br />
                 <br />
-                <span className="rounded-[5px] bg-background p-1 font-semibold text-foreground">
+                {/* <span className="rounded-[10px] bg-background p-1 font-semibold text-foreground">
                     Get Started Today
-                </span>
+                </span> */}
             </Balancer>
         </section>
 

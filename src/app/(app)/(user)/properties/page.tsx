@@ -36,10 +36,10 @@ export default async function UserPropertyPage() {
                             <CardContent className="p-4 flex flex-col justify-between h-full">
                                 <div>
                                     <CardTitle className="text-xl font-semibold mb-2">{property.title}</CardTitle>
-                                    <CardDescription className="text-sm mb-2">{property.description}</CardDescription>
+                                    <CardDescription className="text-sm mb-2">{property.address}</CardDescription>
                                     <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
                                         <p>{format(new Date(property.createdAt), "PPP")}</p>
-                                        <Badge variant="background" className="w-fit">{property.address}</Badge>
+                                        {property.unitNumber && <Badge variant="background" className="w-fit">{property.unitNumber}</Badge>}
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-end mt-auto">
@@ -47,7 +47,7 @@ export default async function UserPropertyPage() {
                                         variant={
                                             property.status === "Available"
                                                 ? "success"
-                                                : property.status === "Sold"
+                                                : property.status === "Pending"
                                                     ? "info"
                                                     : "secondary"
                                         }
