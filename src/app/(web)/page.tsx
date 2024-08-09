@@ -16,7 +16,7 @@ import { ArrowRightIcon } from "lucide-react";
 import HowItWorks from "@/app/(web)/_components/howitworks";
 
 export const metadata: Metadata = {
-    title: "Prevent Unah, not weeks. Next.js Starter Kit",
+    title: "Protect Your Rentals, Detect Unauthorized Subleases!",
 };
 
 export const dynamic = "force-static";
@@ -26,7 +26,7 @@ export default async function HomePage() {
         <WebPageWrapper>
             <WebPageHeader
                 badge="Stay in Control"
-                title={`Detect Unauthorized Subleasing for Landlords & Real Estate Companies | SubletGuard`}
+                title={`Prevent Unauthorized Subleasing`}
 
             >
                 <Balancer
