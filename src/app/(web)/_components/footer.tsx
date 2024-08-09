@@ -68,7 +68,7 @@ export function WebFooter() {
                             <span className="sr-only">Subletguard instagram</span>
                         </Link> */}
                         <Link
-                            href={siteUrls.github}
+                            href={siteUrls.twitter}
                             className={buttonVariants({
                                 variant: "outline",
                                 size: "icon",

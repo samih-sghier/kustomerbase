@@ -97,7 +97,7 @@ export const pricingPlans: PricingPlan[] = [
     {
         id: pricingIds.free,
         title: "Free",
-        description: "Monitor one property for basic subletting alerts.",
+        description: "Monitor 1 property for basic subletting alerts.",
         price: {
             monthly: 0,
             yearly: 0,
@@ -116,7 +116,7 @@ export const pricingPlans: PricingPlan[] = [
     {
         id: pricingIds.basic,
         title: "Basic",
-        description: "Monitor up to 3 properties with essential features.",
+        description: "Monitor up to 5 properties with essential features.",
         price: {
             monthly: 29,
             yearly: 299,
@@ -128,7 +128,7 @@ export const pricingPlans: PricingPlan[] = [
         duration: "per month",
         highlight: "Ideal for small landlords",
         buttonHighlighted: true,
-        propertiesLimit: 3,
+        propertiesLimit: 5,
         usersLimit: 2,
         uniqueFeatures: ["Real-time subletting alerts", "Daily subletting activity summaries", "Customizable alert filters"],
         variantId: { monthly: 456947, yearly: 456945 },
@@ -136,7 +136,7 @@ export const pricingPlans: PricingPlan[] = [
     {
         id: pricingIds.standard,
         title: "Standard",
-        description: "Monitor up to 10 properties with advanced features.",
+        description: "Monitor up to 25 properties with advanced features.",
         price: {
             monthly: 99,
             yearly: 999,
@@ -148,7 +148,7 @@ export const pricingPlans: PricingPlan[] = [
         duration: "per month",
         highlight: "Most popular plan",
         buttonHighlighted: true,
-        propertiesLimit: 10,
+        propertiesLimit: 25,
         usersLimit: 5,
         uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "Dedicated customer support"],
         variantId: { monthly: 456949, yearly: 456952 },

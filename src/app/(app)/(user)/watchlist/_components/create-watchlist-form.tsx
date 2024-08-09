@@ -115,7 +115,6 @@ export function CreateWatchlistForm() {
 
     const onSubmit = async (data: CreateWatchlistFormSchema) => {
         try {
-            console.log("Submitting data:", data);
             await mutateAsync({
                 ...data,
                 organizationId: currentOrganization?.id

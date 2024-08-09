@@ -19,15 +19,17 @@ type Testimonial = {
 };
 
 export const featuredTestimonial: Testimonial = {
-    body: "Integer id nunc sit semper purus. Bibendum at lacus ut arcu blandit montes vitae auctor libero. Hac condimentum dignissim nibh vulputate ut nunc. Amet nibh orci mi venenatis blandit vel et proin. Non hendrerit in vel ac diam.",
+    body: "SubletGuard has been fantastic in helping us prevent lease breaches and avoid costly litigation. The system catches potential issues early, so we can handle them before they escalate. It's made managing properties so much smoother!",
     author: {
         name: "Brenna Goyette",
         handle: "brennagoyette",
         imageUrl:
-            "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80",
+            "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80",
         logoUrl: "https://tailwindui.com/img/logos/savvycal-logo-gray-900.svg",
     },
 };
+
+
 
 export const testimonials: Testimonial[][][] = [
     [

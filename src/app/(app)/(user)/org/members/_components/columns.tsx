@@ -28,7 +28,6 @@ export const columns: ColumnDef<MembersData>[] = [
         accessorKey: "name",
         header: () => <span className="pl-2">Name</span>,
         cell: ({ row }) => {
-            console.log(row.original);
 
             if (row.original.name) {
                 return (

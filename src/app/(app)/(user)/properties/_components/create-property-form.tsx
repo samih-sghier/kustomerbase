@@ -36,6 +36,7 @@ import { toast } from "sonner";
 import type { z } from "zod";
 import { getOrganizations } from "@/server/actions/organization/queries";
 import { GooglePlacesInput } from "@/app/(app)/_components/google-places-input";
+import { siteUrls } from "@/config/urls";
 
 // Define the schema for the form including new fields
 const createPropertyFormSchema = propertyInsertSchema.pick({
@@ -123,10 +124,14 @@ export function CreatePropertyForm() {
 
             toast.success("Property created successfully");
         } catch (error) {
-            toast.error(
-                (error as { message?: string })?.message ??
-                "Failed to create property"
-            );
+            const errorMessage = (error as { message?: string })?.message ?? "Failed to create property";
+
+            if (errorMessage.includes("Please upgrade")) {
+                toast.error("Your current plan does not allow this action. Please upgrade your plan.");
+                router.push(siteUrls.organization.plansAndBilling); // Redirect to the upgrade page
+            } else {
+                toast.error(errorMessage);
+            }
         }
     };
 

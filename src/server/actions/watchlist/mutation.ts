@@ -18,7 +18,6 @@ export async function createWatchlistMutation(props: CreateWatchlistProps) {
     const watchlistParse = await watchlistInsertSchema.safeParseAsync(props);
 
     if (!watchlistParse.success) {
-        console.log(watchlistParse.error);
         throw new Error("Invalid watchlist item", {
             cause: watchlistParse.error.errors,
         });

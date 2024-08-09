@@ -1,11 +1,12 @@
 // Import necessary modules
 import { db } from "@/server/db";
-import { watchlist, tenant, property } from "@/server/db/schema";
+import { watchlist, tenant, property, sgAlert } from "@/server/db/schema";
 import { protectedProcedure } from "@/server/procedures";
 import { unstable_noStore as noStore } from "next/cache";
-import { asc, count, desc, eq, ilike, inArray, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, inArray, lte, or, where } from "drizzle-orm";
 import { z } from "zod";
 import { getOrganizations } from "../organization/queries";
+import { endOfDay, startOfDay, subDays } from "date-fns";
 
 // Schema for paginated alerts
 const paginatedAlertsSchema = z.object({
@@ -40,11 +41,11 @@ export async function getAllPaginatedAlertsQuery(
     ]) ?? ["createdAt", "desc"];
 
     // Collect statuses if provided
-    const statuses = (input.alertType?.split(".") as (typeof watchlist.$inferSelect.alertType)[]) ?? [];
+    const statuses = (input.alertType?.split(".") as (typeof sgAlert.$inferSelect.alertType)[]) ?? [];
 
     const { data, total } = await db.transaction(async (tx) => {
         // Fetch paginated data with filters
-        const response = await tx.query.watchlist.findMany({
+        const response = await tx.query.sgAlert.findMany({
             where: or(
                 input.firstName ? ilike(tenant.firstName, `%${input.firstName}%`) : undefined,
                 input.lastName ? ilike(tenant.lastName, `%${input.lastName}%`) : undefined,
@@ -114,4 +115,67 @@ export async function getAlertByIdQuery(alertId: string) {
             property: true, // Join property table to get property details
         },
     });
+}
+
+
+// Function to get alert statistics based on organizationId
+export async function getAlertStatistics() {
+    await protectedProcedure(); // Ensure proper authorization
+    const { currentOrg } = await getOrganizations();
+    const organizationId = currentOrg.id;
+    // Define the date range for new alerts (last 3 days)
+    const now = new Date();
+    const threeDaysAgo = subDays(now, 3);
+    const startOfThreeDaysAgo = startOfDay(threeDaysAgo);
+    const endOfThreeDaysAgo = endOfDay(now);
+
+    // Count total alerts for the specified organization
+    const totalAlertsPromise = db
+        .select({ count: count() })
+        .from(sgAlert)
+        .where(eq(sgAlert.organizationId, organizationId))
+        .execute();
+
+    // Count new alerts (detected within the last 3 days) for the specified organization
+    const newAlertsPromise = db
+        .select({ count: count() })
+        .from(sgAlert)
+        .where(
+            and(
+                eq(sgAlert.organizationId, organizationId),
+                gte(sgAlert.detectedOn, startOfThreeDaysAgo),
+                lte(sgAlert.detectedOn, endOfThreeDaysAgo)
+            )
+        )
+        .execute();
+
+    // Count archived alerts for the specified organization
+    const archivedAlertsPromise = db
+        .select({ count: count() })
+        .from(sgAlert)
+        .where(
+            and(
+                eq(sgAlert.organizationId, organizationId),
+                eq(sgAlert.archived, true)
+            )
+        )
+        .execute();
+
+    // Execute all queries concurrently
+    const [totalAlertsResult, newAlertsResult, archivedAlertsResult] = await Promise.all([
+        totalAlertsPromise,
+        newAlertsPromise,
+        archivedAlertsPromise
+    ]);
+
+    // Extract counts from results
+    const totalAlerts = totalAlertsResult[0]?.count ?? 0;
+    const newAlerts = newAlertsResult[0]?.count ?? 0;
+    const archivedAlerts = archivedAlertsResult[0]?.count ?? 0;
+
+    return {
+        totalAlerts,
+        newAlerts,
+        archivedAlerts
+    };
 }

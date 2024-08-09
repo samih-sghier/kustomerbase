@@ -10,6 +10,7 @@
 export const siteUrls = {
     publicUrl: "https://subletguard.com",
     github: "https://github.com/subletguard",
+    twitter: "https://x.com/subletguard",
     home: "/",
     pricing: "/pricing",
     features: "/features",

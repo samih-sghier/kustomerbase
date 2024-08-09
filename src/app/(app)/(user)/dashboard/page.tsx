@@ -16,8 +16,17 @@ import {
 import { Button } from "@/components/ui/button"; // Assuming you have a Button component
 import { siteUrls } from "@/config/urls";
 import { redirect, useRouter } from "next/navigation";
+import { getDashboardInfo } from "@/server/actions/dashboard/queries";
+import { formatCurrency } from "date-fns";
+import { getOrgSubscription } from "@/server/actions/subscription/query";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+
+    const dashInfo = await getDashboardInfo();
+    const subscription = await getOrgSubscription();
+
     return (
         <AppPageShell
             title={dashboardPageConfig.title}
@@ -33,9 +42,9 @@ export default function DashboardPage() {
                             <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">$45,231.89</div>
+                            <div className="text-2xl font-bold">{dashInfo.totalRent}</div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                +0.0% from last month
                             </p>
                         </CardContent>
                     </Card>
@@ -47,9 +56,9 @@ export default function DashboardPage() {
                             <Users2Icon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">148</div>
+                            <div className="text-2xl font-bold">{dashInfo.numberOfTenants}</div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                +0.0% from last month
                             </p>
                         </CardContent>
                     </Card>
@@ -61,9 +70,13 @@ export default function DashboardPage() {
                             <ActivityIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">+304</div>
+                            <div className="text-2xl font-bold">
+                                {dashInfo.numberOfAlerts >= 0
+                                    ? (dashInfo.numberOfAlerts > 0 ? `+${dashInfo.numberOfAlerts}` : dashInfo.numberOfAlerts)
+                                    : "0"}
+                            </div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                +0.0% from last month
                             </p>
                         </CardContent>
                     </Card>
@@ -75,9 +88,9 @@ export default function DashboardPage() {
                             <EyeIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">1450</div>
+                            <div className="text-2xl font-bold">{dashInfo.numberWatchlist}</div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                +0.0% from last month
                             </p>
                         </CardContent>
                     </Card>
@@ -89,7 +102,7 @@ export default function DashboardPage() {
                             <UsersIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">138</div>
+                            <div className="text-2xl font-bold">{dashInfo.numberOfOrganizationMembers}</div>
                             {/* <p className="text-xs text-muted-foreground">
                                 +10.1% from last month
                             </p> */}
@@ -103,7 +116,7 @@ export default function DashboardPage() {
                             <HomeIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">78</div>
+                            <div className="text-2xl font-bold">{dashInfo.numberOfProperties}</div>
                             {/* <p className="text-xs text-muted-foreground">
                                 +20.1% from last month
                             </p> */}
@@ -117,10 +130,38 @@ export default function DashboardPage() {
                             <ShieldIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="relative pb-12"> {/* Add extra padding to bottom */}
-                            <div className="text-2xl font-bold">Premium</div>
+                            <div className="flex items-center gap-2">
+                                <div className="text-2xl font-bold">{subscription ? subscription.plan?.title : "Free"}</div>
+
+                                {subscription?.status_formatted && (
+                                    <Badge variant="secondary">
+                                        {subscription.status_formatted}
+                                    </Badge>
+                                )}
+                            </div>
                             <p className="text-xs text-muted-foreground">
-                                Renewal next month
+                                {subscription ? (
+                                    <>
+                                        {subscription.status === "active" &&
+                                            "Renews at " +
+                                            format(subscription.renews_at, "PP")}
+
+                                        {subscription.status === "paused" &&
+                                            "Your subscription is paused"}
+
+                                        {subscription.status === "cancelled" &&
+                                            subscription.ends_at &&
+                                            `${new Date(subscription.ends_at) >
+                                                new Date()
+                                                ? "Ends at "
+                                                : "Ended on "
+                                            }` + format(subscription.ends_at, "PP")}
+                                    </>
+                                ) : (
+                                    "No expiration"
+                                )}
                             </p>
+
                             {/* <div className="absolute bottom-4 right-4">
                                 <Button>
                                     Manage
@@ -136,9 +177,9 @@ export default function DashboardPage() {
                             <BarChartIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">85%</div>
+                            <div className="text-2xl font-bold">0%</div>
                             <p className="text-xs text-muted-foreground">
-                                +10.5% from last month
+                                +0% from last month
                             </p>
                         </CardContent>
                     </Card>

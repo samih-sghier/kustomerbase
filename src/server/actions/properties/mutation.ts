@@ -9,9 +9,12 @@ import {
     propertyUpdateSchema,
 } from "@/server/db/schema";
 import { adminProcedure, protectedProcedure } from "@/server/procedures";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import type { z } from "zod";
 import { getOrganizations } from "../organization/queries";
+import { getOrgSubscription } from "../subscription/query";
+import { pricingIds, pricingPlans } from "@/config/pricing";
+import { redirect } from "next/navigation";
 
 /**
  * Create a new property
@@ -42,6 +45,8 @@ export async function createPropertyMutation(props: CreatePropertyProps) {
     const { user } = await protectedProcedure();
     const { currentOrg, userOrgs } = await getOrganizations();
 
+    const subscription = await getOrgSubscription();
+
     // Validate the property data against the schema
     const propertyParse = await propertyFormSchema.safeParseAsync(props);
 
@@ -53,7 +58,16 @@ export async function createPropertyMutation(props: CreatePropertyProps) {
     }
 
 
+
+
     var currentOrgId = propertyParse.data.organizationId;
+
+    // Usage example:
+    if (!(await canPostProperty(subscription, currentOrgId))) {
+        throw new Error("Your current plan does not allow posting more properties. Please upgrade your plan.");
+    }
+
+
     // Ensure the user has access to the organization (if applicable)
     // Search through userOrgs to find a match
     // const organization = userOrgs.find(org => org.id === currentOrgId);
@@ -89,7 +103,7 @@ export async function createPropertyMutation(props: CreatePropertyProps) {
  * Remove a property
  * @params id - The ID of the property
  */
-export async function removePropertyMutation({ id, orgId}: { id: string, orgId: string }) {
+export async function removePropertyMutation({ id, orgId }: { id: string, orgId: string }) {
     const { user } = await protectedProcedure();
 
     // Check if id is provided
@@ -112,7 +126,6 @@ export async function removePropertyMutation({ id, orgId}: { id: string, orgId: 
     // Perform the deletion
     try {
         await db.delete(property).where(eq(property.id, id)).execute();
-        console.log(`Property with ID ${id} removed successfully`);
     } catch (error) {
         console.error(`Failed to remove property with ID ${id}:`, error);
         throw new Error("Failed to remove property");
@@ -168,3 +181,39 @@ export async function deletePropertyMutation({ id }: { id: string }) {
 
     return await db.delete(property).where(eq(property.id, id)).execute();
 }
+
+
+
+const canPostProperty = async (subscription: any | null, currentOrgId: string): Promise<boolean> => {
+    // Check if the subscription is active
+    const isSubscriptionActive = () => {
+        if (!subscription) return true; // Free plan is always active
+        const currentDate = new Date();
+        return subscription.status === 'active' || (subscription.status === 'cancelled' && subscription.ends_at && new Date(subscription.ends_at) > currentDate);
+    };
+
+    // Verify if the plan allows posting more properties
+    const verifyPlan = async () => {
+        const planId = subscription?.plan?.id || pricingIds.free; // Default to free plan if no subscription
+
+        // Find the plan based on pricingIds
+        const plan = pricingPlans.find(p => p.id === planId);
+
+        if (!plan) return false;
+
+        // Count the number of properties already posted by the organization
+        const propertyCount = await db
+            .select({ count: count() })
+            .from(property)
+            .where(eq(property.organizationId, currentOrgId))
+            .execute()
+            .then(res => res[0]?.count ?? 0);
+
+        // Check if the current property count exceeds the limit
+        return propertyCount < plan.propertiesLimit;
+    };
+
+    // Check if the user can post another property based on their plan
+    return isSubscriptionActive() && await verifyPlan();
+};
+

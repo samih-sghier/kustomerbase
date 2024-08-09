@@ -84,7 +84,6 @@ export async function getAllPaginatedWatchlistTenantsQuery(
                     : desc(watchlist.createdAt),
         });
 
-        console.log(input)
         // Map the data to include tenantName and title
         const mappedData = response.map(item => ({
             ...item,

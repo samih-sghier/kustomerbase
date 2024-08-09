@@ -10,7 +10,7 @@ import { AlertTable } from "./_components/alert-table";
 import { getAllPaginatedWatchlistTenantsQuery } from "@/server/actions/watchlist/queries";
 import { SearchParams } from "@/types/data-table";
 import { z } from "zod";
-import { getAllPaginatedAlertsQuery } from "@/server/actions/alert/queries";
+import { getAlertStatistics, getAllPaginatedAlertsQuery } from "@/server/actions/alert/queries";
 
 type AlertsPageProps = {
     searchParams: SearchParams;
@@ -33,6 +33,7 @@ export default async function AlertsPage({ searchParams }: AlertsPageProps) {
 
     // Fetch the alerts using the new query function
     const alerts = getAllPaginatedAlertsQuery(search);
+    const stats = await getAlertStatistics();
 
     return (
         <AppPageShell
@@ -49,7 +50,7 @@ export default async function AlertsPage({ searchParams }: AlertsPageProps) {
                             <BellIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">144</div>
+                            <div className="text-2xl font-bold">{stats.totalAlerts}</div>
                             {/* <p className="text-xs text-muted-foreground">
                                 +20.1% from last month
                             </p> */}
@@ -64,7 +65,7 @@ export default async function AlertsPage({ searchParams }: AlertsPageProps) {
                         </CardHeader>
                         <CardContent>
                             <div
-                                className="text-2xl font-bold">9</div>
+                                className="text-2xl font-bold">{stats.newAlerts}</div>
                             {/* <p className="text-xs text-muted-foreground">
                                 +20.1% from last month
                             </p> */}
@@ -78,7 +79,7 @@ export default async function AlertsPage({ searchParams }: AlertsPageProps) {
                             <ArchiveIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">0</div>
+                            <div className="text-2xl font-bold">{stats.archivedAlerts}</div>
                             {/* <p className="text-xs text-muted-foreground">
                                 0
                             </p> */}

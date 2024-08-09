@@ -42,7 +42,6 @@ export async function createTenantMutation(props: CreateTenantProps) {
     const tenantParse = await tenantFormSchema.safeParseAsync(props);
 
     if (!tenantParse.success) {
-        console.log(tenantParse.error);
         throw new Error("Invalid tenant data", {
             cause: tenantParse.error.errors,
         });

@@ -25,7 +25,9 @@ export const defaultMetadata: Metadata = {
         "Illegal Subleasing Alerts",
         "Property Compliance Platform",
         "Subleasing Enforcement Solutions",
-        "Tenant Violation Detection"
+        "Tenant Violation Detection",
+        "Subleasing",
+        "Prevent Subleasing"
     ],
     authors: [{ name: "SubletGuard", url: "https://x.com/subletguard" }],
     creator: "SubletGuard",
