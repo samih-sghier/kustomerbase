@@ -63,7 +63,7 @@ async function fetchCurrentOrganization() {
 export function CreatePropertyForm() {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
-    const [statusOptions, setStatusOptions] = useState<string[]>(["Available", "Under Contract", "Pending"]);
+    const [statusOptions, setStatusOptions] = useState<string[]>(["Available", "Leased", "Pending"]);
     const [currentOrganization, setCurrentOrganization] = useState<any>(undefined);
 
     // Initialize the form with default values and schema validation

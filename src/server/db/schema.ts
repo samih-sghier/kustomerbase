@@ -255,8 +255,7 @@ export const orgRequestInsertSchema = createInsertSchema(orgRequests);
 
 export const propertyStatusEnum = pgEnum("property-status", [
     "Available",
-    "Sold",
-    "Under Contract",
+    "Leased",
     "Pending",
 ]);
 
@@ -365,7 +364,7 @@ export const propertyInsertSchema = createInsertSchema(property, {
     description: z.string().min(2, "Description must be at least 10 characters long").optional(),
     price: z.number().min(0, "Price must be a positive number"),
     address: z.string().min(3, "Address must be at least 3 characters long").max(255, "Address must be at most 255 characters long"),
-    status: z.enum(["Available", "Sold", "Under Contract", "Pending"]),
+    status: z.enum(["Available", "Leased", "Pending"]),
     organizationId: z.string(),
     type: z.enum(["Apartment",
         "Condominium",
@@ -384,7 +383,7 @@ export const propertySelectSchema = createSelectSchema(property, {
     description: z.string().min(2, "Description must be at least 10 characters long").optional(),
     price: z.number().min(0, "Price must be a positive number"),
     address: z.string().min(3, "Address must be at least 3 characters long").max(255, "Address must be at most 255 characters long"),
-    status: z.enum(["Available", "Sold", "Under Contract", "Pending"]),
+    status: z.enum(["Available", "Leased", "Pending"]),
     type: z.enum(["Apartment",
         "Condominium",
         "Townhouse",
@@ -402,7 +401,7 @@ export const propertyUpdateSchema = z.object({
     description: z.string().min(2, "Description must be at least 10 characters long").optional(),
     price: z.number().min(0, "Price must be a positive number"),
     address: z.string().min(3, "Address must be at least 3 characters long").max(255, "Address must be at most 255 characters long").optional(),
-    status: z.enum(["Available", "Sold", "Under Contract", "Pending"]).optional(),
+    status: z.enum(["Available", "Leased", "Pending"]).optional(),
     type: z.enum([
         "Apartment",
         "Condominium",
