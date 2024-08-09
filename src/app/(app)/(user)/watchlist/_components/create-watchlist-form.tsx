@@ -129,6 +129,9 @@ export function CreateWatchlistForm() {
                 organizationId: currentOrganization?.id
             });
 
+            await startAwaitableTransition(() => {
+                router.refresh();
+            });
             form.reset({
                 alertType: "Subleasing",
                 organizationId: currentOrganization?.id ?? "",
@@ -138,9 +141,6 @@ export function CreateWatchlistForm() {
             setIsOpen(false);
             toast.success("Watchlist item created successfully");
             await scanPlatforms(data);
-            await startAwaitableTransition(() => {
-                router.refresh();
-            });
         } catch (error) {
             console.error("Submission error:", error);
             toast.error(error?.message || "Failed to create watchlist item");
