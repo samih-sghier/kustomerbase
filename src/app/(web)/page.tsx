@@ -16,7 +16,7 @@ import { ArrowRightIcon } from "lucide-react";
 import HowItWorks from "@/app/(web)/_components/howitworks";
 
 export const metadata: Metadata = {
-    title: "Build Your MVP in Days, not weeks. Next.js Starter Kit",
+    title: "Prevent Unah, not weeks. Next.js Starter Kit",
 };
 
 export const dynamic = "force-static";
@@ -26,7 +26,7 @@ export default async function HomePage() {
         <WebPageWrapper>
             <WebPageHeader
                 badge="Stay in Control"
-                title={`Prevent Unauthorized Subleasing`}
+                title={`Detect Unauthorized Subleasing for Landlords & Real Estate Companies | SubletGuard`}
 
             >
                 <Balancer
