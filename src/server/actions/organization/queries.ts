@@ -70,7 +70,7 @@ type GetOrgByIdProps = {
 };
 
 export async function getOrgByIdQuery({ orgId }: GetOrgByIdProps) {
-    await protectedProcedure();
+    // await protectedProcedure();
 
     return await db.query.organizations.findFirst({
         where: and(eq(organizations.id, orgId)),
