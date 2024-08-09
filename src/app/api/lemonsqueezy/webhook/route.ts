@@ -11,7 +11,6 @@ import {
 
 export async function POST(request: Request) {
     const rawBody = await request.text();
-    console.log(rawBody)
     const secret = env.LEMONSQUEEZY_WEBHOOK_SECRET;
 
     const hmac = crypto.createHmac("sha256", secret);
