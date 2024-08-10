@@ -342,8 +342,8 @@ export const watchlistRelations = relations(watchlist, ({ one }) => ({
 
 export const watchlistInsertSchema = createInsertSchema(watchlist, {
     organizationId: z.string().uuid("Invalid organization ID format"),
-    propertyId: z.string().uuid("Invalid property ID format").optional(),
-    tenantId: z.string().uuid("Invalid tenant ID format").optional(),
+    propertyId: z.string().uuid("Invalid property ID format"),
+    tenantId: z.string().optional(),
     alertType: z.enum([
         "Subleasing",
         "Unauthorized Tenants",

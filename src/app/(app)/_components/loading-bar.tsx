@@ -1,5 +1,4 @@
-import { alertTypeEnum } from '@/server/db/schema';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { create } from 'zustand';
 
 interface LoadingBarState {
@@ -50,7 +49,7 @@ export const governmentPlatforms = [
     "Insurance Claims Records"
 ];
 
-export function LoadingBar() {
+export function LoadingBar({ subscription }: any) {
     const { isLoading, progress, currentPlatformIndex, alertType } = useLoadingBarStore(state => ({
         isLoading: state.isLoading,
         progress: state.progress,
@@ -79,8 +78,13 @@ export function LoadingBar() {
                         ? `Scanning ${currentPlatform}...`
                         : "Completed"}
                 </div>
+                {
+                    !subscription ?
+                        <p className="text-center text-xs text-muted-foreground">
+                            Upgrade your plan for real time scanning
+                        </p> : null
+                }
             </div>
         </div>
     );
 }
-

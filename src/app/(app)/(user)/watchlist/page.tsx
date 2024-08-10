@@ -7,6 +7,7 @@ import { getAllPaginatedWatchlistTenantsQuery } from "@/server/actions/watchlist
 import { CreateWatchlistForm } from "./_components/create-watchlist-form";
 import { getOrgPropertiesQuery } from "@/server/actions/properties/queries";
 import { getOrgTenantsQuery } from "@/server/actions/tenants/queries";
+import { getOrgSubscription } from "@/server/actions/subscription/query";
 
 type WatchlistPageProps = {
     searchParams: SearchParams;
@@ -31,6 +32,7 @@ export default async function OrgMembersPage({ searchParams }: WatchlistPageProp
     const membersPromise = getAllPaginatedWatchlistTenantsQuery(search);
     const properties = await getOrgPropertiesQuery();
     const tenants = await getOrgTenantsQuery();
+    const subscription = await getOrgSubscription();
 
     return (
         <AppPageShell
@@ -42,7 +44,7 @@ export default async function OrgMembersPage({ searchParams }: WatchlistPageProp
                     {(await membersPromise).data.length} items on watch.
                 </h2>
 
-                <CreateWatchlistForm />
+                <CreateWatchlistForm subscription={subscription} />
             </div>
             <div className="w-full space-y-5">
                 <WatchListTable

@@ -67,7 +67,7 @@ async function fetchTenants(organizationId: string) {
     return await getOrgTenantsQuery();
 }
 
-export function CreateWatchlistForm() {
+export function CreateWatchlistForm({ subscription }: any) {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [currentOrganization, setCurrentOrganization] = useState<any>(undefined);
@@ -128,10 +128,6 @@ export function CreateWatchlistForm() {
                 ...data,
                 organizationId: currentOrganization?.id
             });
-
-            await startAwaitableTransition(() => {
-                router.refresh();
-            });
             form.reset({
                 alertType: "Subleasing",
                 organizationId: currentOrganization?.id ?? "",
@@ -141,6 +137,9 @@ export function CreateWatchlistForm() {
             setIsOpen(false);
             toast.success("Watchlist item created successfully");
             await scanPlatforms(data);
+            await startAwaitableTransition(() => {
+                router.refresh();
+            });
         } catch (error) {
             console.error("Submission error:", error);
             toast.error(error?.message || "Failed to create watchlist item");
@@ -310,7 +309,7 @@ export function CreateWatchlistForm() {
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>
-                                        <FormDescription>Select the tenant from the list.</FormDescription>
+                                        <FormDescription>Choosing the current tenant improves the accuracy of scans.</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -327,7 +326,7 @@ export function CreateWatchlistForm() {
                     </Form>
                 </DialogContent>
             </Dialog>
-            <LoadingBar /> {/* Display loading bar */}
+            <LoadingBar subscription={subscription} /> {/* Display loading bar */}
         </>
     );
 }

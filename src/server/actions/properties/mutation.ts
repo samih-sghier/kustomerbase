@@ -64,8 +64,9 @@ export async function createPropertyMutation(props: CreatePropertyProps) {
 
     // Usage example:
     if (!(await canPostProperty(subscription, currentOrgId))) {
-        throw new Error("Your current plan does not allow posting more properties. Please upgrade your plan.");
-    }
+        return new Response("Your current plan does not allow posting more properties. Please upgrade your plan.", { status: 400 });
+    }        
+
 
 
     // Ensure the user has access to the organization (if applicable)
