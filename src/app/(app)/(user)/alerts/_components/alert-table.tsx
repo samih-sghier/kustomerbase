@@ -10,19 +10,9 @@ import type {
     DataTableFilterableColumn,
     DataTableSearchableColumn,
 } from "@/types/data-table";
-import { type getAllPaginatedWatchlistTenantsQuery } from "@/server/actions/watchlist/queries";
-import { getOrgTenantsQuery } from "@/server/actions/tenants/queries";
-import { getOrgPropertiesQuery } from "@/server/actions/properties/queries";
 import { getAllPaginatedAlertsQuery } from "@/server/actions/alert/queries";
 
 
-async function fetchProperties() {
-    return (await getOrgPropertiesQuery()).map(property => { });
-}
-
-async function fetchTenants() {
-    return await getOrgTenantsQuery();
-}
 
 // Define filterable columns for the DataTable
 const filterableColumns: DataTableFilterableColumn<AlertData>[] = [
@@ -72,7 +62,7 @@ export function AlertTable({ watchListPromise }: AlertTableProps) {
     );
 
     // Ensure that the new fields are included
-    const watchListData: AlertData[] = data.map((item) => ({
+    const alertData: AlertData[] = data.map((item) => ({
         id: item.id!,
         alertType: item.alertType,
         createdAt: item.createdAt,
@@ -88,7 +78,7 @@ export function AlertTable({ watchListPromise }: AlertTableProps) {
     }));
 
     const { table } = useDataTable({
-        data: watchListData,
+        data: alertData,
         columns,
         pageCount,
         searchableColumns,

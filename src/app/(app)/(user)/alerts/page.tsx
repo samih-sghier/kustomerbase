@@ -7,7 +7,6 @@ import {
     ArchiveIcon,
 } from "lucide-react";
 import { AlertTable } from "./_components/alert-table";
-import { getAllPaginatedWatchlistTenantsQuery } from "@/server/actions/watchlist/queries";
 import { SearchParams } from "@/types/data-table";
 import { z } from "zod";
 import { getAlertStatistics, getAllPaginatedAlertsQuery } from "@/server/actions/alert/queries";

@@ -24,7 +24,7 @@ import {
     updateWatchListAlertTypeMutation,
 } from "@/server/actions/watchlist/mutation";
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
-import { WatchListData } from "./columns";
+import { WatchListData } from "../../watchlist/_components/columns";
 
 type AlertType = (typeof alertTypeEnum.enumValues)[number];
 

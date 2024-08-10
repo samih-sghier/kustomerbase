@@ -27,7 +27,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
 import { getOrganizations } from "@/server/actions/organization/queries";
 import { createTenantMutation } from "@/server/actions/tenants/mutation";
-import { getOrgTenantsQuery } from "@/server/actions/tenants/queries";
 import { tenantInsertSchema } from "@/server/db/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";

@@ -17,11 +17,11 @@ const searchParamsSchema = z.object({
     per_page: z.coerce.number().default(10),
     sort: z.string().optional(),
     email: z.string().optional(),
-    tenantName: z.string().optional(),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
-    title: z.string().optional(),
+    tenantName: z.string().optional(),
     address: z.string().optional(),
+    title: z.string().optional(),
     alertType: z.string().optional()
 });
 
