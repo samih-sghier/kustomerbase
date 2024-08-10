@@ -21,10 +21,10 @@ type Testimonial = {
 export const featuredTestimonial: Testimonial = {
     body: "SubletGuard has been fantastic in helping us prevent lease breaches and avoid costly litigation. The system catches potential issues early, so we can handle them before they escalate. It's made managing properties so much smoother!",
     author: {
-        name: "Brenna Goyette",
-        handle: "brennagoyette",
+        name: "Brenna",
+        handle: "Pinnacle Property Pros",
         imageUrl:
-            "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80",
+            "https://plus.unsplash.com/premium_photo-1669075651198-674fab1370b3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmVhbCUyMGVzdGF0ZSUyMGNvbXBhbnklMjBsb2dvfGVufDB8fDB8fHww",
         logoUrl: "https://tailwindui.com/img/logos/savvycal-logo-gray-900.svg",
     },
 };
@@ -40,16 +40,16 @@ export const testimonials: Testimonial[][][] = [
                     name: "Leslie",
                     handle: "Urban Nest Realty",
                     imageUrl:
-                        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                        "https://utfs.io/f/e9364a67-9c41-421d-bb94-b7101f618d1f-1uet02.png",
                 },
             },
             {
                 body: "We've significantly reduced the risk of unauthorized subleasing thanks to SubletGuard. Their service is invaluable for property management.",
                 author: {
-                    name: "Lindsay",
+                    name: "Jose",
                     handle: "Vista Realty Group",
                     imageUrl:
-                        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                        "https://utfs.io/f/5437bc02-991a-4c44-8492-9c35d696c3f5-e00rau.png",
                 },
             },
             // More testimonials...
@@ -58,10 +58,10 @@ export const testimonials: Testimonial[][][] = [
             {
                 body: "SubletGuard has revolutionized how we handle subleasing issues. It's a must-have for any property manager serious about compliance.",
                 author: {
-                    name: "Lindsay",
+                    name: "Jessica",
                     handle: "Walton Properties LLC",
                     imageUrl:
-                        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                        "https://static.wixstatic.com/media/cea8c0_365d1486f5204ccbbb40e3b77e591dc4~mv2.jpg/v1/fill/w_600,h_362,al_c,lg_1,q_80,enc_auto/cea8c0_365d1486f5204ccbbb40e3b77e591dc4~mv2.jpg",
                 },
             },
             // More testimonials...
@@ -75,7 +75,7 @@ export const testimonials: Testimonial[][][] = [
                     name: "Tom",
                     handle: "Greenfield Estates",
                     imageUrl:
-                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                        "https://utfs.io/f/e6ed2635-d6e0-4acf-abb9-3466525c819e-5hoeg9.jpg",
                 },
             },
 
@@ -88,16 +88,16 @@ export const testimonials: Testimonial[][][] = [
                     name: "Leonard",
                     handle: "Horizon Haven Realty",
                     imageUrl:
-                        "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                        "https://utfs.io/f/291a4aa7-892f-4eb3-be3b-0661fbc665c7-i5ejyz.jpg",
                 },
             },
             {
                 body: "Thanks to SubletGuard, managing our rental properties has become much smoother. Their platform ensures we stay compliant without hassle.",
                 author: {
-                    name: "Tom",
-                    handle: "True North Properties",
+                    name: "Eric",
+                    handle: "Harmony Real Estate",
                     imageUrl:
-                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                        "https://utfs.io/f/41f0eac5-9949-47b0-9bc1-2d39fe892775-biu686.png",
                 },
             },
             // More testimonials...

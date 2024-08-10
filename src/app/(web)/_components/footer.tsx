@@ -7,9 +7,13 @@ import { siteUrls } from "@/config/urls";
 import { cn } from "@/lib/utils";
 import { ArrowUpRightIcon, BookOpenIcon } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import Balancer from "react-wrap-balancer";
 
 export function WebFooter() {
+
+    const year = new Date().getFullYear();
+
     return (
         <div className="pb-0 sm:px-4 sm:py-8">
             <footer className="container grid grid-cols-1 gap-8 border border-border bg-background p-8 sm:grid-cols-2 sm:rounded-lg">
@@ -94,8 +98,8 @@ export function WebFooter() {
                             />
                         ))}
                         <FooterLink
-                            href={siteUrls.github}
-                            label="Github"
+                            href={siteUrls.twitter}
+                            label="Social"
                             external
                         />
                     </div>
@@ -121,6 +125,9 @@ export function WebFooter() {
                             />
                         ))}
                     </div>
+                </div>
+                <div className="col-span-full mt-8 text-center text-sm text-muted-foreground">
+                    <p>&copy; {year} SubletGuard, Inc. All rights reserved.</p>
                 </div>
             </footer>
         </div>
