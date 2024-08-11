@@ -92,7 +92,6 @@ export async function removeTenantMutation({ id, orgId }: { id: string, orgId: s
     // Perform the deletion
     try {
         await db.delete(tenant).where(eq(tenant.id, id)).execute();
-        console.log(`Tenant with ID ${id} removed successfully`);
     } catch (error) {
         console.error(`Failed to remove tenant with ID ${id}:`, error);
         throw new Error("Failed to remove tenant");

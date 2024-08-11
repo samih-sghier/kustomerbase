@@ -19,7 +19,7 @@ const nextConfig = {
         optimizePackageImports: ["lucide-react"],
     },
     images: {
-        remotePatterns: [{ hostname: "fakeimg.pl" }, { hostname: "utfs.io" }],
+        remotePatterns: [{ hostname: "images.unsplash.com" }, { hostname: "utfs.io" }],
     },
     typescript: {
         ignoreBuildErrors: true,

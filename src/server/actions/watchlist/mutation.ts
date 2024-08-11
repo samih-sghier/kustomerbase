@@ -38,7 +38,7 @@ export async function createWatchlistMutation(props: CreateWatchlistProps) {
         .execute();
 
     if (existingWatchlistItem.length > 0) {
-        throw new Error("This alert type for the specified property and tenant already exists.");
+        throw new Error("This property has an existing alert type with the same alert, and tenant.");
     }
 
     // Insert or update the watchlist item
