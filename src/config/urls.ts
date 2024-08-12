@@ -27,7 +27,7 @@ export const siteUrls = {
     dashboard: {
         home: "/dashboard",
         properties: "/properties",
-        tenants: "/tenants",
+        // tenants: "/tenants",
         watchlist: "/watchlist",
         alerts: "/alerts",
     },
