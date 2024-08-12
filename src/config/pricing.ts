@@ -55,64 +55,69 @@ export const pricingFeatures: PricingFeature[] = [
         title: "Text Recognition Scanning",
         includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
-
+    
+    // Uncomment and modify this entry as needed
+    // {
+    //     id: "2",
+    //     title: "Real Estate Marketplace Platforms Scanning (e.g., Airbnb, Zillow, Craigslist...)",
+    //     includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+    // },
+    
     {
         id: "2",
-        title: "Real Estate Marketplace Platforms Scanning (eg: Airbnb, Zillow, Craigslist...)",
-        includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
-    },
-    {
-        id: "3",
         title: "AI and Media-Based Scanning",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
+    
+    // Uncomment and modify this entry as needed
+    // {
+    //     id: "4",
+    //     title: "Social Media Platforms Scanning (e.g., Facebook groups...)",
+    //     includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+    // },
+    
     {
-        id: "4",
-        title: "Social Media Platforms Scanning (eg: Facebook groups...)",
-        includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
-    },
-    {
-        id: "5",
+        id: "3",
         title: "Real-time subletting alerts",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "6",
+        id: "4",
         title: "Daily subletting activity summaries",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "7",
+        id: "5",
         title: "Historical subletting data",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "8",
+        id: "6",
         title: "Customizable alert filters",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "9",
+        id: "7",
         title: "Tenant communication tools",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "10",
+        id: "8",
         title: "Advanced analytics and reporting",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
-
     {
-        id: "11",
+        id: "9",
         title: "Dedicated customer support",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "12",
+        id: "10",
         title: "API access for integrations",
         includedIn: [pricingIds.unlimited],
     },
 ];
+
 
 export const pricingPlans: PricingPlan[] = [
     {
