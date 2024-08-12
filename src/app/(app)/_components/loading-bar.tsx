@@ -25,28 +25,30 @@ export const useLoadingBarStore = create<LoadingBarState>(set => ({
 }));
 
 export const rentalPlatforms = [
-    "Airbnb",
-    "Zillow",
-    "Facebook Marketplace",
-    "Craigslist",
-    "Apartments.com",
-    "+1,000 Real Estate Marketplace Platforms"
+    // "Airbnb",
+    // "Zillow",
+    // "Facebook Marketplace",
+    // "Craigslist",
+    // "Apartments.com",
+    // "+1,000 Real Estate Marketplace Platforms",
+    "Public Real Estate Data",
+
 ];
 
 export const governmentPlatforms = [
-    "Court Records",
-    "Civil Case Records",
-    "Landlord-Tenant Dispute Records",
-    "Property Code Violations",
-    "Building Permits",
-    "Eviction Records",
-    "Consumer Protection Complaints",
-    "Health and Safety Violations",
-    "Foreclosure Records",
-    "Municipal Code Enforcement",
-    "Housing Authority Records",
-    "Tenant Rights Organizations",
-    "Insurance Claims Records"
+    "Public Court Records",
+    "Public Civil Case Records",
+    "Public Landlord-Tenant Dispute Records",
+    "Public Property Code Violations",
+    "Public Building Permits",
+    "Public Eviction Records",
+    "Public Consumer Protection Complaints",
+    "Public Health and Safety Violations",
+    "Public Foreclosure Records",
+    "Public Municipal Code Enforcement",
+    "Public Housing Authority Records",
+    "Public Tenant Rights Organizations",
+    "Public Insurance Claims Records"
 ];
 
 export function LoadingBar({ subscription }: any) {
