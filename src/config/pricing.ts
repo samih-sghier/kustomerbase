@@ -148,7 +148,7 @@ export const pricingPlans: PricingPlan[] = [
         },
         duration: "per month",
         highlight: "Ideal for small landlords",
-        buttonHighlighted: true,
+        buttonHighlighted: false,
         propertiesLimit: 5,
         usersLimit: 2,
         uniqueFeatures: ["Real-time subletting alerts", "Daily subletting activity summaries", "Customizable alert filters"],
