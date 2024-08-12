@@ -127,7 +127,7 @@ export function WebFooter() {
                     </div>
                 </div>
                 <div className="col-span-full mt-8 text-center text-sm text-muted-foreground">
-                    <p>&copy; {year} SubletGuard, Inc. All rights reserved.</p>
+                    <p>&copy; {year} SubletGuard. All rights reserved.</p>
                 </div>
             </footer>
         </div>
