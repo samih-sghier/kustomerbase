@@ -14,9 +14,9 @@ export default function HowItWorks() {
             </div>
             <div className="grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">
                 <StepCard number={1} title="Upload Your Property Data" />
-                <StepCard number={2} title="Upload Your Tenant Information" />
-                <StepCard number={3} title="Create a Watch List Item" />
-                <StepCard number={4} title="Receive Alerts for Illegal Subleasing and Complaints" />
+                {/* <StepCard number={2} title="Upload Your Tenant Information" /> */}
+                <StepCard number={2} title="Create a Watch List Item" />
+                <StepCard number={3} title="Receive Alerts for Illegal Subleasing and Complaints" />
             </div>
         </section>
     );
