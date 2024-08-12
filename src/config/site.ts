@@ -22,7 +22,9 @@ export const siteConfig = {
         "Guard Your Leases with Confidence!",
         "Real-Time Detection for Real Peace of Mind!",
         "Stay in Control of Your Rentals!",
-        "Prevent Unauthorized Subleases with Ease!"
+        "Prevent Unauthorized Subleases with Ease!",
+        "Sublease Alert",
+
     ]
 } as const;
 

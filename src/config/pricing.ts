@@ -52,42 +52,63 @@ export const pricingIds = {
 export const pricingFeatures: PricingFeature[] = [
     {
         id: "1",
+        title: "Text Recognition Scanning",
+        includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+    },
+
+    {
+        id: "2",
+        title: "Real Estate Marketplace Platforms Scanning (eg: Airbnb, Zillow, Craigslist...)",
+        includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+    },
+    {
+        id: "3",
+        title: "AI and Media-Based Scanning",
+        includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+    },
+    {
+        id: "4",
+        title: "Social Media Platforms Scanning (eg: Facebook groups...)",
+        includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+    },
+    {
+        id: "5",
         title: "Real-time subletting alerts",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "2",
+        id: "6",
         title: "Daily subletting activity summaries",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "3",
+        id: "7",
         title: "Historical subletting data",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "4",
+        id: "8",
         title: "Customizable alert filters",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "5",
+        id: "9",
         title: "Tenant communication tools",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "6",
+        id: "10",
         title: "Advanced analytics and reporting",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
 
     {
-        id: "7",
+        id: "11",
         title: "Dedicated customer support",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "8",
+        id: "12",
         title: "API access for integrations",
         includedIn: [pricingIds.unlimited],
     },

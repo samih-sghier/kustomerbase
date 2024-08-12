@@ -25,7 +25,7 @@ import { siteUrls } from "@/config/urls";
 
 export function PricingTable() {
     return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {pricingPlans.map((pricing) => (
                 <PricingCard key={pricing.id} pricing={pricing} />
             ))}
