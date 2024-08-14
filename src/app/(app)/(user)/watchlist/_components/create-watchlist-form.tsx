@@ -202,7 +202,7 @@ export function CreateWatchlistForm({ subscription }: any) {
                 <DialogTrigger asChild>
                     <Button type="button">Create Item</Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-h-screen overflow-auto">
                     <DialogHeader>
                         <DialogTitle>Create a New Watchlist Item</DialogTitle>
                         <DialogDescription>

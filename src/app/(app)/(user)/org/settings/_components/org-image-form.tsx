@@ -148,7 +148,7 @@ export function OrgImageForm({ currentOrg }: OrgImageFormProps) {
                 </CardFooter>
             </Card>
 
-            <DialogContent>
+            <DialogContent className="max-h-screen overflow-auto">
                 <DialogHeader>
                     <DialogTitle>
                         Upload your org&apos;s profile image here

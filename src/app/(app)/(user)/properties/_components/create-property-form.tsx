@@ -146,7 +146,7 @@ export function CreatePropertyForm() {
             <DialogTrigger asChild>
                 <Button type="button">Create Property</Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[100vh] overflow-auto">
+            <DialogContent className="max-h-screen overflow-auto">
                 <DialogHeader>
                     <DialogTitle>Create a New Property for {currentOrganization?.name}</DialogTitle>
                     <DialogDescription>

@@ -85,7 +85,7 @@ export function CreateFeedbackForm() {
         } catch (error) {
             toast.error(
                 (error as { message?: string })?.message ??
-                    "Failed to submit feedback",
+                "Failed to submit feedback",
             );
         }
     };
@@ -101,7 +101,7 @@ export function CreateFeedbackForm() {
             <DialogTrigger asChild>
                 <Button type="button">Give Feedback</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-h-screen overflow-auto">
                 <DialogHeader>
                     <DialogTitle>Give your feedback</DialogTitle>
                     <DialogDescription>

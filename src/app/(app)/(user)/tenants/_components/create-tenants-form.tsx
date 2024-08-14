@@ -128,7 +128,7 @@ export function CreateTenantForm() {
             <DialogTrigger asChild>
                 <Button type="button">Create Tenant</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-h-screen overflow-auto">
                 <DialogHeader>
                     <DialogTitle>Create a New Tenant for {currentOrganization?.name}</DialogTitle>
                     <DialogDescription>

@@ -78,14 +78,14 @@ export function CreateOrgForm({ open, setOpen }: CreateOrgFormProps) {
         } catch (error) {
             toast.error(
                 (error as { message?: string })?.message ??
-                    "Organization could not be created",
+                "Organization could not be created",
             );
         }
     };
 
     return (
         <Dialog open={open} onOpenChange={(o) => setOpen(o)}>
-            <DialogContent>
+            <DialogContent className="max-h-screen overflow-auto">
                 <DialogHeader>
                     <DialogTitle>Create Organization</DialogTitle>
                     <DialogDescription>
