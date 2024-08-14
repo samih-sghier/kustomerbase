@@ -18,7 +18,7 @@ import { siteUrls } from "@/config/urls";
 import { redirect, useRouter } from "next/navigation";
 import { getDashboardInfo } from "@/server/actions/dashboard/queries";
 import { formatCurrency } from "date-fns";
-import { getOrgSubscription } from "@/server/actions/subscription/query";
+import { getOrgSubscription } from "@/server/actions/stripe_subscription/query";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 
@@ -133,9 +133,9 @@ export default async function DashboardPage() {
                             <div className="flex items-center gap-2">
                                 <div className="text-2xl font-bold">{subscription ? subscription.plan?.title : "Free"}</div>
 
-                                {subscription?.status_formatted && (
+                                {subscription?.status && (
                                     <Badge variant="secondary">
-                                        {subscription.status_formatted}
+                                        {subscription.status}
                                     </Badge>
                                 )}
                             </div>
@@ -149,7 +149,7 @@ export default async function DashboardPage() {
                                         {subscription.status === "paused" &&
                                             "Your subscription is paused"}
 
-                                        {subscription.status === "cancelled" &&
+                                        {subscription.status === "canceled" &&
                                             subscription.ends_at &&
                                             `${new Date(subscription.ends_at) >
                                                 new Date()

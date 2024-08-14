@@ -33,9 +33,9 @@ export function CurrentPlan({ subscription }: CurrentPlanProps) {
                             {subscription ? subscription.plan?.title : "Free"}
                         </p>
 
-                        {subscription?.status_formatted && (
+                        {subscription?.status && (
                             <Badge variant="secondary">
-                                {subscription.status_formatted}
+                                {subscription.status}
                             </Badge>
                         )}
                     </div>
@@ -49,7 +49,7 @@ export function CurrentPlan({ subscription }: CurrentPlanProps) {
                                 {subscription.status === "paused" &&
                                     "Your subscription is paused"}
 
-                                {subscription.status === "cancelled" &&
+                                {subscription.status === "canceled" &&
                                     subscription.ends_at &&
                                     `${
                                         new Date(subscription.ends_at) >

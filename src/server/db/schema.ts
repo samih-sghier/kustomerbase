@@ -559,12 +559,13 @@ export const subscriptions = createTable("subscription", {
         .notNull()
         .primaryKey()
         .default(sql`gen_random_uuid()`),
-    lemonSqueezyId: text("lemonSqueezyId").unique().notNull(),
-    orderId: integer("orderId").notNull(),
+    stripeSubscriptionId: text("stripeSubscriptionId").unique().notNull(),
+    orderId: text("orderId").notNull(),
     orgId: text("orgId")
         .notNull()
+        .unique()
         .references(() => organizations.id, { onDelete: "cascade" }),
-    variantId: integer("variantId").notNull(),
+    priceId: text("priceId").notNull()
 });
 
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({

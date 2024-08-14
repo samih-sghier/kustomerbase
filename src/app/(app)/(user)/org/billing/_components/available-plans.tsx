@@ -40,13 +40,13 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
             plan:
                 pricingPlans.find(
                     (plan) =>
-                        plan.variantId?.monthly === subscription?.variant_id ||
-                        plan.variantId?.yearly === subscription?.variant_id,
+                        plan.priceId?.monthly === subscription?.plan?.priceId ||
+                        plan.priceId?.yearly === subscription?.plan?.priceId,
                 )?.id ?? pricingPlans[0]?.id,
             billing: pricingPlans.find(
                 (plan) =>
-                    plan.variantId?.monthly === subscription?.variant_id ||
-                    plan.variantId?.yearly === subscription?.variant_id,
+                    plan.priceId?.monthly === subscription?.plan?.priceId ||
+                    plan.priceId?.yearly === subscription?.plan?.priceId,
             )
                 ? "monthly"
                 : "yearly",
@@ -61,8 +61,8 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
         pricingPlans[0];
     const selectedVariantId =
         selectedBilling === "monthly"
-            ? selectedPlan?.variantId?.monthly
-            : selectedPlan?.variantId?.yearly;
+            ? selectedPlan?.priceId?.monthly
+            : selectedPlan?.priceId?.yearly;
 
     return (
         <form>
@@ -89,12 +89,12 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
                                             defaultValue={
                                                 pricingPlans.find(
                                                     (plan) =>
-                                                        plan.variantId
+                                                        plan.priceId
                                                             ?.monthly ===
-                                                            subscription?.variant_id ||
-                                                        plan.variantId
+                                                            subscription?.plan?.priceId ||
+                                                        plan.priceId
                                                             ?.yearly ===
-                                                            subscription?.variant_id,
+                                                            subscription?.plan?.priceId,
                                                 )
                                                     ? "monthly"
                                                     : "yearly"
@@ -154,12 +154,12 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
                                             defaultValue={
                                                 pricingPlans.find(
                                                     (plan) =>
-                                                        plan.variantId
+                                                        plan.priceId
                                                             ?.monthly ===
-                                                            subscription?.variant_id ||
-                                                        plan.variantId
+                                                            subscription?.plan?.priceId ||
+                                                        plan.priceId
                                                             ?.yearly ===
-                                                            subscription?.variant_id,
+                                                            subscription?.plan?.priceId,
                                                 )?.id ?? pricingPlans[0]?.id
                                             }
                                             className="space-y-2"
@@ -242,7 +242,7 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
                                     </ul>
                                 </CardContent>
                             </Card>
-                            {selectedVariantId === subscription?.variant_id ? (
+                            {selectedVariantId === subscription?.plan?.priceId ? (
                                 <div
                                     className={buttonVariants({
                                         className:
@@ -275,7 +275,8 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
                                                 : selectedPlan?.price.yearly ??
                                                   0
                                         }
-                                        variantId={selectedVariantId}
+                                        // variantId={selectedVariantId}
+                                        priceId={selectedVariantId}
                                         status={subscription?.status ?? ""}
                                     />
                                 </div>

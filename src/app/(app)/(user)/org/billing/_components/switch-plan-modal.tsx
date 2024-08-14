@@ -16,6 +16,7 @@ import { useState } from "react";
 
 type SwitchPlanModalProps = {
     variantId: number | undefined;
+    priceId: string | undefined;
     lastCardDigits: string;
     cardBrand: string;
     currencySymbol: string;
@@ -33,9 +34,13 @@ export function SwitchPlanModal({
     planName,
     price,
     variantId,
+    priceId,
     status
 }: SwitchPlanModalProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const closeModal = () => {
+        setIsOpen(false);
+    };
     return (
         <AlertDialog open={isOpen} onOpenChange={(o) => setIsOpen(o)}>
             <AlertDialogTrigger asChild>
@@ -70,7 +75,7 @@ export function SwitchPlanModal({
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <SubscribeBtn variantId={variantId}>{status === "active" ? "Switch" : "Subscribe"}</SubscribeBtn>
+                    <SubscribeBtn onSuccess={closeModal} priceId={priceId} variantId={variantId}>{status === "active" ? "Switch" : "Subscribe"}</SubscribeBtn>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

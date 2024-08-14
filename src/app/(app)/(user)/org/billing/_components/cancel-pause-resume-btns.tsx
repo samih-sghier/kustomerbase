@@ -5,13 +5,15 @@ import {
     cancelPlan,
     pausePlan,
     resumePlan,
-} from "@/server/actions/subscription/mutations";
+} from "@/server/actions/stripe_subscription/mutation";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
 import { Icons } from "@/components/ui/icons";
 import type { OrgSubscription } from "@/types/org-subscription";
+import { getCheckoutURL } from "@/server/actions/stripe_subscription/query";
+import { check } from "prettier";
 
 type CancelAndPauseBtnProps = {
     subscription: OrgSubscription;
@@ -42,19 +44,33 @@ export function CancelPauseResumeBtns({
 
     const { isPending: isResuming, mutate: resumeMutate } = useMutation({
         mutationFn: async () => {
-            const response = await resumePlan();
-            await startAwaitableTransition(() => {
-                router.refresh();
-            });
+            const response = await handleResumePlan();
+            if (typeof response !== "string") {
+                await startAwaitableTransition(() => {
+                    router.refresh();
+                });
+                toast.success("Plan resumed successfully!");
+            }
             return response;
         },
         onError: () => {
             toast.error("Failed to resume plan");
         },
-        onSuccess: () => {
-            toast.success("Plan resumed successfully");
+        onSuccess: (checkoutUrl) => {
+            if (checkoutUrl && typeof checkoutUrl === "string") {
+                router.push(checkoutUrl);
+            }
         },
     });
+
+
+    const handleResumePlan = async () => {
+        if (!subscription || (subscription.ends_at && new Date(subscription.ends_at) < new Date())) {
+            return await getCheckoutURL(subscription?.priceId);
+        } else {
+            return await resumePlan();
+        }
+    };
 
     const { isPending: isPausing, mutate: pauseMutate } = useMutation({
         mutationFn: async () => {

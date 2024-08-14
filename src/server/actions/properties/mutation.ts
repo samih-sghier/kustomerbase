@@ -12,7 +12,7 @@ import { adminProcedure, protectedProcedure } from "@/server/procedures";
 import { and, count, eq } from "drizzle-orm";
 import type { z } from "zod";
 import { getOrganizations } from "../organization/queries";
-import { getOrgSubscription } from "../subscription/query";
+import { getOrgSubscription } from "../stripe_subscription/query";
 import { pricingIds, pricingPlans } from "@/config/pricing";
 import { redirect } from "next/navigation";
 

@@ -34,6 +34,10 @@ export type PricingPlan = {
         monthly: number;
         yearly: number;
     };
+    priceId?: {
+        monthly: string;
+        yearly: string;
+    };
 };
 
 export type PricingFeature = {
@@ -55,27 +59,27 @@ export const pricingFeatures: PricingFeature[] = [
         title: "Text Recognition Scanning",
         includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
-    
+
     // Uncomment and modify this entry as needed
     // {
     //     id: "2",
     //     title: "Real Estate Marketplace Platforms Scanning (e.g., Airbnb, Zillow, Craigslist...)",
     //     includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     // },
-    
+
     {
         id: "2",
         title: "AI and Media-Based Scanning",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
-    
+
     // Uncomment and modify this entry as needed
     // {
     //     id: "4",
     //     title: "Social Media Platforms Scanning (e.g., Facebook groups...)",
     //     includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     // },
-    
+
     {
         id: "3",
         title: "Real-time subletting alerts",
@@ -158,6 +162,8 @@ export const pricingPlans: PricingPlan[] = [
         usersLimit: 2,
         uniqueFeatures: ["Real-time subletting alerts", "Daily subletting activity summaries", "Customizable alert filters"],
         variantId: { monthly: 456947, yearly: 456945 },
+        priceId: { monthly: "price_1Pn9GHKLl0K9lei90qNnj9Sv", yearly: "price_1Pn9HEKLl0K9lei9O2zp3Yzb" },
+
     },
     {
         id: pricingIds.standard,
@@ -178,6 +184,7 @@ export const pricingPlans: PricingPlan[] = [
         usersLimit: 5,
         uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "Dedicated customer support"],
         variantId: { monthly: 456949, yearly: 456952 },
+        priceId: { monthly: "price_1Pn9HYKLl0K9lei9PTuDndsh", yearly: "price_1Pn9HwKLl0K9lei9qBvPQAiC" },
     },
     {
         id: pricingIds.unlimited,
@@ -197,7 +204,8 @@ export const pricingPlans: PricingPlan[] = [
         propertiesLimit: Infinity,
         usersLimit: Infinity,
         uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "API access for integrations", "Dedicated customer support"],
-        variantId: { monthly: 456956, yearly: 456957 },
+        variantId: { monthly: 456956, yearly: 456957 }, // not used anymore, legacy for lemonsqueezy integration
+        priceId: { monthly: "price_1Pn9JWKLl0K9lei9EeLGFbFY", yearly: "price_1Pn9JiKLl0K9lei9aLXVvQAG" },
     },
 ];
 

@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import {
     getRevenueCount,
     getSubscriptionsCount,
-} from "@/server/actions/subscription/query";
+} from "@/server/actions/stripe_subscription/query";
 import { getUsersCount } from "@/server/actions/user/queries";
 import {
     DollarSignIcon,

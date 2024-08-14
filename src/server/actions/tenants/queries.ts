@@ -4,7 +4,7 @@ import { db } from "@/server/db";
 import { tenant, organizations } from "@/server/db/schema";
 import { adminProcedure, protectedProcedure } from "@/server/procedures";
 import { unstable_noStore as noStore } from "next/cache";
-import { asc, count, desc, eq, ilike, or } from "drizzle-orm";
+import { asc, count, desc, eq, ilike, inArray, or } from "drizzle-orm";
 import { z } from "zod";
 import { getOrganizations } from "../organization/queries";
 
