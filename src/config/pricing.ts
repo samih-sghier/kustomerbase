@@ -162,8 +162,10 @@ export const pricingPlans: PricingPlan[] = [
         usersLimit: 2,
         uniqueFeatures: ["Real-time subletting alerts", "Daily subletting activity summaries", "Customizable alert filters"],
         variantId: { monthly: 456947, yearly: 456945 },
-        priceId: { monthly: "price_1Pn9GHKLl0K9lei90qNnj9Sv", yearly: "price_1Pn9HEKLl0K9lei9O2zp3Yzb" },
-
+        priceId: {
+            monthly: process.env.STRIPE_PRICE_BASIC_MONTHLY ?? "",
+            yearly: process.env.STRIPE_PRICE_BASIC_YEARLY ?? ""
+        },
     },
     {
         id: pricingIds.standard,
@@ -184,7 +186,10 @@ export const pricingPlans: PricingPlan[] = [
         usersLimit: 5,
         uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "Dedicated customer support"],
         variantId: { monthly: 456949, yearly: 456952 },
-        priceId: { monthly: "price_1Pn9HYKLl0K9lei9PTuDndsh", yearly: "price_1Pn9HwKLl0K9lei9qBvPQAiC" },
+        priceId: {
+            monthly: process.env.STRIPE_PRICE_STANDARD_MONTHLY ?? "",
+            yearly: process.env.STRIPE_PRICE_STANDARD_YEARLY ?? ""
+        },
     },
     {
         id: pricingIds.unlimited,
@@ -205,7 +210,10 @@ export const pricingPlans: PricingPlan[] = [
         usersLimit: Infinity,
         uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "API access for integrations", "Dedicated customer support"],
         variantId: { monthly: 456956, yearly: 456957 }, // not used anymore, legacy for lemonsqueezy integration
-        priceId: { monthly: "price_1Pn9JWKLl0K9lei9EeLGFbFY", yearly: "price_1Pn9JiKLl0K9lei9aLXVvQAG" },
+        priceId: {
+            monthly: process.env.STRIPE_PRICE_UNLIMITED_MONTHLY ?? "",
+            yearly: process.env.STRIPE_PRICE_UNLIMITED_YEARLY ?? ""
+        },
     },
 ];
 
