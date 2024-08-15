@@ -25,12 +25,12 @@ export const useLoadingBarStore = create<LoadingBarState>(set => ({
 }));
 
 export const rentalPlatforms = [
-    // "Airbnb",
-    // "Zillow",
-    // "Facebook Marketplace",
-    // "Craigslist",
-    // "Apartments.com",
-    // "+1,000 Real Estate Marketplace Platforms",
+    "Airbnb",
+    "Zillow",
+    "Facebook Marketplace",
+    "Craigslist",
+    "Apartments.com",
+    "+1,000 Real Estate Marketplace Platforms",
     "Public Real Estate Data",
 
 ];
