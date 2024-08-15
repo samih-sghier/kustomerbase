@@ -10,6 +10,7 @@
  * 1. Add id to the features object then use it as the id of the new feature object.
  * 2. Add title and includedIn to the new feature object. (includedIn is an array of pricing plan ids that include this feature)
  */
+import { env } from "@/env";
 
 export type PricingPlan = {
     id: string;
@@ -163,8 +164,8 @@ export const pricingPlans: PricingPlan[] = [
         uniqueFeatures: ["Real-time subletting alerts", "Daily subletting activity summaries", "Customizable alert filters"],
         variantId: { monthly: 456947, yearly: 456945 },
         priceId: {
-            monthly: process.env.STRIPE_PRICE_BASIC_MONTHLY ?? "",
-            yearly: process.env.STRIPE_PRICE_BASIC_YEARLY ?? ""
+            monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC_MONTHLY ?? "",
+            yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC_YEARLY ?? ""
         },
     },
     {
@@ -187,8 +188,8 @@ export const pricingPlans: PricingPlan[] = [
         uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "Dedicated customer support"],
         variantId: { monthly: 456949, yearly: 456952 },
         priceId: {
-            monthly: process.env.STRIPE_PRICE_STANDARD_MONTHLY ?? "",
-            yearly: process.env.STRIPE_PRICE_STANDARD_YEARLY ?? ""
+            monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_STANDARD_MONTHLY ?? "",
+            yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_STANDARD_YEARLY ?? ""
         },
     },
     {
@@ -211,8 +212,8 @@ export const pricingPlans: PricingPlan[] = [
         uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "API access for integrations", "Dedicated customer support"],
         variantId: { monthly: 456956, yearly: 456957 }, // not used anymore, legacy for lemonsqueezy integration
         priceId: {
-            monthly: process.env.STRIPE_PRICE_UNLIMITED_MONTHLY ?? "",
-            yearly: process.env.STRIPE_PRICE_UNLIMITED_YEARLY ?? ""
+            monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_UNLIMITED_MONTHLY ?? "",
+            yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_UNLIMITED_YEARLY ?? ""
         },
     },
 ];
