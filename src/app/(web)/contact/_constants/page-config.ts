@@ -1,6 +1,6 @@
 import { siteConfig } from "@/config/site";
 
 export const supportPageConfig = {
-    title: "Support",
+    title: "Contact Us",
     description: `Get support from ${siteConfig.name} to get started securing your property.`,
 } as const;

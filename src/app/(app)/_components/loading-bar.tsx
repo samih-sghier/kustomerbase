@@ -29,10 +29,9 @@ export const rentalPlatforms = [
     "Zillow",
     "Facebook Marketplace",
     "Craigslist",
+    "Reddit.com",
     "Apartments.com",
-    "+1,000 Real Estate Marketplace Platforms",
-    "Public Real Estate Data",
-
+    "+1,000 Platforms",
 ];
 
 export const governmentPlatforms = [

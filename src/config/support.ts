@@ -43,7 +43,7 @@ export const supportInfos: SupportInfo[] = [
         title: "Sales",
         description:
             "Get help with any sales-related questions. Our team will help you with any sales inquiries.",
-        email: "sales@subletguard.com",
+        email: "support@subletguard.com",
         buttonHref: `mailto:support@subletguard.com`,
         buttonText: "Get in touch",
     },
