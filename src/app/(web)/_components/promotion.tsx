@@ -8,13 +8,13 @@ export function Promotion() {
                 as="h2"
                 className="text-center font-heading text-3xl font-bold md:text-5xl"
             >
-                Prevent Lease Breaches Before It Happens
+                Stop squatters and save money on costly legal battles with SubletGuard.
             </Balancer>
             <Balancer
                 as="p"
                 className="text-center text-base leading-relaxed text-background/70 sm:text-xl"
             >
-                Detect and prevent unauthorized subleasing effortlessly with SubletGuard. Our platform offers real-time monitoring, proactive alerts, and detailed reports, ensuring your rental properties stay secure and compliant.
+                We actively monitor major real estate platforms like Airbnb and Zillow, as well as social media, to detect if your property is listed without your permission. Receive instant alerts and detailed reports to keep your rental properties secure and compliant.
                 <br />
                 <br />
                 {/* <span className="rounded-[10px] bg-background p-1 font-semibold text-foreground">

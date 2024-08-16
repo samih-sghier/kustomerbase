@@ -57,67 +57,64 @@ export const pricingIds = {
 export const pricingFeatures: PricingFeature[] = [
     {
         id: "1",
-        title: "Text Recognition Scanning",
+        title: "Image-Based and Text Recognition Scanning",
         includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
-
-    // Uncomment and modify this entry as needed
-    // {
-    //     id: "2",
-    //     title: "Real Estate Marketplace Platforms Scanning (e.g., Airbnb, Zillow, Craigslist...)",
-    //     includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
-    // },
-
     {
         id: "2",
-        title: "AI and Media-Based Scanning",
-        includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+        title: "Real Estate Marketplace Platforms Scanning (e.g., Airbnb, Zillow...)",
+        includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
-
-    // Uncomment and modify this entry as needed
     // {
-    //     id: "4",
-    //     title: "Social Media Platforms Scanning (e.g., Facebook groups...)",
+    //     id: "2",
+    //     title: "AI and Media-Based Scanning",
     //     includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     // },
 
+    // Uncomment and modify this entry as needed
     {
         id: "3",
+        title: "Social Media Platforms Scanning (e.g: Reddit, Facebook groups...)",
+        includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+    },
+
+    {
+        id: "4",
         title: "Real-time subletting alerts",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "4",
+        id: "5",
         title: "Daily subletting activity summaries",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "5",
+        id: "6",
         title: "Historical subletting data",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "6",
+        id: "7",
         title: "Customizable alert filters",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "7",
+        id: "8",
         title: "Tenant communication tools",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "8",
+        id: "9",
         title: "Advanced analytics and reporting",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "9",
+        id: "10",
         title: "Dedicated customer support",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "10",
+        id: "11",
         title: "API access for integrations",
         includedIn: [pricingIds.unlimited],
     },
