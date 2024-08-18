@@ -32,7 +32,7 @@ export default async function HomePage() {
                     as="p"
                     className="text-center text-base text-muted-foreground sm:text-lg"
                 >
-                    Protect your rentals with SubletGuard! Detect unauthorized subleasing and stay secure. Ideal for landlords and tenants with N12 or notice to vacate. Easy, reliable, real-time monitoring.
+                    Detect unauthorized subleasing and stay secure. Ideal for landlords and tenants with N12 or notice to vacate. Easy, reliable, real-time monitoring.
                 </Balancer>
 
                 <div className="flex items-center gap-2">
