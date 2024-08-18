@@ -28,7 +28,7 @@ export type PricingPlan = {
     duration: string;
     highlight: string;
     buttonHighlighted: boolean;
-    propertiesLimit: number;
+    planLimit: number;
     usersLimit: number;
     uniqueFeatures?: string[];
     variantId?: {
@@ -49,6 +49,7 @@ export type PricingFeature = {
 
 export const pricingIds = {
     free: "free",
+    hobby: "hobby",
     basic: "basic",
     standard: "standard",
     unlimited: "unlimited",
@@ -57,13 +58,19 @@ export const pricingIds = {
 export const pricingFeatures: PricingFeature[] = [
     {
         id: "1",
-        title: "Image-Based and Text Recognition Scanning",
-        includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+        title: "Move-Out Notice Alerts (eg: N-12, Section 21...)",
+        includedIn: [pricingIds.hobby, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
+    
     {
         id: "2",
+        title: "Image-Based and Text Recognition Scanning",
+        includedIn: [pricingIds.hobby, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+    },
+    {
+        id: "3",
         title: "Real Estate Marketplace Platforms Scanning (e.g., Airbnb, Zillow...)",
-        includedIn: [pricingIds.free, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+        includedIn: [pricingIds.hobby, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     // {
     //     id: "2",
@@ -73,48 +80,48 @@ export const pricingFeatures: PricingFeature[] = [
 
     // Uncomment and modify this entry as needed
     {
-        id: "3",
+        id: "4",
         title: "Social Media Platforms Scanning (e.g: Reddit, Facebook groups...)",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
 
     {
-        id: "4",
+        id: "5",
         title: "Real-time subletting alerts",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "5",
+        id: "6",
         title: "Daily subletting activity summaries",
         includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "6",
+        id: "7",
         title: "Historical subletting data",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "7",
+        id: "8",
         title: "Customizable alert filters",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "8",
+        id: "9",
         title: "Tenant communication tools",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "9",
+        id: "10",
         title: "Advanced analytics and reporting",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "10",
+        id: "11",
         title: "Dedicated customer support",
         includedIn: [pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "11",
+        id: "12",
         title: "API access for integrations",
         includedIn: [pricingIds.unlimited],
     },
@@ -122,29 +129,52 @@ export const pricingFeatures: PricingFeature[] = [
 
 
 export const pricingPlans: PricingPlan[] = [
+    // {
+    //     id: pricingIds.free,
+    //     title: "Free",
+    //     description: "Monitor 1 property for basic subletting alerts.",
+    //     price: {
+    //         monthly: 0,
+    //         yearly: 0,
+    //     },
+    //     currency: {
+    //         code: "USD",
+    //         symbol: "$",
+    //     },
+    //     duration: "Forever",
+    //     highlight: "Get started for free",
+    //     buttonHighlighted: false,
+    //     planLimit: 1,
+    //     usersLimit: 1,
+    //     uniqueFeatures: [],
+    // },
     {
-        id: pricingIds.free,
-        title: "Free",
-        description: "Monitor 1 property for basic subletting alerts.",
+        id: pricingIds.hobby,
+        title: "Hobby",
+        description: "Monitor 2 properties for basic rental activity alerts.",
         price: {
-            monthly: 0,
-            yearly: 0,
+            monthly: 9,
+            yearly: 90,
         },
         currency: {
             code: "USD",
             symbol: "$",
         },
-        duration: "Forever",
-        highlight: "Get started for free",
+        duration: "per month",
+        highlight: "Get started for cheap",
         buttonHighlighted: false,
-        propertiesLimit: 1,
+        planLimit: 2,
         usersLimit: 1,
         uniqueFeatures: [],
+        priceId: {
+            monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_MONTHLY ?? "",
+            yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_YEARLY ?? ""
+        },
     },
     {
         id: pricingIds.basic,
         title: "Basic",
-        description: "Monitor up to 5 properties with essential features.",
+        description: "Monitor up to 10 properties with essential features.",
         price: {
             monthly: 29,
             yearly: 299,
@@ -154,9 +184,9 @@ export const pricingPlans: PricingPlan[] = [
             symbol: "$",
         },
         duration: "per month",
-        highlight: "Ideal for small landlords",
+        highlight: "Ideal for small sized real estate companies",
         buttonHighlighted: false,
-        propertiesLimit: 5,
+        planLimit: 10,
         usersLimit: 2,
         uniqueFeatures: ["Real-time subletting alerts", "Daily subletting activity summaries", "Customizable alert filters"],
         variantId: { monthly: 456947, yearly: 456945 },
@@ -168,7 +198,7 @@ export const pricingPlans: PricingPlan[] = [
     {
         id: pricingIds.standard,
         title: "Standard",
-        description: "Monitor up to 25 properties with advanced features.",
+        description: "Monitor up to 50 properties with advanced features.",
         price: {
             monthly: 99,
             yearly: 999,
@@ -180,7 +210,7 @@ export const pricingPlans: PricingPlan[] = [
         duration: "per month",
         highlight: "Most popular plan",
         buttonHighlighted: true,
-        propertiesLimit: 25,
+        planLimit: 50,
         usersLimit: 5,
         uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "Dedicated customer support"],
         variantId: { monthly: 456949, yearly: 456952 },
@@ -202,9 +232,9 @@ export const pricingPlans: PricingPlan[] = [
             symbol: "$",
         },
         duration: "per month",
-        highlight: "For large property owners and property management companies",
+        highlight: "For large real estate and property management companies",
         buttonHighlighted: false,
-        propertiesLimit: Infinity,
+        planLimit: Infinity,
         usersLimit: Infinity,
         uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "API access for integrations", "Dedicated customer support"],
         variantId: { monthly: 456956, yearly: 456957 }, // not used anymore, legacy for lemonsqueezy integration

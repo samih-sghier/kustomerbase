@@ -292,6 +292,7 @@ export const property = createTable("property", {
 // Enum for alert types
 export const alertTypeEnum = pgEnum("alert_type", [
     "Subleasing",
+    "Notice to Vacate",
     "Unauthorized Tenants",
     "Court Complaints",
 ]);
@@ -347,6 +348,7 @@ export const watchlistInsertSchema = createInsertSchema(watchlist, {
     alertType: z.enum([
         "Subleasing",
         "Unauthorized Tenants",
+        "Notice to Vacate",
         "Court Complaints",
     ])
 });
@@ -641,6 +643,7 @@ export const sgAlertInsertSchema = createInsertSchema(sgAlert, {
     alertType: z.enum([
         "Subleasing",
         "Unauthorized Tenants",
+        "Notice to Vacate",
         "Court Complaints",
     ]),
     alertLink: z.string().url().optional(),

@@ -38,11 +38,12 @@ import {
 import { Icons } from "@/components/ui/icons";
 import { getOrganizations } from "@/server/actions/organization/queries";
 import { alertTypeEnum, watchlistInsertSchema } from "@/server/db/schema"; // Adjust based on your schema
-import { createWatchlistMutation } from "@/server/actions/watchlist/mutation";
+import { canPostWatchlist, createWatchlistMutation } from "@/server/actions/watchlist/mutation";
 import { getOrgPropertiesQuery } from "@/server/actions/properties/queries";
 import { getOrgTenantsQuery } from "@/server/actions/tenants/queries";
 import { governmentPlatforms, LoadingBar, rentalPlatforms, useLoadingBarStore } from "@/app/(app)/_components/loading-bar";
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
+import { siteUrls } from "@/config/urls";
 
 // Define the schema for the form
 const createWatchlistFormSchema = watchlistInsertSchema.pick({
@@ -124,6 +125,14 @@ export function CreateWatchlistForm({ subscription }: any) {
 
     const onSubmit = async (data: CreateWatchlistFormSchema) => {
         try {
+
+            const canPost = await canPostWatchlist();
+            console.log("can post =====> ", canPost)
+            if (!canPost) {
+                toast.error("Your current plan does not allow this action. Please upgrade.");
+                router.push(siteUrls.organization.plansAndBilling);
+                return;
+            }
             await mutateAsync({
                 ...data,
                 organizationId: currentOrganization?.id
@@ -152,7 +161,7 @@ export function CreateWatchlistForm({ subscription }: any) {
 
         // Set loading state
         setLoading(true)
-        if (data.alertType === "Subleasing" || data.alertType === "Court Complaints") {
+        if (data.alertType === "Subleasing" || data.alertType === "Court Complaints" || data.alertType === "Notice to Vacate") {
             setAlertType(data.alertType)
 
             const platforms = data.alertType === "Subleasing" ? rentalPlatforms : governmentPlatforms;
@@ -279,7 +288,7 @@ export function CreateWatchlistForm({ subscription }: any) {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="tenantId"
                                 render={({ field }) => (
@@ -313,7 +322,7 @@ export function CreateWatchlistForm({ subscription }: any) {
                                         <FormMessage />
                                     </FormItem>
                                 )}
-                            />
+                            /> */}
                             <DialogFooter>
                                 <Button type="submit" disabled={isMutatePending}>
                                     {isMutatePending ? "Creating..." : "Create"}

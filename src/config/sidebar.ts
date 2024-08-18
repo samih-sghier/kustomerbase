@@ -131,11 +131,11 @@ const navigation: SidebarNavItems[] = [
                 icon: HomeIcon,
                 href: siteUrls.dashboard.properties,
             },
-            {
-                label: "Tenants",
-                icon: UsersRoundIcon,
-                href: siteUrls.dashboard.tenants,
-            },
+            // {
+            //     label: "Tenants",
+            //     icon: UsersRoundIcon,
+            //     href: siteUrls.dashboard.tenants,
+            // },
             {
                 label: "Watch List",
                 icon: EyeIcon,

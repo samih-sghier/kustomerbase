@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 type SwitchPlanModalProps = {
-    variantId: number | undefined;
     priceId: string | undefined;
     lastCardDigits: string;
     cardBrand: string;
@@ -33,7 +32,6 @@ export function SwitchPlanModal({
     lastCardDigits,
     planName,
     price,
-    variantId,
     priceId,
     status
 }: SwitchPlanModalProps) {
@@ -75,7 +73,7 @@ export function SwitchPlanModal({
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <SubscribeBtn onSuccess={closeModal} priceId={priceId} variantId={variantId}>{status === "active" ? "Switch" : "Subscribe"}</SubscribeBtn>
+                    <SubscribeBtn onSuccess={closeModal} priceId={priceId}>{status === "active" ? "Switch" : "Subscribe"}</SubscribeBtn>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

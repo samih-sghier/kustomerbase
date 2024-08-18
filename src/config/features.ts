@@ -34,15 +34,14 @@ export const features: Feature[] = [
             "https://utfs.io/f/ed512354-67c6-43ba-808a-d0deefbef2ba-1ml5w4.png",
     },
     {
-        title: "Lease Compliance Management",
+        title: "Monitor Move-Out Notices",
         description:
-            "Facilitate company-wide tracking and management of lease compliance. Our platform allows for centralized oversight, ensuring that all lease breaches are monitored and resolved efficiently across your organization.",
+            "Track move-out notices served by your landlord and ensure your property hasn’t been relisted. Our platform helps you verify that your rental remains off the market.",
         image: "https://utfs.io/f/fcb52926-361c-4495-a790-3b5ee194ac62-aylp7x.png",
-        imageDark:
-            "https://utfs.io/f/b2dc6e98-3d27-4608-95ff-e017906a47e7-kyyxmn.png",
-    },
+        imageDark: "https://utfs.io/f/b2dc6e98-3d27-4608-95ff-e017906a47e7-kyyxmn.png",
+    },    
     {
-        title: "Property and Tenant Oversight",
+        title: "Property Oversight",
         description:
             "Enable your entire team to efficiently manage and monitor multiple properties and tenants. Our platform supports bulk uploads and provides tools for effective tracking and oversight, ensuring streamlined operations and improved management.",
         image: "https://utfs.io/f/cdbaa3d7-59aa-43b2-aa89-e3c60066eb31-r1zhx8.png",

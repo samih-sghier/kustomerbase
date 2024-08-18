@@ -3,9 +3,11 @@
 import { db } from "@/server/db";
 import { watchlist, watchlistInsertSchema } from "@/server/db/schema";
 import { protectedProcedure } from "@/server/procedures";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import type { z } from "zod";
 import { getOrganizations } from "../organization/queries";
+import { pricingIds, pricingPlans } from "@/config/pricing";
+import { getOrgSubscription } from "../stripe_subscription/query";
 
 
 type CreateWatchlistProps = z.infer<typeof watchlistInsertSchema>;
@@ -150,3 +152,47 @@ export async function updateWatchListAlertTypeMutation(props: UpdateWatchlistPro
         )
     ).execute();
 }
+
+
+export const canPostWatchlist = async (): Promise<boolean> => {
+    // Check if the subscription is active
+    const { currentOrg } = await getOrganizations();
+
+    if (!currentOrg) {
+        throw new Error("Organization not found");
+    }
+
+    const currentOrgId = currentOrg.id;
+    const subscription = await getOrgSubscription();
+
+    const isSubscriptionActive = () => {
+        if (!subscription) return false;
+        const currentDate = new Date();
+        return subscription.status === 'active' || (subscription.status === 'canceled' && subscription.ends_at && new Date(subscription.ends_at) > currentDate);
+    };
+
+    // Verify if the plan allows posting more properties
+    const verifyPlan = async () => {
+    
+        const planId = subscription?.plan?.id || pricingIds.free; // Default to free plan if no subscription
+
+        // Find the plan based on pricingIds
+        const plan = pricingPlans.find(p => p.id === planId);
+
+        if (!plan) return false;
+
+        // Count the number of properties already posted by the organization
+        const watchlistCount = await db
+            .select({ count: count() })
+            .from(watchlist)
+            .where(eq(watchlist.organizationId, currentOrgId))
+            .execute()
+            .then(res => res[0]?.count ?? 0);
+
+        // Check if the current property count exceeds the limit
+        return (watchlistCount < plan.planLimit)
+    };
+
+    // Check if the user can post another property based on their plan
+    return isSubscriptionActive() && await verifyPlan();
+};

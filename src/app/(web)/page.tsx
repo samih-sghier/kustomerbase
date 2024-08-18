@@ -26,15 +26,13 @@ export default async function HomePage() {
         <WebPageWrapper>
             <WebPageHeader
                 badge="Stay in Control"
-                title={`Prevent Unauthorized Subleasing`}
-
+                title={`Monitor Rentals`}
             >
                 <Balancer
                     as="p"
                     className="text-center text-base text-muted-foreground sm:text-lg"
                 >
-                    Safeguard your properties with SubletGuard! Detect unauthorized subleasing and keep your rentals secure with our advanced monitoring system. Easy to use. Reliable. Real-time.
-
+                    Protect your rentals with SubletGuard! Detect unauthorized subleasing and stay secure. Ideal for landlords and tenants with N12 or notice to vacate. Easy, reliable, real-time monitoring.
                 </Balancer>
 
                 <div className="flex items-center gap-2">
@@ -51,9 +49,10 @@ export default async function HomePage() {
                         href={siteUrls.auth.login}
                         className={buttonVariants()}
                     >
-                        Secure your Property 🔒
+                        Get Alerts Now 🚨
                         <ArrowRightIcon className="ml-1 h-4 w-4" />
                     </Link>
+
                 </div>
             </WebPageHeader>
 

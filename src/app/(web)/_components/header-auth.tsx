@@ -29,7 +29,7 @@ export async function HeaderAuth() {
                         <span>Try it out</span>
                         <span className="font-light italic">
                             {" "}
-                            — it&apos;s free
+                            — it&apos;s cheap
                         </span>
                     </Link>
                 </Fragment>

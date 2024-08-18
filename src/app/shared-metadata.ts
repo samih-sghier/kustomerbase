@@ -12,6 +12,9 @@ export const defaultMetadata: Metadata = {
     keywords: [
         "Illegal Subleasing Detection",
         "Illegal Subleasing Prevention",
+        "Notice to Vacate",
+        "N12",
+        "Section 21",
         "Prevent Subleasing",
         "Sublease Alerts",
         "Illegal Tenants",

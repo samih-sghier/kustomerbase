@@ -7,6 +7,7 @@ import {
     propertyInsertSchema,
     propertySelectSchema,
     propertyUpdateSchema,
+    watchlist,
 } from "@/server/db/schema";
 import { adminProcedure, protectedProcedure } from "@/server/procedures";
 import { and, count, eq } from "drizzle-orm";
@@ -60,12 +61,12 @@ export async function createPropertyMutation(props: CreatePropertyProps) {
 
 
 
-    var currentOrgId = propertyParse.data.organizationId;
+    // var currentOrgId = propertyParse.data.organizationId;
 
     // Usage example:
-    if (!(await canPostProperty(subscription, currentOrgId))) {
-        throw new Error("Your current plan does not allow posting more properties. Please upgrade your plan.", { status: 400 });
-    }        
+    // if (!(await canPostProperty(subscription, currentOrgId))) {
+    //     throw new Error("Your current plan does not allow posting more properties. Please upgrade your plan.", { status: 400 });
+    // }        
 
 
 
@@ -205,13 +206,13 @@ const canPostProperty = async (subscription: any | null, currentOrgId: string): 
         // Count the number of properties already posted by the organization
         const propertyCount = await db
             .select({ count: count() })
-            .from(property)
-            .where(eq(property.organizationId, currentOrgId))
+            .from(watchlist)
+            .where(eq(watchlist.organizationId, currentOrgId))
             .execute()
             .then(res => res[0]?.count ?? 0);
 
         // Check if the current property count exceeds the limit
-        return propertyCount < plan.propertiesLimit;
+        return propertyCount < plan.planLimit;
     };
 
     // Check if the user can post another property based on their plan

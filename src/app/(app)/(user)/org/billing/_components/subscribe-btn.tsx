@@ -15,11 +15,10 @@ import { toast } from "sonner";
 
 type SubscribeBtnProps = {
     priceId?: string;
-    variantId?: number;
     onSuccess?: () => void;
 } & ButtonProps;
 
-export function SubscribeBtn({ priceId, variantId, onSuccess, ...props }: SubscribeBtnProps) {
+export function SubscribeBtn({ priceId, onSuccess, ...props }: SubscribeBtnProps) {
     const router = useRouter();
 
     const [, startAwaitableTransition] = useAwaitableTransition();

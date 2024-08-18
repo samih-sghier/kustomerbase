@@ -275,7 +275,6 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
                                                 : selectedPlan?.price.yearly ??
                                                   0
                                         }
-                                        // variantId={selectedVariantId}
                                         priceId={selectedVariantId}
                                         status={subscription?.status ?? ""}
                                     />
