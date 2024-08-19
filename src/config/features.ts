@@ -34,7 +34,7 @@ export const features: Feature[] = [
             "https://utfs.io/f/ed512354-67c6-43ba-808a-d0deefbef2ba-1ml5w4.png",
     },
     {
-        title: "Monitor Move-Out Notices",
+        title: "Monitor your Vacate Notices",
         description:
             "Track move-out notices served by your landlord and ensure your property hasn’t been relisted. Our platform helps you verify that your rental remains off the market.",
         image: "https://utfs.io/f/fcb52926-361c-4495-a790-3b5ee194ac62-aylp7x.png",
