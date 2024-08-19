@@ -164,7 +164,7 @@ export function CreateWatchlistForm({ subscription }: any) {
         if (data.alertType === "Subleasing" || data.alertType === "Court Complaints" || data.alertType === "Notice to Vacate") {
             setAlertType(data.alertType)
 
-            const platforms = data.alertType === "Subleasing" ? rentalPlatforms : governmentPlatforms;
+            const platforms = data.alertType === "Court Complaints" ? governmentPlatforms : rentalPlatforms;
 
             // console.log(platforms)
             for (let i = 0; i < platforms.length; i++) {
@@ -237,7 +237,7 @@ export function CreateWatchlistForm({ subscription }: any) {
                                                 <SelectContent>
                                                     {alertTypeEnum.enumValues.map((val) => (
                                                         <SelectItem key={val} value={val}>
-                                                            {val}
+                                                            {val} {val == "Notice to Vacate" ? " (Property is relisted)" : null}
                                                         </SelectItem>
                                                     ))}
                                                 </SelectContent>
