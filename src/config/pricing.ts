@@ -58,7 +58,7 @@ export const pricingIds = {
 export const pricingFeatures: PricingFeature[] = [
     {
         id: "1",
-        title: "Move-Out Notice Alerts (eg: N-12, Section 21...)",
+        title: "Notice to Vacate Alerts (eg: N-12, Section 21...)",
         includedIn: [pricingIds.hobby, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
     },
     
