@@ -365,7 +365,7 @@ export function CreatePropertyForm() {
                         {isPending || isMutatePending ? (
                             <Icons.loader className="h-4 w-4" />
                         ) : null}
-                        <span>Create Property</span>
+                        <span>Create Source</span>
                     </Button>
                 </DialogFooter>
             </DialogContent>

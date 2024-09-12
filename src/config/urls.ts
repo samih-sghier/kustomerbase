@@ -9,8 +9,8 @@
 
 export const siteUrls = {
     publicUrl: "https://subletguard.com",
-    github: "https://github.com/subletguard",
-    twitter: "https://x.com/subletguard",
+    github: "https://github.com/customerbase",
+    twitter: "https://x.com/customerbase",
     home: "/",
     pricing: "/pricing",
     features: "/features",
@@ -20,15 +20,15 @@ export const siteUrls = {
     changelogs: "/changelogs",
     maintenance: "/maintenance",
     waitlist: "/waitlist",
-    subletguard: "https://subletguard.com",
+    subletguard: "https://customerbase.us",
     privacy: "/privacy",
     terms: "/terms",
     contact: "/contact",
     dashboard: {
         home: "/dashboard",
-        properties: "/properties",
+        sources: "/sources",
         tenants: "/tenants",
-        watchlist: "/watchlist",
+        logs: "/logs",
         alerts: "/alerts",
     },
     feedback: "/feedback",
@@ -75,7 +75,7 @@ export const publicRoutes: string[] = [
 
 export const protectedRoutes: string[] = [
     siteUrls.dashboard.home,
-    siteUrls.dashboard.properties,
+    siteUrls.dashboard.sources,
     siteUrls.dashboard.tenants,
     siteUrls.dashboard.alerts,
     siteUrls.feedback,

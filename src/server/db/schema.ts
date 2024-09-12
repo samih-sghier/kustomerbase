@@ -431,6 +431,72 @@ export const tenantTypeEnum = pgEnum("tenant-type", [
     "Corporate",
 ]);
 
+
+export const connected = createTable("connected", {
+    email: varchar("email", { length: 255 })
+        .notNull()
+        .primaryKey()
+        .unique(),
+    orgId: text("orgId")
+        .notNull()
+        .unique()
+        .references(() => organizations.id, { onDelete: "cascade" }),
+    frequency: integer("frequency"),
+    access_token: varchar("access_token", { length: 255 }).notNull(),
+    refresh_token: varchar("refresh_token", { length: 255 }).notNull(),
+    purpose: text("purpose"),
+    provider: varchar("provider", { length: 255 }).notNull(),
+    isActive: boolean("isActive").default(true),
+    expires_at: integer("expires_at"),
+    lastOn: timestamp("lastOn", { mode: "date" }),
+    lastThreadId: varchar("lastThreadId", { length: 255 }),
+    updatedOn: timestamp("updatedOn", { mode: "date" }).defaultNow(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const connectedInsertSchema = z.object({
+    email: z.string().email("Email must be a valid email address"),
+    orgId: z.string(), // Generic string instead of UUID
+    frequency: z.number().int().optional(), // Optional if not required
+    access_token: z.string().min(1, "Access token is required"),
+    refresh_token: z.string().min(1, "Refresh token is required"),
+    purpose: z.string().optional(),
+    isActive: z.boolean().default(true),
+    provider: z.string().min(1, "Provider is required"),
+    expires_at: z.number().int().optional(), // Optional if not required
+    lastOn: z.string().optional(), // Ensure proper format if needed
+    lastThreadId: z.string().optional(),
+});
+
+export const connectedUpdateSchema = z.object({
+    email: z.string().email("Email must be a valid email address").optional(), // Typically not updated
+    orgId: z.string(), // Generic string instead of UUID
+    frequency: z.number().int().optional(),
+    access_token: z.string().optional(),
+    refresh_token: z.string().optional(),
+    purpose: z.string().optional(),
+    provider: z.string().optional(),
+    expires_at: z.number().int().optional(),
+    lastOn: z.string().optional(), // Ensure proper format if needed
+    lastThreadId: z.string().optional(),
+});
+
+
+export const connectedSelectSchema = z.object({
+    email: z.string().email("Email must be a valid email address"),
+    orgId: z.string(), // Generic string instead of UUID
+    frequency: z.number().int().optional(),
+    access_token: z.string(),
+    refresh_token: z.string(),
+    purpose: z.string().optional(),
+    provider: z.string(),
+    isActive: z.boolean(),
+    expires_at: z.number().int().optional(),
+    lastOn: z.string().optional(), // Ensure proper format if needed
+    lastThreadId: z.string().optional(),
+    createdAt: z.date().optional() // Date format, adjust as needed
+});
+
 export const tenant = createTable("tenant", {
     id: varchar("id", { length: 255 })
         .notNull()

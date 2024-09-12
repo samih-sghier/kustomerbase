@@ -5,7 +5,7 @@
  */
 
 export const siteConfig = {
-    name: "SubletGuard",
+    name: "bettereply",
     description:
         "Safeguard your properties with SubletGuard! Detect unauthorized subleasing and keep your rentals secure with our advanced monitoring system.",
     orgImage:

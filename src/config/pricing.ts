@@ -129,48 +129,48 @@ export const pricingFeatures: PricingFeature[] = [
 
 
 export const pricingPlans: PricingPlan[] = [
-    // {
-    //     id: pricingIds.free,
-    //     title: "Free",
-    //     description: "Monitor 1 property for basic subletting alerts.",
-    //     price: {
-    //         monthly: 0,
-    //         yearly: 0,
-    //     },
-    //     currency: {
-    //         code: "USD",
-    //         symbol: "$",
-    //     },
-    //     duration: "Forever",
-    //     highlight: "Get started for free",
-    //     buttonHighlighted: false,
-    //     planLimit: 1,
-    //     usersLimit: 1,
-    //     uniqueFeatures: [],
-    // },
     {
-        id: pricingIds.hobby,
-        title: "Hobby",
-        description: "Monitor 2 properties for basic rental activity alerts.",
+        id: pricingIds.free,
+        title: "Free",
+        description: "Monitor 1 property for basic subletting alerts.",
         price: {
-            monthly: 9,
-            yearly: 90,
+            monthly: 0,
+            yearly: 0,
         },
         currency: {
             code: "USD",
             symbol: "$",
         },
-        duration: "per month",
-        highlight: "Get started for cheap",
+        duration: "Forever",
+        highlight: "Get started for free",
         buttonHighlighted: false,
-        planLimit: 2,
+        planLimit: 1,
         usersLimit: 1,
         uniqueFeatures: [],
-        priceId: {
-            monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_MONTHLY ?? "",
-            yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_YEARLY ?? ""
-        },
     },
+    // {
+    //     id: pricingIds.hobby,
+    //     title: "Hobby",
+    //     description: "Monitor 2 properties for basic rental activity alerts.",
+    //     price: {
+    //         monthly: 9,
+    //         yearly: 90,
+    //     },
+    //     currency: {
+    //         code: "USD",
+    //         symbol: "$",
+    //     },
+    //     duration: "per month",
+    //     highlight: "Get started for cheap",
+    //     buttonHighlighted: false,
+    //     planLimit: 2,
+    //     usersLimit: 1,
+    //     uniqueFeatures: [],
+    //     priceId: {
+    //         monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_MONTHLY ?? "",
+    //         yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_YEARLY ?? ""
+    //     },
+    // },
     {
         id: pricingIds.basic,
         title: "Basic",

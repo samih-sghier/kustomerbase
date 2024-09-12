@@ -6,7 +6,7 @@ import {
     CreditCardIcon,
     HelpCircleIcon,
     LayoutDashboardIcon,
-    HomeIcon,
+    LinkIcon,
     GroupIcon,
     AlertOctagonIcon,
     MessageSquareIcon,
@@ -15,7 +15,10 @@ import {
     UserRoundCheckIcon,
     UserRoundPlusIcon,
     UsersRoundIcon,
-    EyeIcon
+    EyeIcon,
+    Plug2,
+    Plug2Icon
+
 } from "lucide-react";
 import { siteUrls } from "@/config/urls";
 
@@ -127,19 +130,24 @@ const navigation: SidebarNavItems[] = [
                 href: siteUrls.dashboard.home,
             },
             {
-                label: "Properties",
-                icon: HomeIcon,
-                href: siteUrls.dashboard.properties,
+                label: "Sources",
+                icon: Plug2Icon,
+                href: siteUrls.dashboard.sources,
             },
-            // {
-            //     label: "Tenants",
-            //     icon: UsersRoundIcon,
-            //     href: siteUrls.dashboard.tenants,
-            // },
             {
-                label: "Watch List",
-                icon: EyeIcon,
-                href: siteUrls.dashboard.watchlist,
+                label: "Connect",
+                icon: LinkIcon,
+                href: siteUrls.dashboard.tenants,
+            },
+            {
+                label: "Email Logs",
+                icon: BarChart4Icon,
+                href: siteUrls.dashboard.logs,
+            },
+            {
+                label: "Leads",
+                icon: UsersRoundIcon,
+                href: siteUrls.dashboard.logs,
             },
             {
                 label: "Alerts",

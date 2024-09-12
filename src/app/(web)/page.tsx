@@ -25,14 +25,14 @@ export default async function HomePage() {
     return (
         <WebPageWrapper>
             <WebPageHeader
-                badge="Stay in Control"
-                title={`Monitor Rentals`}
+                badge="Focus on what matters"
+                title={`Custom ChatGPT for your business`}
             >
                 <Balancer
                     as="p"
                     className="text-center text-base text-muted-foreground sm:text-lg"
                 >
-                    Detect unauthorized subleasing and stay secure. Ideal for landlords and tenants with N12 or notice to vacate. Easy, reliable, real-time monitoring.
+                    Build a custom GPT, connect it to your email and let it handle customer support, lead generation, engage with your users, incoming support requests, reply to internal technical queries and more.
                 </Balancer>
 
                 <div className="flex items-center gap-2">
@@ -47,9 +47,11 @@ export default async function HomePage() {
 
                     <Link
                         href={siteUrls.auth.login}
-                        className={buttonVariants()}
+                        className={buttonVariants({
+                            className: "bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300"
+                        })}
                     >
-                        Get Alerts Now 🚨
+                        Build your bot 🤖
                         <ArrowRightIcon className="ml-1 h-4 w-4" />
                     </Link>
 
@@ -79,7 +81,6 @@ export default async function HomePage() {
             <Promotion />
             <HowItWorks />
             <Features />
-
             <Testimonials />
         </WebPageWrapper>
     );

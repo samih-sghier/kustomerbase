@@ -1,17 +1,42 @@
 import { useEffect, useState } from "react";
 import { AppPageShell } from "@/app/(app)/_components/page-shell";
 import { tenantsPageConfig } from "@/app/(app)/(user)/tenants/_constants/page-config";
-import { CreateTenantForm } from "@/app/(app)/(user)/tenants/_components/create-tenants-form";
+import { ConnectEmailForm } from "@/app/(app)/(user)/tenants/_components/create-tenants-form";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { TenantDropdown } from "@/app/(app)/(user)/tenants/_components/tenants-dropdown";
+import { ConnectedEmailsDropdown } from "@/app/(app)/(user)/tenants/_components/connect-dropdown";
 import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import { getOrgTenantsQuery } from "@/server/actions/tenants/queries";
+import { getOrganizations } from "@/server/actions/organization/queries";
+import { getOrgConnectedQuery } from "@/server/actions/gmail/queries";
+
+function mapFrequencyToLabel(frequency: number | string | null): string {
+    switch (frequency) {
+        case 0:
+            return "Instantly";
+        case 2:
+            return "After 2 minutes";
+        case 60:
+            return "After 1 hour";
+        case 240:
+            return "After 4 hours";
+        case 1440:
+            return "After 24 hours";
+        case 2880:
+            return "After 48 hours";
+        case 4320:
+            return "After 72 hours";
+        default:
+            return "Only when approved";
+    }
+}
+
 
 export default async function UserTenantPage() {
-    const tenants = await getOrgTenantsQuery();
+    const tenants = await getOrgConnectedQuery();
+    const { currentOrg } = await getOrganizations();
 
     return (
         <AppPageShell
@@ -23,35 +48,36 @@ export default async function UserTenantPage() {
                     {tenants.length} tenants you have added.
                 </h2>
 
-                <CreateTenantForm />
+                <ConnectEmailForm defaultOpen={false} orgId={currentOrg.id}   />
             </div>
 
             <div className={tenants.length > 0 ? "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid gap-4"}>
                 {tenants.length > 0 ? (
                     tenants.map((tenant) => (
-                        <Card key={tenant.id} className="relative shadow-md">
-                            <TenantDropdown {...tenant} />
+                        <Card key={tenant.email} className="relative shadow-md">
+                            <ConnectedEmailsDropdown {...tenant} />
                             <CardContent className="p-4 flex flex-col justify-between h-full">
                                 <div>
-                                    <CardTitle className="text-xl font-semibold mb-2">{tenant.firstName}</CardTitle>
-                                    <CardDescription className="text-sm mb-2">{tenant.email}</CardDescription>
+                                    <CardTitle className="text-xl font-semibold mb-2">{tenant.email}</CardTitle>
+                                    <CardDescription className="text-sm mb-2">{`Reply Frequency: ${mapFrequencyToLabel(tenant.frequency)}`}</CardDescription>
                                     <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
-                                        <p>Tenant since {format(new Date(tenant.createdAt), "PPP")}</p>
-                                        {tenant.type && <Badge variant="background" className="w-fit">{tenant.type}</Badge>}
+                                        <p>Added on {format(new Date(tenant.createdAt), "PPP")}</p>
+                                        {tenant.purpose && <Badge variant="background" className="w-fit">{tenant.purpose}</Badge>}
+
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-end mt-auto">
                                     <Badge
                                         variant={
-                                            tenant.status === "Active"
+                                            tenant.isActive
                                                 ? "success"
-                                                : tenant.status === "Inactive"
+                                                : !tenant.isActive
                                                     ? "secondary"
                                                     : "info"
                                         }
                                         className="w-fit"
                                     >
-                                        {tenant.status}
+                                        {tenant.isActive ? "active" : "reconnect"}
                                     </Badge>
                                 </div>
                             </CardContent>
@@ -59,7 +85,7 @@ export default async function UserTenantPage() {
                     ))
                 ) : (
                     <div className="flex w-full flex-col items-center justify-center gap-4 py-10">
-                        <p className="font-medium text-muted-foreground">No tenants found.</p>
+                        <p className="font-medium text-muted-foreground">No email accounts linked.</p>
                         <Balancer as="p" className="text-center text-muted-foreground">
                             Add a tenant using the form above, your tenants are important to us. 🏠
                         </Balancer>

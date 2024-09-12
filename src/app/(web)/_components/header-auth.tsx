@@ -1,5 +1,6 @@
 import { buttonVariants } from "@/components/ui/button";
 import { siteUrls } from "@/config/urls";
+import { getOrganizations } from "@/server/actions/organization/queries";
 import { getUser } from "@/server/auth";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -29,7 +30,7 @@ export async function HeaderAuth() {
                         <span>Try it out</span>
                         <span className="font-light italic">
                             {" "}
-                            — it&apos;s cheap
+                            — it&apos;s free
                         </span>
                     </Link>
                 </Fragment>

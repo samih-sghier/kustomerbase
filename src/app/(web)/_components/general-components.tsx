@@ -46,7 +46,7 @@ export function WebPageHeader({
             )}
             <Balancer
                 as="h1"
-                className="max-w-2xl text-center font-heading text-4xl font-bold leading-none sm:text-5xl"
+                className="max-w-2xl text-center font-heading text-6xl font-bold leading-none sm:text-7xl"
             >
                 {title}
             </Balancer>

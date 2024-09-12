@@ -152,6 +152,64 @@ export const authOptions: NextAuthOptions = {
     ],
 };
 
+
+
+
+export const getGmailData: NextAuthOptions = {
+    callbacks: {
+        session({ token, session }) {
+            if (token) {
+                // Add the user id to the session, so it's available in the client app
+                session.user.id = token.id;
+                session.user.name = token.name;
+                session.user.email = token.email;
+                session.user.image = token.picture;
+                session.user.role = token.role;
+                session.user.createdAt = token.createdAt;
+                session.user.emailVerified = token.emailVerified;
+                session.user.isNewUser = token.isNewUser;
+            }
+
+            return session;
+        },
+        async jwt({ token, user }) {
+            const dbUser = await db.query.users.findFirst({
+                where: eq(users.email, token.email!),
+            });
+
+            if (!dbUser) {
+                if (user) {
+                    token.id = user?.id;
+                }
+                return token;
+            }
+
+            return {
+                id: dbUser.id,
+                role: dbUser.role,
+                createdAt: dbUser.createdAt,
+                emailVerified: dbUser.emailVerified,
+                email: dbUser.email,
+                name: dbUser.name,
+                picture: dbUser.image,
+                isNewUser: dbUser.isNewUser,
+            };
+        },
+    },
+
+    secret: env.NEXTAUTH_SECRET,
+    pages: {
+        getGmailData: siteUrls.auth.tenants,
+    },
+    providers: [
+        GoogleProvider({
+            clientId: env.GOOGLE_CLIENT_ID,
+            clientSecret: env.GOOGLE_CLIENT_SECRET,
+            allowDangerousEmailAccountLinking: true
+        }),
+    ],
+};
+
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
  *
