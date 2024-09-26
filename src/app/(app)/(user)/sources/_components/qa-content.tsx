@@ -1,5 +1,7 @@
+// QnAContent.tsx
 "use client";
 
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -7,64 +9,98 @@ import { Textarea } from "@/components/ui/textarea";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { removeQaSourceField, updateQaSourceField } from '@/server/actions/sources/mutations';
 
 // Define schema for validation
 const qnaSchema = z.object({
     qnaPairs: z.array(z.object({
+        key: z.string(),
         question: z.string().min(1, "Question is required"),
         answer: z.string().min(1, "Answer is required"),
     })),
 });
 
-export function QnAContent() {
+type QnAPair = z.infer<typeof qnaSchema>['qnaPairs'][number];
+
+interface Source {
+    qa_source: Record<string, string> | null;
+}
+
+export function QnAContent({ source }: { source: Source }) {
     const [loading, setLoading] = useState(false);
-    const [initialData, setInitialData] = useState([]);
+    const [removedKeys, setRemovedKeys] = useState<Set<string>>(new Set());
+
+    // Transform source.qa_source into the format expected by the form
+    const transformedInitialData = React.useMemo(() => {
+        if (!source?.qa_source) {
+            return [];
+        }
+
+        return Object.entries(source.qa_source).map(([question, answer]) => ({
+            key: question,
+            question,
+            answer
+        }));
+    }, [source?.qa_source]);
 
     // Initialize the form with validation schema
-    const form = useForm({
+    const form = useForm<z.infer<typeof qnaSchema>>({
         resolver: zodResolver(qnaSchema),
         defaultValues: {
-            qnaPairs: initialData,
+            qnaPairs: transformedInitialData,
         },
     });
+
+    // Initialize form with existing data on component mount
+    useEffect(() => {
+        form.reset({ qnaPairs: transformedInitialData });
+    }, [transformedInitialData, form]);
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "qnaPairs",
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch("/api/get-qna"); // Adjust endpoint as needed
-                const data = await response.json();
-                setInitialData(data.qnaPairs || []);
-                form.reset({ qnaPairs: data.qnaPairs || [] });
-            } catch (error) {
-                console.error("Error fetching initial data:", error);
-            }
-        };
-
-        fetchData();
-    }, [form]);
-
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: z.infer<typeof qnaSchema>) => {
         setLoading(true);
         try {
-            const response = await fetch("/api/submit-qna", { // Adjust endpoint as needed
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+            // Prepare the update object with simple key-value pairs
+            const qaSourceUpdate: Record<string, string> = {};
+            data.qnaPairs.forEach(pair => {
+                qaSourceUpdate[pair.question] = pair.answer;
             });
-            const result = await response.json();
-            console.log(result); // Handle the response accordingly
+
+            await updateQaSourceField(qaSourceUpdate);
+
+            // Prepare keys for removal
+            if (removedKeys.size > 0) {
+                const keysToRemove = Array.from(removedKeys);
+                await removeQaSourceField(keysToRemove);
+                setRemovedKeys(new Set()); // Clear the removedKeys after processing
+            }
+
+            console.log("Q&A pairs updated successfully");
         } catch (error) {
-            console.error("Error submitting questions and answers:", error);
+            console.error("Error updating questions and answers:", error);
         } finally {
             setLoading(false);
         }
     };
+
+    const handleRemove = (index: number, key: string) => {
+        // Update removedKeys state
+        setRemovedKeys(prev => {
+            const updated = new Set(prev);
+            updated.add(key);
+            return updated;
+        });
+
+        // Remove item from the form array
+        remove(index);
+        removeQaSourceField(new Set([key]));
+
+    };
+
 
     return (
         <div className="space-y-6">
@@ -73,7 +109,7 @@ export function QnAContent() {
                 <div className="flex space-x-2">
                     <Button
                         type="button"
-                        onClick={() => append({ question: "", answer: "" })}
+                        onClick={() => append({ key: `new_${Date.now()}`, question: "", answer: "" })}
                         variant="outline"
                     >
                         + Add Another Q&A Pair
@@ -84,7 +120,6 @@ export function QnAContent() {
                 </div>
             </div>
 
-            {/* Form for multiple Q&A pairs */}
             <Form {...form}>
                 <form
                     id="qna-form"
@@ -92,7 +127,7 @@ export function QnAContent() {
                     className="space-y-4"
                 >
                     {fields.map((field, index) => (
-                        <div key={field.id} className="space-y-4">
+                        <div key={field.id} className="space-y-4 p-4 border rounded-md">
                             <FormField
                                 control={form.control}
                                 name={`qnaPairs.${index}.question`}
@@ -103,7 +138,6 @@ export function QnAContent() {
                                             <Input
                                                 placeholder="Enter your question here..."
                                                 {...field}
-                                                value={field.value || ""}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -120,7 +154,6 @@ export function QnAContent() {
                                             <Textarea
                                                 placeholder="Enter your answer here..."
                                                 {...field}
-                                                value={field.value || ""}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -129,7 +162,7 @@ export function QnAContent() {
                             />
                             <Button
                                 type="button"
-                                onClick={() => remove(index)}
+                                onClick={() => handleRemove(index, fields[index].question)}
                                 variant="outline"
                                 className="text-red-600"
                             >

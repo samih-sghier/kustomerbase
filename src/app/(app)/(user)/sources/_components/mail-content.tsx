@@ -138,7 +138,7 @@ export function MailContent() {
                     <span>Connect Gmail</span>
                 </Button>
 
-                <Button
+                {/* <Button
                     onClick={() => handleConnect('outlook')}
                     variant="outline"
                     className="w-full gap-2"
@@ -146,7 +146,7 @@ export function MailContent() {
                 >
                     <Icons.microsoft className="h-4 w-4 fill-foreground" />
                     <span>Connect Outlook</span>
-                </Button>
+                </Button> */}
             </div>
 
             {/* Combined list of connected accounts */}

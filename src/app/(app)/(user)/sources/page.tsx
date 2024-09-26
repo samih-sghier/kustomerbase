@@ -10,19 +10,15 @@ import { PropertyDropdown } from "@/app/(app)/(user)/sources/_components/propert
 import WebsiteContent from "./_components/website-content";
 import { TabsSection } from "./_components/tabs-section";
 import { SourcesCard } from "./_components/sources-card";
+import { getOrgSourcesQuery, getSourceStatsQuery } from "@/server/actions/sources/queries";
+import { stat } from "fs";
 
 export default async function UserPropertyPage() {
-    const properties = await getOrgPropertiesQuery();
-
+    const source = await getOrgSourcesQuery();
+    const stats = await getSourceStatsQuery();
     // const totalChars = links.reduce((total, link) => total + link.chars, 0);
 
-    const handleDeleteLink = (id) => {
-        // setLinks(links.filter((link) => link.id !== id));
-    };
 
-    const handleDeleteAll = () => {
-        // setLinks([]);
-    };
     return (
         <AppPageShell
             title={propertiesPageConfig.title}
@@ -30,10 +26,10 @@ export default async function UserPropertyPage() {
         >
             <div className="flex flex-col lg:flex-row lg:space-x-4">
                 <div className="flex-1">
-                    <TabsSection />
+                    <TabsSection source={source} />
                 </div>
                 <div className="mt-4 lg:mt-0 lg:w-1/4">
-                    <SourcesCard />
+                    <SourcesCard stats={stats} />
                 </div>
             </div>
         </AppPageShell>

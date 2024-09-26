@@ -7,36 +7,33 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useState } from "react";
+import { updateTextSourceField } from "@/server/actions/sources/mutations";
+import { toast } from "sonner";
 
 const textSchema = z.object({
-    text: z.string().min(1, "Text is required"),
+    text: z.string().optional(),
 });
 
-export function TextContent() {
+export function TextContent({ source }: any) {
     const [loading, setLoading] = useState(false);
 
     const form = useForm({
         resolver: zodResolver(textSchema),
         defaultValues: {
-            text: "",
+            text: source?.text_source || "",
         },
     });
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: any) => {
         setLoading(true);
         try {
-            const response = await fetch("/api/submit-text", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: data.text }),
-            });
-            const result = await response.json();
-            console.log(result); // Handle the response accordingly
+            await updateTextSourceField(data.text);
         } catch (error) {
+            toast.error("Error Submitting Text Source");
             console.error("Error submitting text:", error);
         } finally {
+            toast.success("Text Source Updated");
             setLoading(false);
-            form.reset();
         }
     };
 

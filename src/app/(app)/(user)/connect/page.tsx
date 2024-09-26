@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { AppPageShell } from "@/app/(app)/_components/page-shell";
-import { tenantsPageConfig } from "@/app/(app)/(user)/tenants/_constants/page-config";
-import { ConnectEmailForm } from "@/app/(app)/(user)/tenants/_components/create-tenants-form";
+import { tenantsPageConfig } from "@/app/(app)/(user)/connect/_constants/page-config";
+import { ConnectEmailForm } from "@/app/(app)/(user)/connect/_components/create-tenants-form";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { ConnectedEmailsDropdown } from "@/app/(app)/(user)/tenants/_components/connect-dropdown";
+import { ConnectedEmailsDropdown } from "@/app/(app)/(user)/connect/_components/connect-dropdown";
 import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
-import { getOrgTenantsQuery } from "@/server/actions/tenants/queries";
 import { getOrganizations } from "@/server/actions/organization/queries";
 import { getOrgConnectedQuery } from "@/server/actions/gmail/queries";
 
@@ -35,7 +34,7 @@ function mapFrequencyToLabel(frequency: number | string | null): string {
 
 
 export default async function UserTenantPage() {
-    const tenants = await getOrgConnectedQuery();
+    const source = await getOrgConnectedQuery();
     const { currentOrg } = await getOrganizations();
 
     return (
@@ -45,15 +44,15 @@ export default async function UserTenantPage() {
         >
             <div className="flex w-full items-start justify-between mb-6">
                 <h2 className="text-base font-medium sm:text-lg">
-                    {tenants.length} tenants you have added.
+                    {source.length} tenants you have added.
                 </h2>
 
                 <ConnectEmailForm defaultOpen={false} orgId={currentOrg.id}   />
             </div>
 
-            <div className={tenants.length > 0 ? "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid gap-4"}>
-                {tenants.length > 0 ? (
-                    tenants.map((tenant) => (
+            <div className={source.length > 0 ? "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid gap-4"}>
+                {source.length > 0 ? (
+                    source.map((tenant) => (
                         <Card key={tenant.email} className="relative shadow-md">
                             <ConnectedEmailsDropdown {...tenant} />
                             <CardContent className="p-4 flex flex-col justify-between h-full">

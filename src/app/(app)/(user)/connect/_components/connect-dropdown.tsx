@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import type { z } from "zod";
 import { connectedSelectSchema } from "@/server/db/schema"; // Update this import path as needed
-import { authorizeGmailMutation, removeConnectedItemMutation } from "@/server/actions/gmail/mutations";
+import { authorizeGmailMutationSend, removeConnectedItemMutation } from "@/server/actions/gmail/mutations";
 
 type ConnectedEmailDropdownProps = z.infer<typeof connectedSelectSchema>;
 
@@ -45,7 +45,7 @@ export function ConnectedEmailsDropdown(props: ConnectedEmailDropdownProps) {
     const handleConnect = async (data: any) => {
         if (data.provider === 'google') {
             try {
-                const authUrl = await authorizeGmailMutation(data);
+                const authUrl = await authorizeGmailMutationSend(data);
                 window.location.href = authUrl;
             } catch (error) {
                 toast.error("Failed to authorize Gmail");

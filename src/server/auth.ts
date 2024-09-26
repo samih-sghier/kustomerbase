@@ -199,7 +199,7 @@ export const getGmailData: NextAuthOptions = {
 
     secret: env.NEXTAUTH_SECRET,
     pages: {
-        getGmailData: siteUrls.auth.tenants,
+        getGmailData: siteUrls.dashboard.connect,
     },
     providers: [
         GoogleProvider({

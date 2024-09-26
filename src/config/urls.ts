@@ -8,9 +8,9 @@
  */
 
 export const siteUrls = {
-    publicUrl: "https://subletguard.com",
-    github: "https://github.com/customerbase",
-    twitter: "https://x.com/customerbase",
+    publicUrl: "https://bettereply.com/",
+    github: "https://github.com/bettereply",
+    twitter: "https://x.com/bettereply",
     home: "/",
     pricing: "/pricing",
     features: "/features",
@@ -20,14 +20,14 @@ export const siteUrls = {
     changelogs: "/changelogs",
     maintenance: "/maintenance",
     waitlist: "/waitlist",
-    subletguard: "https://customerbase.us",
+    subletguard: "https://bettereply.com",
     privacy: "/privacy",
     terms: "/terms",
     contact: "/contact",
     dashboard: {
         home: "/dashboard",
         sources: "/sources",
-        tenants: "/tenants",
+        connect: "/connect",
         logs: "/logs",
         alerts: "/alerts",
     },
@@ -76,7 +76,7 @@ export const publicRoutes: string[] = [
 export const protectedRoutes: string[] = [
     siteUrls.dashboard.home,
     siteUrls.dashboard.sources,
-    siteUrls.dashboard.tenants,
+    siteUrls.dashboard.connect,
     siteUrls.dashboard.alerts,
     siteUrls.feedback,
     siteUrls.organization.members.home,

@@ -6,9 +6,10 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get('code');
     const state = searchParams.get('state'); // Extract the state parameter
+    const redirectUrl = new URL(siteUrls.dashboard.connect, request.url).toString();
 
     if (!code) {
-        return NextResponse.json({ error: 'Authorization code not found' }, { status: 400 });
+        return NextResponse.redirect(redirectUrl);
     }
 
     try {
@@ -20,7 +21,7 @@ export async function GET(request: Request) {
         // Optionally, you can store the tokens or any other information here
 
         // Redirect the user to the dashboard or any other URL
-        const redirectUrl = new URL(siteUrls.dashboard.tenants, request.url).toString();
+        const redirectUrl = new URL(siteUrls.dashboard.connect, request.url).toString();
         return NextResponse.redirect(redirectUrl);
 
     } catch (error) {

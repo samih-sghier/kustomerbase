@@ -137,18 +137,18 @@ const navigation: SidebarNavItems[] = [
             {
                 label: "Connect",
                 icon: LinkIcon,
-                href: siteUrls.dashboard.tenants,
+                href: siteUrls.dashboard.connect,
             },
             {
                 label: "Email Logs",
                 icon: BarChart4Icon,
                 href: siteUrls.dashboard.logs,
             },
-            {
-                label: "Leads",
-                icon: UsersRoundIcon,
-                href: siteUrls.dashboard.logs,
-            },
+            // {
+            //     label: "Leads",
+            //     icon: UsersRoundIcon,
+            //     href: siteUrls.dashboard.logs,
+            // },
             {
                 label: "Alerts",
                 icon: AlertOctagonIcon,

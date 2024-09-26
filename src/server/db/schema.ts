@@ -431,6 +431,107 @@ export const tenantTypeEnum = pgEnum("tenant-type", [
     "Corporate",
 ]);
 
+export const emailLogs = createTable("email_logs", {
+    id: integer("id").primaryKey(),
+    email: varchar("email", { length: 255 })
+        .notNull()
+        .references(() => connected.email, { onDelete: "cascade" }),
+    orgId: text("orgId")
+        .notNull()
+        .unique()
+        .references(() => organizations.id, { onDelete: "cascade" }),
+    recipient: varchar("recipient", { length: 255 }).notNull(),
+    subject: varchar("subject", { length: 255 }),
+    content: text("content").notNull(),
+    status: varchar("status", { length: 50 }).notNull().default("sent"),
+    threadId: varchar("threadId", { length: 255 }),
+    messageId: varchar("messageId", { length: 255 }),
+    response_data: jsonb("response_data"),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedOn: timestamp("updatedOn").notNull().defaultNow(),
+});
+
+// Zod schema for insert operations
+export const emailLogInsertSchema = createInsertSchema(emailLogs, {
+    email: z.string().email("Email must be a valid email address"),
+    orgId: z.string().uuid("Organization ID must be a valid UUID"),
+    recipient: z.string().email("Recipient must be a valid email address"),
+    subject: z.string().max(255, "Subject must be 255 characters or less").optional(),
+    content: z.string().min(1, "Content is required"),
+    status: z.enum(["sent", "failed", "draft", "scheduled"]).default("sent"),
+    threadId: z.string().max(255, "Thread ID must be 255 characters or less").optional(),
+    messageId: z.string().max(255, "Message ID must be 255 characters or less").optional(),
+    response_data: z.object({}).passthrough().optional(),
+});
+
+// Zod schema for select operations
+export const emailLogSelectSchema = createSelectSchema(emailLogs);
+
+// Zod schema for update operations
+export const emailLogUpdateSchema = emailLogInsertSchema.partial().omit({ id: true, createdAt: true });
+
+
+export const sources = createTable("sources", {
+    id: varchar("id", { length: 255 })
+        .notNull()
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    orgId: text("orgId")
+        .notNull()
+        .unique()
+        .references(() => organizations.id, { onDelete: "cascade" }),
+    // Q&A Source as JSONB (key-value map)
+    qa_source: jsonb("qa_source"), // Stores question-answer pairs
+    // Text source
+    text_source: text("text_source"), // Stores large text data
+    // Website crawling results as JSONB (URL-text map)
+    website_data: jsonb("website_data"), // Stores page links and corresponding text
+    modelId: text("modelId"), // Stores question-answer pairs
+    lastTrained: timestamp("lastTrained", { mode: "date" }),
+    // Documents as JSONB (file name-text map)
+    documents: jsonb("documents"), // Stores file names and corresponding text
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedOn: timestamp("updatedOn", { mode: "date" }).defaultNow(),
+});
+
+export const sourcesInsertSchema = z.object({
+    id: z.string().optional(), // ID is auto-generated
+    orgId: z.string(), // Organization ID
+    qa_source: z.record(z.string(), z.string()).nullable(), // Map of question-answer pairs
+    text_source: z.string().nullable(), // Large text data
+    website_data: z.record(z.string(), z.string()).nullable(), // URL-text map
+    modelId: z.string().nullable(), // Large text data
+    lastTrained: z.string().optional(), // ISO date string for last update timestamp
+    documents: z.record(z.string(), z.string()).nullable(), // File name-text map
+    createdAt: z.date().optional(), // ISO date string for creation timestamp
+    updatedOn: z.date().optional(), // ISO date string for last update timestamp
+});
+
+export const sourcesUpdateSchema = z.object({
+    id: z.string().optional(), // ID should not change
+    orgId: z.string().optional(), // Optional field; typically not updated
+    qa_source: z.record(z.string(), z.string()).nullable(), // Map of question-answer pairs
+    text_source: z.string().nullable(), // Large text data
+    modelId: z.string().nullable(), // Large text data
+    lastTrained: z.string().optional(), // Large text data
+    website_data: z.record(z.string(), z.string()).nullable(), // URL-text map
+    documents: z.record(z.string(), z.string()).nullable(), // File name-text map
+    createdAt: z.date().optional(), // ISO date string for creation timestamp
+    updatedOn: z.date().optional(), // ISO date string for last update timestamp
+});
+
+export const sourcesSelectSchema = z.object({
+    id: z.string(), // Primary key
+    orgId: z.string(), // Foreign key to organizations table
+    qa_source: z.record(z.string(), z.string()).nullable(), // Map of question-answer pairs
+    text_source: z.string().nullable(), // Large text data
+    website_data: z.record(z.string(), z.string()).nullable(), // URL-text map
+    documents: z.record(z.string(), z.string()).nullable(), // File name-text map
+    createdAt: z.string().optional(), // ISO date string for creation timestamp
+    lastTrained: z.date().optional(), // Large text data
+    updatedOn: z.date().optional(), // ISO date string for last update timestamp
+});
+
 
 export const connected = createTable("connected", {
     email: varchar("email", { length: 255 })
@@ -449,6 +550,9 @@ export const connected = createTable("connected", {
     isActive: boolean("isActive").default(true),
     expires_at: integer("expires_at"),
     lastOn: timestamp("lastOn", { mode: "date" }),
+    //gmail wathclist
+    historyId: integer("historyId").notNull(),
+    expiration: integer("expiration"),
     lastThreadId: varchar("lastThreadId", { length: 255 }),
     updatedOn: timestamp("updatedOn", { mode: "date" }).defaultNow(),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
@@ -460,6 +564,8 @@ export const connectedInsertSchema = z.object({
     frequency: z.number().int().optional(), // Optional if not required
     access_token: z.string().min(1, "Access token is required"),
     refresh_token: z.string().min(1, "Refresh token is required"),
+    historyId: z.number().int(), // Add expiration as optional
+    expiration: z.number().int().optional(), // Add expiration as optional
     purpose: z.string().optional(),
     isActive: z.boolean().default(true),
     provider: z.string().min(1, "Provider is required"),

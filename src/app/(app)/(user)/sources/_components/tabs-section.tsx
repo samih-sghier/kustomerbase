@@ -14,8 +14,9 @@ import { TextContent } from "./text-content";
 import { QnAContent } from "./qa-content";
 import { FileUploadForm } from "./files-content";
 import { MailContent } from "./mail-content";
+import { getOrgSourcesQuery } from "@/server/actions/sources/queries";
 
-export function TabsSection() {
+export function TabsSection({ source }: any) {
     const [activeTab, setActiveTab] = useState<string>("files");
 
     return (
@@ -79,16 +80,16 @@ export function TabsSection() {
             </Tabs.List>
 
             <Tabs.Content value="files" className="p-4">
-                <FileUploadForm />
+                <FileUploadForm source={source} />
             </Tabs.Content>
             <Tabs.Content value="text" className="p-4">
-                <TextContent />
+                <TextContent source={source} />
             </Tabs.Content>
             <Tabs.Content value="website" className="p-4">
-                <WebsiteContent />
+                <WebsiteContent source={source} />
             </Tabs.Content>
             <Tabs.Content value="qna" className="p-4">
-                <QnAContent />
+                <QnAContent source={source} />
             </Tabs.Content>
             <Tabs.Content value="mail" className="p-4">
                 <MailContent />

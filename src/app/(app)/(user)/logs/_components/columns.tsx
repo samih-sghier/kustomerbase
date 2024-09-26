@@ -1,93 +1,136 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 "use client";
 
+import React from "react";
 import { type ColumnDef } from "@tanstack/react-table";
-import { type alertTypeEnum } from "@/server/db/schema";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { ColumnDropdown } from "./column-dropdown";
+import { MoreHorizontal } from "lucide-react";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type WatchListData = {
-    id: string;
-    organizationId: string;
-    propertyId?: string;
-    tenantId?: string;
-    alertType: keyof typeof alertTypeEnum.enumValues; // Use enum keys directly
-    createdAt: Date;
-    tenantName: string,
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    address?: string;
-    title?: string;
-    unitNumber?: string;
-};
-
-export function getWatchListColumns(): ColumnDef<WatchListData>[] {
-    return columns;
+export enum EmailStatus {
+    SENT = 'sent',
+    FAILED = 'failed',
+    DRAFT = 'draft',
+    SCHEDULED = 'scheduled',
 }
 
-export const columns: ColumnDef<WatchListData>[] = [
+export type EmailLogData = {
+    id: number;
+    email: string;
+    orgId: string;
+    recipient: string;
+    subject: string;
+    content: string;
+    status: EmailStatus;
+    threadId: string;
+    messageId: string;
+    createdAt: Date;
+    updatedOn: Date;
+};
+
+const TruncatedContent = ({ content }: { content: string }) => {
+    const truncated = content.length > 30 ? content.slice(0, 30) + "..." : content;
+    return (
+        <div className="truncate-content">
+            <span className="mr-2">{truncated}</span>
+        </div>
+    );
+};
+
+const EmailViewDialog = ({ email }: { email: EmailLogData }) => {
+    return (
+        <DialogContent className="sm:max-w-[700px]">
+            <DialogHeader>
+                <DialogTitle>{email.subject}</DialogTitle>
+            </DialogHeader>
+            <div className="mt-2 space-y-4">
+                <div className="grid grid-cols-[auto,1fr] gap-x-2 text-sm">
+                    <span className="font-semibold">From:</span>
+                    <span>{email.email}</span>
+                    <span className="font-semibold">To:</span>
+                    <span>{email.recipient}</span>
+                    <span className="font-semibold">Date:</span>
+                    <span>{format(new Date(email.createdAt), "PPpp")}</span>
+                    <span className="font-semibold">Status:</span>
+                    <Badge variant={getBadgeVariant(email.status)} className="w-fit capitalize">
+                        {email.status}
+                    </Badge>
+                </div>
+                <div className="border-t pt-4">
+                    <div className="max-h-[50vh] overflow-y-auto whitespace-pre-wrap">
+                        {email.content}
+                    </div>
+                </div>
+                <div className="border-t pt-4 text-sm text-muted-foreground">
+                    <p>Message ID: {email.messageId}</p>
+                    {email.threadId && <p>Thread ID: {email.threadId}</p>}
+                </div>
+            </div>
+        </DialogContent>
+    );
+};
+
+const getBadgeVariant = (status: EmailStatus): 'default' | 'secondary' | 'destructive' | 'success' => {
+    switch (status) {
+        case EmailStatus.SENT:
+            return "success";
+        case EmailStatus.FAILED:
+            return "destructive";
+        case EmailStatus.DRAFT:
+            return "secondary";
+        case EmailStatus.SCHEDULED:
+            return "default";
+        default:
+            return "secondary";
+    }
+};
+
+export const columns: ColumnDef<EmailLogData>[] = [
     {
-        accessorKey: "title",
-        header: "Label",
-        cell: ({ row }) => row.original.title ?? "N/A",
-    },
-    {
-        accessorKey: "unitNumber",
-        header: "Unit Number",
-        cell: ({ row }) => row.original.unitNumber ?? "N/A",
-    },
-    {
-        accessorKey: "address",
-        header: "Address",
-        cell: ({ row }) => row.original.address ?? "N/A",
-    },
-    {
-        accessorKey: "tenantName", // You can use any name for the accessorKey
-        header: "Tenant",
-        cell: ({ row }) => `${row.original.firstName ?? ""} ${row.original.lastName ?? ""}`,
+        accessorKey: "messageId",
+        header: "Message ID",
+        cell: ({ row }) => row.original.messageId || "N/A",
     },
     {
         accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => row.original.email ?? "N/A",
+        header: "Sender",
+        cell: ({ row }) => row.original.email,
     },
     {
-        accessorKey: "alertType",
-        header: "Alert Type",
+        accessorKey: "recipient",
+        header: "Recipient",
+        cell: ({ row }) => row.original.recipient,
+    },
+    {
+        accessorKey: "subject",
+        header: "Subject",
+        cell: ({ row }) => <TruncatedContent content={row.original.subject} />,
+    },
+    {
+        accessorKey: "content",
+        header: "Content",
+        cell: ({ row }) => <TruncatedContent content={row.original.content} />,
+    },
+    {
+        accessorKey: "status",
+        header: "Status",
         cell: ({ row }) => (
-            <Badge variant="secondary" className="capitalize">
-                {row?.original?.alertType}
+            <Badge variant={getBadgeVariant(row.original.status)} className="capitalize">
+                {row.original.status}
             </Badge>
         ),
         filterFn: (row, id, value) => {
             return !!value.includes(row.getValue(id));
         },
     },
-    // {
-    //     accessorKey: "verified",
-    //     header: "Verified",
-    //     cell: ({ row }) => (
-    //         <span className={row.original.verified ? "text-green-600" : "text-red-600"}>
-    //             {row.original.verified ? "Yes" : "No"}
-    //         </span>
-    //     ),
-    // },
-    // {
-    //     accessorKey: "verificationDetails",
-    //     header: "Verification Details",
-    //     cell: ({ row }) => row.original.verificationDetails ?? "N/A",
-    // },
     {
         accessorKey: "createdAt",
-        header: "Created At",
+        header: "Delivered On",
         cell: ({ row }) => (
             <span className="text-muted-foreground">
-                {format(new Date(row.original.createdAt), "PP")}
+                {format(new Date(row.original.createdAt), "PPp")}
             </span>
         ),
     },
@@ -96,3 +139,26 @@ export const columns: ColumnDef<WatchListData>[] = [
         cell: ({ row }) => <ColumnDropdown {...row.original} />,
     },
 ];
+
+export function getEmailLogsColumns(): ColumnDef<EmailLogData>[] {
+    return columns.map(column => {
+        if (column.id === "actions") {
+            // Return the actions column as is, without wrapping it in a Dialog
+            return column;
+        }
+        
+        return {
+            ...column,
+            cell: ({ row }) => (
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <div className="cursor-pointer">
+                            {column.cell ? column.cell({ row }) : row.getValue(column.accessorKey as string)}
+                        </div>
+                    </DialogTrigger>
+                    <EmailViewDialog email={row.original} />
+                </Dialog>
+            ),
+        };
+    });
+}

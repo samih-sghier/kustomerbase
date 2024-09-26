@@ -8,7 +8,6 @@ import { env } from "@/env";
 import { OAuth2Client } from 'google-auth-library';
 import type { z } from "zod";
 import { siteUrls } from "@/config/urls";
-import * as cheerio from 'cheerio';
 import { connected, connectedInsertSchema, connectedUpdateSchema } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getOrganizations } from "../organization/queries";
@@ -168,8 +167,8 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
         const { tokens } = await oauth2Client.getToken(code);
         await oauth2Client.setCredentials(tokens);
         const profileResponse = await gmail.users.getProfile({ userId: 'me' });
-        const { emailAddress  } = profileResponse?.data;
-        let metadata: MetaData = {} ;
+        const { emailAddress } = profileResponse?.data;
+        let metadata: MetaData = {};
 
         if (state) {
             try {
@@ -181,6 +180,12 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
         const orgId = metadata?.orgId || '';
         const purpose = metadata?.purpose;
         const email = emailAddress || '';
+        // Set up the Gmail watch for push notifications
+        const watchResponse = await createWatchMutation(tokens);
+        if (watchResponse.error) {
+            console.error('Error setting up Gmail watch:', watchResponse.error);
+            throw new Error('Failed to set up Gmail watch');
+        }
 
         await createConnectedMutation({
             email,
@@ -190,6 +195,9 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
             provider: metadata.provider,
             expires_at: tokens.expiry_date ? Math.floor(tokens.expiry_date / 1000) : undefined,
             frequency: metadata.frequency || undefined,
+            isActive: true,
+            historyId: watchResponse.historyId || -1,
+            expiration: watchResponse.expiration || 0,
             purpose,
         });
 
@@ -207,17 +215,109 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
     }
 }
 
+export async function createWatchMutation({ access_token, refresh_token }: { access_token: string, refresh_token: string }) {
+    try {
+
+        const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+
+        // Define the Pub/Sub topic and label to watch (e.g., "INBOX")
+        const topicName = 'projects/kava-c7f69/topics/bettereply';  // Replace with your actual Pub/Sub topic
+        const watchRequest = {
+            labelIds: ['INBOX'],  // Monitor the INBOX for new messages
+            topicName: topicName,
+        };
+
+        // Call Gmail API to set up watch
+        const response = await gmail.users.watch({
+            userId: 'me',  // 'me' refers to the authenticated user
+            requestBody: watchRequest,
+        });
+
+        return { historyId: convertStringToInt(response.data.historyId), expiration: convertExpirationToInt(response.data.expiration) };  // Return the watch response data
+
+    } catch (error) {
+        console.error('Error setting up Gmail watch:', error);
+        return { error: error.message };
+    }
+}
+
+export async function stopWatchMutation({ access_token, refresh_token }: { access_token: string, refresh_token: string }) {
+    try {
+
+        // Set the tokens
+        await oauth2Client.setCredentials({ access_token, refresh_token });
+
+        const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+
+        // Call Gmail API to stop watch
+        await gmail.users.stop({
+            userId: 'me',  // 'me' refers to the authenticated user
+        });
+
+        return { message: 'Watch stopped successfully.' };
+
+    } catch (error) {
+        console.error('Error stopping Gmail watch:', error);
+        return { error: error?.message };
+    }
+}
+
+function convertExpirationToInt(expiration?: string | null): number | null {
+    if (expiration) {
+        // Convert the string to an integer
+        const expirationInt = parseInt(expiration, 10);
+
+        // Check if the conversion was successful (not NaN)
+        if (!isNaN(expirationInt)) {
+            return expirationInt;
+        }
+    }
+    // If expiration is null or conversion fails, return null
+    return null;
+}
+
+function convertStringToInt(value?: string | null): number | null {
+    if (value) {
+        const intValue = parseInt(value, 10);
+        return !isNaN(intValue) ? intValue : null;
+    }
+    return null;
+}
+
+
+
+
+
 
 
 /**
  * Authorize Gmail and redirect user to consent screen
  */
-export async function authorizeGmailMutation(metadata?: MetaData) {
+export async function authorizeGmailMutationSend(metadata?: MetaData) {
 
     const authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: [
-            'https://www.googleapis.com/auth/gmail.readonly',
+            'https://www.googleapis.com/auth/gmail.modify',
+            'https://www.googleapis.com/auth/gmail.send',  // Added write scope
+
+        ],
+        state: JSON.stringify(metadata)
+    });
+    return authUrl;
+}
+
+/**
+ * Authorize Gmail and redirect user to consent screen
+ */
+export async function authorizeGmailMutationRead(metadata?: MetaData) {
+
+    const authUrl = oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        scope: [
+            'https://www.googleapis.com/auth/gmail.modify',
+            'https://www.googleapis.com/auth/gmail.send', 
+
         ],
         state: JSON.stringify(metadata)
     });
@@ -288,13 +388,29 @@ export async function removeConnectedItemMutation({
 }: {
     email: string;
 }) {
-    const { user } = await protectedProcedure();
     const { currentOrg } = await getOrganizations();
 
     // Ensure an email is provided
     if (!email) {
         throw new Error("Email must be provided");
     }
+
+    // Fetch tokens for the given email from the connected table
+
+    const tokenRecord: any = await db
+        .select()
+        .from(connected)
+        .where(and(
+            eq(connected.orgId, currentOrg.id),
+            eq(connected.email, email)
+        ))
+        .execute();
+
+    if (tokenRecord.count == 0) {
+        throw new Error("No tokens found for the provided email");
+    }
+
+    const { access_token, refresh_token } = tokenRecord[0]; // Get the first record
 
     // Remove the connected item
     const result = await db.delete(connected).where(
@@ -308,7 +424,23 @@ export async function removeConnectedItemMutation({
         throw new Error("No matching connected entry found");
     }
 
-    return result;
+    if (access_token && refresh_token) {
+        // Stop the Gmail watch if the removal was successful
+        const stopWatchResult = await stopWatchMutation({
+            access_token,
+            refresh_token,
+        });
+
+        if (stopWatchResult.error) {
+            console.error("Error stopping the watch:", stopWatchResult.error);
+            // You might want to handle the error differently depending on your needs
+        }
+    }
+
+
+    return {
+        message: 'Connected item removed and watch stopped successfully.',
+    };
 }
 
 /**

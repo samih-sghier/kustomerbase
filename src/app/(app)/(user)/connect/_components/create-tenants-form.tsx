@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Icons } from "@/components/ui/icons";
-import { authorizeGmailMutation } from "@/server/actions/gmail/mutations";
+import { authorizeGmailMutationRead, authorizeGmailMutationSend } from "@/server/actions/gmail/mutations";
 import { getOrganizations } from "@/server/actions/organization/queries";
 
 
@@ -43,7 +43,7 @@ export function ConnectEmailForm({ defaultOpen, orgId }: { defaultOpen: boolean,
     const handleConnect = async (provider: string, data: any) => {
         if (provider === 'google') {
             try {
-                const authUrl = await authorizeGmailMutation({ ...data, orgId, provider });
+                const authUrl = await authorizeGmailMutationSend({ ...data, orgId, provider });
                 window.location.href = authUrl;
             } catch (error) {
                 toast.error("Failed to authorize Gmail");

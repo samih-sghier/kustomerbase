@@ -40,7 +40,7 @@ import { getOrganizations } from "@/server/actions/organization/queries";
 import { alertTypeEnum, watchlistInsertSchema } from "@/server/db/schema"; // Adjust based on your schema
 import { canPostWatchlist, createWatchlistMutation } from "@/server/actions/watchlist/mutation";
 import { getOrgPropertiesQuery } from "@/server/actions/properties/queries";
-import { getOrgTenantsQuery } from "@/server/actions/tenants/queries";
+import { getOrgTenantsQuery } from "@/server/actions/connect/queries";
 import { governmentPlatforms, LoadingBar, rentalPlatforms, useLoadingBarStore } from "@/app/(app)/_components/loading-bar";
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
 import { siteUrls } from "@/config/urls";
