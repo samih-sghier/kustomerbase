@@ -1,104 +1,156 @@
 "use server";
 
-import { db } from "@/server/db";
-import { organizations, sources } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
 import OpenAI from "openai";
+import { db } from "@/server/db";
+import { eq } from "drizzle-orm";
+import { organizations, sources } from "@/server/db/schema";
+import { Readable } from "stream";
 import { getOrganizations } from "../organization/queries";
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Helper function to fetch organization and source data
 async function getOrganizationData(orgId: string) {
+  try {
     const org = await db.query.organizations.findFirst({
-        where: eq(organizations.id, orgId),
+      where: eq(organizations.id, orgId),
     });
-
-    const source = await db.query.sources.findFirst({
-        where: eq(sources.orgId, orgId),
+    if (!org) throw new Error("Organization not found");
+    
+    const sourceData = await db.query.sources.findMany({
+      where: eq(sources.orgId, orgId),
     });
-
-    return {
-        name: org?.name,
-        website: source?.website_data,
-        qa_source: source?.qa_source,
-        text_source: source?.text_source,
-        documents: source?.documents,
-    };
+    return { org, sourceData };
+  } catch (error) {
+    console.error("Error fetching organization data:", error);
+    throw new Error("Failed to fetch organization data");
+  }
 }
 
-// Function to prepare fine-tuning data from the organization's sources
-async function prepareFineTuningData(orgId: string) {
-    const orgData = await getOrganizationData(orgId);
-
-    // Prepare fine-tuning data using the organization data
-    return [
-        {
-            prompt: `Organization: ${orgData.name}\nWebsite: ${JSON.stringify(orgData.website)}\nQA Source: ${JSON.stringify(orgData.qa_source)}\nText Source: ${orgData.text_source}\nDocuments: ${JSON.stringify(orgData.documents)}`,
-            completion: "Provide a detailed response based on the above data."
-        }
-    ];
+async function prepareFineTuningData(org: any, sourceData: any) {
+  const data = [];
+  for (const source of sourceData) {
+    data.push({
+      messages: [
+        { role: "system", content: `You are an AI assistant for ${org.name}.` },
+        { role: "user", content: "Tell me about our company." },
+        { role: "assistant", content: source.content },
+      ],
+    });
+  }
+  return data;
 }
 
-// Mutation to fine-tune model
-export async function fineTuneModel() {
-    const { currentOrg } = await getOrganizations();
-    const orgId = currentOrg.id;
+import fs from 'fs';
+import path from 'path';
 
-    const fineTuningData = await prepareFineTuningData(orgId);
+async function uploadDataToOpenAI(data: any) {
+  try {
+    // Convert data to JSONL format
+    const jsonlData = data.map(JSON.stringify).join('\n');
+    
+    // Write JSONL data to a temporary file
+    const tempFilePath = path.join(process.cwd(), 'temp_training_data.jsonl');
+    fs.writeFileSync(tempFilePath, jsonlData);
 
-    // Create JSONL string from the fine-tuning data
-    const jsonlData = fineTuningData.map(entry => `${JSON.stringify(entry)}`).join('\n');
-    const fileBlob = new Blob([jsonlData], { type: 'application/jsonl' }); // Create a Blob
-    const file = new File([fileBlob], 'fine_tuning_data.jsonl', { type: 'application/jsonl', lastModified: Date.now() }); // Create a File
+    // Create a ReadStream from the file
+    const file = fs.createReadStream(tempFilePath);
 
-    // Create a file for fine-tuning
     const uploadedFile = await openai.files.create({
-        file,
-        purpose: "fine-tune",
+      file: file,
+      purpose: "fine-tune"
     });
 
-    // Start the fine-tuning job
-    const job = await openai.fineTuning.jobs.create({
-        training_file: uploadedFile.id,
-        model: "gpt-3.5-turbo",
-    });
+    // Delete the temporary file
+    fs.unlinkSync(tempFilePath);
 
-    // Poll for job completion
-    let completedJob;
-    do {
-        completedJob = await openai.fineTuning.jobs.retrieve(job.id);
-    } while (completedJob.status !== "succeeded");
-
-    // Update the modelId and lastTrained fields in the database
-    await db
-        .update(sources)
-        .set({
-            modelId: completedJob.fine_tuned_model,
-            lastTrained: new Date(),
-            updatedOn: new Date(),
-        })
-        .where(eq(sources.orgId, orgId))
-        .execute();
-
-    return completedJob.fine_tuned_model;
+    return uploadedFile.id;
+  } catch (error) {
+    console.error("Error details:", error);
+    throw new Error("Failed to upload data to OpenAI");
+  }
 }
 
-// Example mutation to train fine-tuned model for the current organization
-export async function trainFineTunedModelForCurrentOrg() {
+async function startFineTuningJob(fileId: string) {
+  try {
+    const fineTune = await openai.fineTuning.jobs.create({
+      training_file: fileId,
+      model: "gpt-3.5-turbo",
+    });
+    return fineTune.id;
+  } catch (error) {
+    console.error("Error starting fine-tuning job:", error);
+    throw new Error("Failed to start fine-tuning job");
+  }
+}
+
+async function pollJobStatus(jobId: string) {
+  const maxAttempts = 60;
+  const delayMs = 10000;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
-        const modelId = await fineTuneModel();
-        console.log(`Fine-tuned model created with ID: ${modelId}`);
-        return modelId;
+      const job = await openai.fineTuning.jobs.retrieve(jobId);
+      if (job.status === "succeeded") {
+        return job.fine_tuned_model;
+      }
+      if (job.status === "failed") {
+        throw new Error("Fine-tuning job failed");
+      }
+      await new Promise(resolve => setTimeout(resolve, delayMs));
     } catch (error) {
-        console.error("Error during fine-tuning:", error);
-        throw new Error("Fine-tuning process failed.");
+      console.error("Error polling job status:", error);
+      throw new Error("Failed to poll job status");
     }
+  }
+  throw new Error("Timeout waiting for fine-tuning job to complete");
 }
 
-// // Example usage
-// if (require.main === module) {
-//     trainFineTunedModelForCurrentOrg();
+async function updateOrganizationModel(orgId: string, modelId: string | null) {
+  try {
+    await db.update(sources).set({
+      modelId: modelId,
+      lastTrained: new Date(),
+    }).where(eq(sources.orgId, orgId));
+  } catch (error) {
+    console.error("Error updating organization model:", error);
+    throw new Error("Failed to update organization model");
+  }
+}
+
+async function fineTuneModel() {
+  const { currentOrg, userOrgs } = await getOrganizations();
+
+  if (!currentOrg) throw new Error("No organization ID found");
+  const orgId = currentOrg?.id;
+
+  const { org, sourceData } = await getOrganizationData(currentOrg.id);
+
+  try {
+    const data = await prepareFineTuningData(org, sourceData);
+    const fileId = await uploadDataToOpenAI(data);
+    const jobId = await startFineTuningJob(fileId);
+    const modelId = await pollJobStatus(jobId);
+    console.log("trained modelId", modelId);
+    await updateOrganizationModel(orgId, modelId);
+    return modelId;
+  } catch (error) {
+    console.error("Error in fineTuneModel:", error);
+    throw new Error("Failed to fine-tune model"); // Make sure to re-throw or handle appropriately
+  }
+}
+
+export async function trainFineTunedModelForCurrentOrg() {
+  try {
+    const modelId = await fineTuneModel();
+    return { success: true, modelId };
+  } catch (error) {
+    console.error("Error in trainFineTunedModelForCurrentOrg:", error);
+    throw new Error("Failed to train bot!"); // Make sure to re-throw or handle appropriately
+  }
+}
+
+// Example usage (commented out):
+// export async function exampleUsage() {
+//   const result = await trainFineTunedModelForCurrentOrg();
+//   console.log(result);
 // }

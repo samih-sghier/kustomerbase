@@ -19,10 +19,7 @@ import { alertTypeEnum } from "@/server/db/schema";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import {
-    removeWatchListItemMutation,
-    updateWatchListAlertTypeMutation,
-} from "@/server/actions/watchlist/mutation";
+
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
 import { WatchListData } from "../../logs/_components/columns";
 
@@ -38,7 +35,7 @@ export function ColumnDropdown({
     const { mutateAsync: updateAlertTypeMutate, isPending: updateAlertTypeIsPending } =
         useMutation({
             mutationFn: ({ alertType }: { alertType: AlertType }) => {
-                return updateWatchListAlertTypeMutation({ id, alertType });
+                console.log("alertType", alertType);
             },
             onSettled: () => {
                 router.refresh();

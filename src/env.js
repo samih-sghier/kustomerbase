@@ -31,6 +31,7 @@ export const env = createEnv({
         UPLOADTHING_ID: z.string(),
         STRIPE_SK: z.string(),
         STRIPE_HOOK_SECRET: z.string(),
+        OPENAI_API_KEY: z.string()
     },
 
     /**

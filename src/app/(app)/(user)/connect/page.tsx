@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AppPageShell } from "@/app/(app)/_components/page-shell";
-import { tenantsPageConfig } from "@/app/(app)/(user)/connect/_constants/page-config";
+import { connectPageConfig } from "@/app/(app)/(user)/connect/_constants/page-config";
 import { ConnectEmailForm } from "@/app/(app)/(user)/connect/_components/create-tenants-form";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
@@ -39,12 +39,12 @@ export default async function UserTenantPage() {
 
     return (
         <AppPageShell
-            title={tenantsPageConfig.title}
-            description={tenantsPageConfig.description}
+            title={connectPageConfig.title}
+            description={connectPageConfig.description}
         >
             <div className="flex w-full items-start justify-between mb-6">
                 <h2 className="text-base font-medium sm:text-lg">
-                    {source.length} tenants you have added.
+                    {source.length} email accounts you have added.
                 </h2>
 
                 <ConnectEmailForm defaultOpen={false} orgId={currentOrg.id}   />
@@ -52,31 +52,31 @@ export default async function UserTenantPage() {
 
             <div className={source.length > 0 ? "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid gap-4"}>
                 {source.length > 0 ? (
-                    source.map((tenant) => (
-                        <Card key={tenant.email} className="relative shadow-md">
-                            <ConnectedEmailsDropdown {...tenant} />
+                    source.map((emailConnected) => (
+                        <Card key={emailConnected.email} className="relative shadow-md">
+                            <ConnectedEmailsDropdown {...emailConnected} />
                             <CardContent className="p-4 flex flex-col justify-between h-full">
                                 <div>
-                                    <CardTitle className="text-xl font-semibold mb-2">{tenant.email}</CardTitle>
-                                    <CardDescription className="text-sm mb-2">{`Reply Frequency: ${mapFrequencyToLabel(tenant.frequency)}`}</CardDescription>
+                                    <CardTitle className="text-xl font-semibold mb-2">{emailConnected.email}</CardTitle>
+                                    <CardDescription className="text-sm mb-2">{`Reply Frequency: ${mapFrequencyToLabel(emailConnected.frequency)}`}</CardDescription>
                                     <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
-                                        <p>Added on {format(new Date(tenant.createdAt), "PPP")}</p>
-                                        {tenant.purpose && <Badge variant="background" className="w-fit">{tenant.purpose}</Badge>}
+                                        <p>Added on {format(new Date(emailConnected.createdAt), "PPP")}</p>
+                                        {emailConnected.purpose && <Badge variant="background" className="w-fit">{emailConnected.purpose}</Badge>}
 
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-end mt-auto">
                                     <Badge
                                         variant={
-                                            tenant.isActive
+                                            emailConnected.isActive
                                                 ? "success"
-                                                : !tenant.isActive
+                                                : !emailConnected.isActive
                                                     ? "secondary"
                                                     : "info"
                                         }
                                         className="w-fit"
                                     >
-                                        {tenant.isActive ? "active" : "reconnect"}
+                                        {emailConnected.isActive ? "active" : "reconnect"}
                                     </Badge>
                                 </div>
                             </CardContent>
@@ -84,9 +84,9 @@ export default async function UserTenantPage() {
                     ))
                 ) : (
                     <div className="flex w-full flex-col items-center justify-center gap-4 py-10">
-                        <p className="font-medium text-muted-foreground">No email accounts linked.</p>
+                        <p className="font-medium text-muted-foreground">No email accounts connected.</p>
                         <Balancer as="p" className="text-center text-muted-foreground">
-                            Add a tenant using the form above, your tenants are important to us. 🏠
+                            Connect an email account using the form above to start automating your email responses.
                         </Balancer>
                     </div>
                 )}

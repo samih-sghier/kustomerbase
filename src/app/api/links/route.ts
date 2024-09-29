@@ -173,6 +173,7 @@ async function getInternalLinksFromPage(baseUrl: string, depth: number, allLinks
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const pageUrl = url.searchParams.get('page');
+  const linkType = url.searchParams.get('linkType');
 
   if (!pageUrl) {
     return NextResponse.json({ error: 'Invalid query parameter' }, { status: 400 });
@@ -180,7 +181,7 @@ export async function GET(request: Request) {
 
   try {
     const allLinks = new Set<string>();
-    const sitemapUrl = await checkForSitemap(pageUrl);
+    const sitemapUrl = linkType === 'sitemap' ? pageUrl : await checkForSitemap(pageUrl);
     
     if (sitemapUrl) {
       console.log(`Sitemap found at ${sitemapUrl}. Using sitemap for crawling.`);

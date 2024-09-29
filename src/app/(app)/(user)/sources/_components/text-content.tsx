@@ -14,8 +14,21 @@ const textSchema = z.object({
     text: z.string().optional(),
 });
 
-export function TextContent({ source }: any) {
+export function TextContent({ source, subscription, stats }: { source: any, subscription: any, stats: any }) {
     const [loading, setLoading] = useState(false);
+
+    const {
+        textInputChars,
+        linkChars,
+        totalChars,
+        linkCount,
+        qaChars,
+        qaCount,
+        fileChars,
+        fileCount,
+        trainChatbot,
+        lastTrainedDate
+    } = stats;
 
     const form = useForm({
         resolver: zodResolver(textSchema),
@@ -27,12 +40,17 @@ export function TextContent({ source }: any) {
     const onSubmit = async (data: any) => {
         setLoading(true);
         try {
+            const newTotalChars = (totalChars - textInputChars) + data.text.length;
+            if (newTotalChars > subscription?.charactersPerChatbot) {
+                toast.error(`File exceeds the character limit for your subscription. Current total: ${totalChars}, New file: ${data.text.length}, Limit: ${subscription?.charactersPerChatbot}`);
+                return;
+            }
             await updateTextSourceField(data.text);
+            toast.success("Text Source Updated");
         } catch (error) {
             toast.error("Error Submitting Text Source");
             console.error("Error submitting text:", error);
         } finally {
-            toast.success("Text Source Updated");
             setLoading(false);
         }
     };

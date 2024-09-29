@@ -39,6 +39,11 @@ export type PricingPlan = {
         monthly: string;
         yearly: string;
     };
+    messageCredits: number;
+    chatbots: number;
+    charactersPerChatbot: number;
+    teamMembers: number;
+    links: number | number;
 };
 
 export type PricingFeature = {
@@ -50,7 +55,6 @@ export type PricingFeature = {
 export const pricingIds = {
     free: "free",
     hobby: "hobby",
-    basic: "basic",
     standard: "standard",
     unlimited: "unlimited",
 } as const;
@@ -58,81 +62,91 @@ export const pricingIds = {
 export const pricingFeatures: PricingFeature[] = [
     {
         id: "1",
-        title: "Notice to Vacate Alerts (eg: N-12, Section 21...)",
-        includedIn: [pricingIds.hobby, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+        title: "Message credits/month",
+        includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
-    
     {
         id: "2",
-        title: "Image-Based and Text Recognition Scanning",
-        includedIn: [pricingIds.hobby, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+        title: "Chatbots",
+        includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
         id: "3",
-        title: "Real Estate Marketplace Platforms Scanning (e.g., Airbnb, Zillow...)",
-        includedIn: [pricingIds.hobby, pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+        title: "Characters/chatbot",
+        includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard],
     },
-    // {
-    //     id: "2",
-    //     title: "AI and Media-Based Scanning",
-    //     includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
-    // },
-
-    // Uncomment and modify this entry as needed
     {
         id: "4",
-        title: "Social Media Platforms Scanning (e.g: Reddit, Facebook groups...)",
-        includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+        title: "Team members",
+        includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
-
     {
         id: "5",
-        title: "Real-time subletting alerts",
-        includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+        title: "Links to train on",
+        includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
         id: "6",
-        title: "Daily subletting activity summaries",
-        includedIn: [pricingIds.basic, pricingIds.standard, pricingIds.unlimited],
+        title: "Connect unlimited email accounts",
+        includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
         id: "7",
-        title: "Historical subletting data",
-        includedIn: [pricingIds.standard, pricingIds.unlimited],
+        title: "Capture leads",
+        includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
         id: "8",
-        title: "Customizable alert filters",
-        includedIn: [pricingIds.standard, pricingIds.unlimited],
+        title: "View chat history",
+        includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
         id: "9",
-        title: "Tenant communication tools",
-        includedIn: [pricingIds.standard, pricingIds.unlimited],
+        title: "GPT-4o (most advanced and efficient model)",
+        includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
         id: "10",
-        title: "Advanced analytics and reporting",
-        includedIn: [pricingIds.standard, pricingIds.unlimited],
+        title: "API access",
+        includedIn: [pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
         id: "11",
-        title: "Dedicated customer support",
-        includedIn: [pricingIds.standard, pricingIds.unlimited],
+        title: "Integrations",
+        includedIn: [pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
         id: "12",
-        title: "API access for integrations",
+        title: "Basic Analytics",
+        includedIn: [pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
+    },
+    {
+        id: "13",
+        title: "Option to choose GPT-4 and GPT-4-Turbo",
+        includedIn: [pricingIds.standard, pricingIds.unlimited],
+    },
+    {
+        id: "14",
+        title: "Remove 'Powered by Chatbase'",
+        includedIn: [pricingIds.unlimited],
+    },
+    {
+        id: "15",
+        title: "Use your own custom domains",
+        includedIn: [pricingIds.unlimited],
+    },
+    {
+        id: "16",
+        title: "Advanced Analytics",
         includedIn: [pricingIds.unlimited],
     },
 ];
-
 
 export const pricingPlans: PricingPlan[] = [
     {
         id: pricingIds.free,
         title: "Free",
-        description: "Monitor 1 property for basic subletting alerts.",
+        description: "Get started for free",
         price: {
             monthly: 0,
             yearly: 0,
@@ -142,78 +156,68 @@ export const pricingPlans: PricingPlan[] = [
             symbol: "$",
         },
         duration: "Forever",
-        highlight: "Get started for free",
+        highlight: "20 message credits/month",
         buttonHighlighted: false,
         planLimit: 1,
         usersLimit: 1,
-        uniqueFeatures: [],
+        uniqueFeatures: ["1 chatbot", "400,000 characters/chatbot", "1 team member", "Limit to 10 links to train on"],
+        messageCredits: 20,
+        chatbots: 1,
+        charactersPerChatbot: 400000,
+        teamMembers: 1,
+        links: 10,
     },
-    // {
-    //     id: pricingIds.hobby,
-    //     title: "Hobby",
-    //     description: "Monitor 2 properties for basic rental activity alerts.",
-    //     price: {
-    //         monthly: 9,
-    //         yearly: 90,
-    //     },
-    //     currency: {
-    //         code: "USD",
-    //         symbol: "$",
-    //     },
-    //     duration: "per month",
-    //     highlight: "Get started for cheap",
-    //     buttonHighlighted: false,
-    //     planLimit: 2,
-    //     usersLimit: 1,
-    //     uniqueFeatures: [],
-    //     priceId: {
-    //         monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_MONTHLY ?? "",
-    //         yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_YEARLY ?? ""
-    //     },
-    // },
     {
-        id: pricingIds.basic,
-        title: "Basic",
-        description: "Monitor up to 10 properties with essential features.",
+        id: pricingIds.hobby,
+        title: "Hobby",
+        description: "Everything in Free, plus...",
         price: {
-            monthly: 29,
-            yearly: 299,
+            monthly: 19,
+            yearly: 190,
         },
         currency: {
             code: "USD",
             symbol: "$",
         },
         duration: "per month",
-        highlight: "Ideal for small sized real estate companies",
+        highlight: "2,000 message credits/month",
         buttonHighlighted: false,
-        planLimit: 10,
-        usersLimit: 2,
-        uniqueFeatures: ["Real-time subletting alerts", "Daily subletting activity summaries", "Customizable alert filters"],
-        variantId: { monthly: 456947, yearly: 456945 },
+        planLimit: 2,
+        usersLimit: 1,
+        uniqueFeatures: ["2 chatbots", "11,000,000 characters/chatbot", "Unlimited links to train on", "API access", "Integrations", "Basic Analytics"],
+        messageCredits: 2000,
+        chatbots: 2,
+        charactersPerChatbot: 11000000,
+        teamMembers: 1,
+        links: 2,
         priceId: {
-            monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC_MONTHLY ?? "",
-            yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC_YEARLY ?? ""
+            monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_MONTHLY ?? "",
+            yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_YEARLY ?? ""
         },
     },
     {
         id: pricingIds.standard,
         title: "Standard",
-        description: "Monitor up to 50 properties with advanced features.",
+        description: "Everything in Hobby, plus...",
         price: {
             monthly: 99,
-            yearly: 999,
+            yearly: 990,
         },
         currency: {
             code: "USD",
             symbol: "$",
         },
         duration: "per month",
-        highlight: "Most popular plan",
+        highlight: "10,000 message credits/month",
         buttonHighlighted: true,
-        planLimit: 50,
-        usersLimit: 5,
-        uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "Dedicated customer support"],
-        variantId: { monthly: 456949, yearly: 456952 },
+        planLimit: 5,
+        usersLimit: 3,
+        uniqueFeatures: ["5 chatbots", "3 team members", "Option to choose GPT-4 and GPT-4-Turbo"],
+        messageCredits: 10000,
+        chatbots: 5,
+        charactersPerChatbot: 11,
+        teamMembers: 3,
+        links: Infinity,
         priceId: {
             monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_STANDARD_MONTHLY ?? "",
             yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_STANDARD_YEARLY ?? ""
@@ -222,26 +226,29 @@ export const pricingPlans: PricingPlan[] = [
     {
         id: pricingIds.unlimited,
         title: "Unlimited",
-        description: "Unlimited properties and users, API access, and premium support.",
+        description: "Everything in Standard, plus...",
         price: {
             monthly: 399,
-            yearly: 3999,
+            yearly: 3990,
         },
         currency: {
             code: "USD",
             symbol: "$",
         },
         duration: "per month",
-        highlight: "For large real estate and property management companies",
+        highlight: "40,000 message credits/month included (Messages over the limit will use your OpenAI API Key)",
         buttonHighlighted: false,
-        planLimit: Infinity,
-        usersLimit: Infinity,
-        uniqueFeatures: ["Real-time subletting alerts", "Historical subletting data", "Daily subletting activity summaries", "Customizable alert filters", "Tenant communication tools", "Advanced analytics and reporting", "API access for integrations", "Dedicated customer support"],
-        variantId: { monthly: 456956, yearly: 456957 }, // not used anymore, legacy for lemonsqueezy integration
+        planLimit: 10,
+        usersLimit: 5,
+        uniqueFeatures: ["10 chatbots", "5 team members", "Remove 'Powered by Chatbase'", "Use your own custom domains", "Advanced Analytics"],
+        messageCredits: 40000,
+        chatbots: 10,
+        charactersPerChatbot: Infinity,
+        teamMembers: 5,
+        links: Infinity,
         priceId: {
             monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_UNLIMITED_MONTHLY ?? "",
             yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_UNLIMITED_YEARLY ?? ""
         },
     },
 ];
-

@@ -161,14 +161,26 @@ const parseJSON = (file: File): Promise<string> => {
 };
 
 
-export function FileUploadForm({ source }: any) {
+export function FileUploadForm({ source, subscription, stats }: { source: any, subscription: any, stats: any }) {
     const [files, setFiles] = useState<File[]>([]);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
     const [convertedData, setConvertedData] = useState<Map<string, string>>(source?.documents ? new Map(Object.entries(source.documents)) : new Map());
     const pdfjs = usePDFJS();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
-
+    
+    const {
+        textInputChars,
+        linkChars,
+        totalChars,
+        linkCount,
+        qaChars,
+        qaCount,
+        fileChars,
+        fileCount,
+        trainChatbot,
+        lastTrainedDate
+    } = stats;
     const processFile = useCallback(async (file: File) => {
         toast.info("Processing " + file.name);
 
@@ -215,6 +227,12 @@ export function FileUploadForm({ source }: any) {
                 return;
             } else {
                 toast.error("Unsupported file type.");
+                return;
+            }
+            const newTotalChars = totalChars + text.length;
+
+            if (newTotalChars > subscription?.charactersPerChatbot) {
+                toast.error(`File exceeds the character limit for your subscription. Current total: ${totalChars}, New file: ${text.length}, Limit: ${subscription?.charactersPerChatbot}`);
                 return;
             }
 

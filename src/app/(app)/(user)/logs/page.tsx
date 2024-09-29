@@ -3,7 +3,7 @@ import type { SearchParams } from "@/types/data-table";
 import { z } from "zod";
 import { getAllPaginatedEmailLogsQuery } from "@/server/actions/logs/queries";
 import { emailLogsPageConfig } from "./_constants/page-config";
-import { EmailLogsTable } from "./_components/watchlist-table";
+import { EmailLogsTable } from "./_components/logs-table";
 
 type EmailLogsPageProps = {
     searchParams: SearchParams;

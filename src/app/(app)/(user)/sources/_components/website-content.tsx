@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { clearSourceFields, removeWebsiteDataField, updateWebsiteDataField } from '@/server/actions/sources/mutations';
 import { sourcesUpdateSchema } from '@/server/db/schema';
+import { PricingPlan } from '@/config/pricing';
 
 const urlSchema = z.string().url().min(1, 'URL cannot be empty');
 const sitemapSchema = z.string().url().min(1, 'Sitemap URL cannot be empty');
@@ -18,7 +19,7 @@ interface Link {
     llmData?: string; // Optional field for LLM data
 }
 
-export default function WebsiteContent({ source }: any) {
+export default function WebsiteContent({ source, stats, subscription }: { source: any, stats: any, subscription: PricingPlan }) {
     const [links, setLinks] = useState<Link[]>([]);
     const [crawlLink, setCrawlLink] = useState('');
     const [sitemapLink, setSitemapLink] = useState('');
@@ -26,7 +27,20 @@ export default function WebsiteContent({ source }: any) {
     const [newLink, setNewLink] = useState('');
     const [fetching, setFetching] = useState(false);
     const [progress, setProgress] = useState(0); // Progress state for the progress bar
-    const [totalChars, setTotalChars] = useState(0); // Total characters in the link URLs and LLM data
+    const [currentTotalChars, setTotalChars] = useState(0); // Total characters in the link URLs and LLM data
+
+    const {
+        textInputChars,
+        linkChars,
+        totalChars,
+        linkCount,
+        qaChars,
+        qaCount,
+        fileChars,
+        fileCount,
+        trainChatbot,
+        lastTrainedDate
+    } = stats;
 
     useEffect(() => {
         if (source && source.website_data) {
@@ -85,28 +99,89 @@ export default function WebsiteContent({ source }: any) {
     // Add a new link to the list and start fetching its LLM data
     const handleAddLink = async () => {
         try {
-            urlSchema.parse(newLink);
+            const trimmedLink = newLink.trim();
 
-            const normalizedNewLink = normalizeUrl(newLink);
+            if (trimmedLink.length === 0) {
+                toast.error('URL cannot be empty');
+                return;
+            }
+
+            const urlToValidate = /^https?:\/\//i.test(trimmedLink) ? trimmedLink : `http://${trimmedLink}`;
+
+            urlSchema.parse(urlToValidate);
+
+            const normalizedNewLink = normalizeUrl(urlToValidate);
 
             if (links.some(link => normalizeUrl(link.url) === normalizedNewLink)) {
                 toast.error('This URL is already in the list.');
                 return;
             }
 
+            // Check link count limit
+            const maxLinks = Number(subscription.links);
+            const currentLinkCount = links.length;
+            
+            if (currentLinkCount >= maxLinks) {
+                toast.error(`You have reached the maximum number of links allowed for your plan (${maxLinks}).`);
+                return;
+            }
+
             const newId = links.length > 0 ? links[links.length - 1].id + 1 : 1;
-            const newLinkEntry = { id: newId, url: newLink };
+            const newLinkEntry = { id: newId, url: urlToValidate };
 
             setLinks(prevLinks => [...prevLinks, newLinkEntry]);
             setNewLink('');
             setIsAddingLink(false);
 
-            // Fetch LLM data for all links including the new one
-            await fetchLinks('page');
+            // Fetch LLM data for the new link
+            setFetching(true);
+            setProgress(0);
 
-            // Update the website data field with the new link
-            const websiteDataUpdate = { [newLink]: '' }; // LLM data will be updated once fetched
-            await updateWebsiteDataField(websiteDataUpdate);
+            try {
+                const response = await fetch(`https://r.jina.ai/${urlToValidate}`);
+                const text = await response.text();
+                setProgress(100);
+
+                // Check character limit
+                const maxChars = subscription.charactersPerChatbot;
+                const currentChars = totalChars;
+                const remainingChars = Math.max(0, maxChars - currentChars);
+                
+                let truncatedText = text;
+                if (text.length > remainingChars) {
+                    truncatedText = text.slice(0, remainingChars);
+                    toast.warning(`The content was truncated to fit within your plan's character limit.`);
+                }
+
+                const updatedLink = { ...newLinkEntry, llmData: truncatedText };
+                setLinks(prevLinks => prevLinks.map(link =>
+                    link.id === newId ? updatedLink : link
+                ));
+                setTotalChars(prevTotal => Math.min(prevTotal + truncatedText.length, maxChars));
+
+                // Update the website data field with the new link and its LLM data
+                const websiteDataUpdate = { [urlToValidate]: truncatedText };
+                await updateWebsiteDataField(websiteDataUpdate);
+
+                toast.success('Link added and LLM data fetched successfully.');
+            } catch (error) {
+                console.error('Error fetching LLM data:', error);
+                toast.error(`Failed to fetch LLM data: ${error.message}`);
+
+                const errorMessage = `Failed to fetch LLM data: ${error.message}`;
+                const updatedLink = { ...newLinkEntry, llmData: errorMessage };
+                setLinks(prevLinks => prevLinks.map(link =>
+                    link.id === newId ? updatedLink : link
+                ));
+                setTotalChars(prevTotal => prevTotal + errorMessage.length);
+
+                // Update the website data field with the new link and error message
+                const websiteDataUpdate = { [urlToValidate]: errorMessage };
+                await updateWebsiteDataField(websiteDataUpdate);
+            } finally {
+                setFetching(false);
+                setProgress(100);
+            }
 
         } catch (e) {
             if (e instanceof z.ZodError) {
@@ -123,7 +198,10 @@ export default function WebsiteContent({ source }: any) {
         try {
             const totalLinks = linksToFetch.length;
             let completedLinks = 0;
-            let totalChars = 0;
+            let totalNewChars = 0;
+
+            const maxChars = Number(subscription.charactersPerChatbot);
+            const initialTotalChars = totalChars;
 
             // Fetch LLM data for all links
             const fetchPromises = linksToFetch.map(async (link) => {
@@ -131,12 +209,20 @@ export default function WebsiteContent({ source }: any) {
                     const response = await fetch(`https://r.jina.ai/${link.url}`);
                     const text = await response.text();
                     completedLinks += 1;
-                    totalChars += text.length;
+                    
+                    const remainingChars = Math.max(0, maxChars - (initialTotalChars + totalNewChars));
+                    let truncatedText = text;
+                    if (text.length > remainingChars) {
+                        truncatedText = text.slice(0, remainingChars);
+                        toast.warning(`Some content was truncated to fit within your plan's character limit.`);
+                    }
+                    
+                    totalNewChars += truncatedText.length;
                     setProgress(Math.round((completedLinks / totalLinks) * 100));
-                    return { ...link, llmData: text };
+
+                    return { ...link, llmData: truncatedText };
                 } catch (error) {
                     completedLinks += 1;
-                    totalChars += `Failed to fetch LLM data: ${error.message}`.length;
                     setProgress(Math.round((completedLinks / totalLinks) * 100));
                     return { ...link, llmData: `Failed to fetch LLM data: ${error.message}` };
                 }
@@ -144,7 +230,7 @@ export default function WebsiteContent({ source }: any) {
 
             const updatedLinks = await Promise.all(fetchPromises);
             setLinks(updatedLinks);
-            setTotalChars(totalChars);
+            setTotalChars(prevTotal => Math.min(prevTotal + totalNewChars, maxChars));
 
             // Update the website data field with the fetched LLM data
             const websiteDataUpdate = updatedLinks.reduce((acc: Record<string, string>, link: Link) => {
@@ -157,6 +243,7 @@ export default function WebsiteContent({ source }: any) {
 
         } catch (error) {
             console.error('Detailed LLM fetch error info:', error);
+            toast.error(`Error: ${error.message}`);
         }
     };
 
@@ -166,16 +253,19 @@ export default function WebsiteContent({ source }: any) {
         setProgress(0);
 
         try {
+            const linkToFetch = type === 'page' ? crawlLink : sitemapLink;
+            
             if (type === 'page') {
-                urlSchema.parse(crawlLink);
+                urlSchema.parse(linkToFetch);
             } else if (type === 'sitemap') {
-                sitemapSchema.parse(sitemapLink);
+                sitemapSchema.parse(linkToFetch);
             }
 
-            const response = await fetch(`/api/links?${type}=${encodeURIComponent(type === 'page' ? crawlLink : sitemapLink)}`);
+            const response = await fetch(`/api/links?page=${encodeURIComponent(linkToFetch)}&linkType=${type}`);
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
             }
 
             const fetchedLinks: string[] = await response.json();
@@ -188,24 +278,43 @@ export default function WebsiteContent({ source }: any) {
             const existingUrls = new Set(links.map(link => normalizeUrl(link.url)));
             const filteredNewLinks = newLinks.filter(link => !existingUrls.has(normalizeUrl(link.url)));
 
-            if (filteredNewLinks.length !== newLinks.length) {
-                toast.error('Some links were duplicates and were not added.');
+            // Check link count limit
+            const maxLinks = Number(subscription.links);
+            const availableSlots = Math.max(0, maxLinks - links.length);
+            const linksToAdd = filteredNewLinks.slice(0, availableSlots);
+
+            if (linksToAdd.length === 0) {
+                if (links.length >= maxLinks) {
+                    toast.error(`No links were added. You have reached the maximum number of links (${maxLinks}) allowed for your plan.`);
+                } else if (filteredNewLinks.length === 0) {
+                    toast.error(`No new links were found or all fetched links are already in your list.`);
+                } else {
+                    toast.error(`No links were added due to reaching your plan's limit of ${maxLinks} links.`);
+                }
+                return; // Exit the function early as no links can be added
             }
 
-            const allLinks = [...links, ...filteredNewLinks];
+            const allLinks = [...links, ...linksToAdd];
             setLinks(allLinks);
 
-            // Fetch LLM data for all links
-            await fetchLLMDataForLinks(allLinks);
+            // Fetch LLM data for new links only
+            await fetchLLMDataForLinks(linksToAdd);
 
             if (type === 'page') setCrawlLink('');
             if (type === 'sitemap') setSitemapLink('');
+
+            if (linksToAdd.length < filteredNewLinks.length) {
+                const remainingLinks = filteredNewLinks.length - linksToAdd.length;
+                toast.warning(`Added ${linksToAdd.length} links. ${remainingLinks} links were not added due to reaching your plan's limit of ${maxLinks} links.`);
+            } else {
+                toast.success(`Successfully added ${linksToAdd.length} new links.`);
+            }
         } catch (error: any) {
             console.error('Detailed error info:', error);
             toast.error(`Error: ${error.message}`);
         } finally {
             setFetching(false);
-            setProgress(100); // Ensure progress is complete when done
+            setProgress(100);
         }
     };
 
@@ -330,7 +439,7 @@ export default function WebsiteContent({ source }: any) {
                         </div>
                     ))}
                 </div>
-                <p className="text-xs text-muted-foreground mt-4">{totalChars} detected characters</p>
+                <p className="text-xs text-muted-foreground mt-4">{currentTotalChars} detected characters</p>
             </div>
         </div>
     );

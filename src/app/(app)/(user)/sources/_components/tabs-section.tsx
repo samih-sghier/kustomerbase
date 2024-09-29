@@ -14,9 +14,9 @@ import { TextContent } from "./text-content";
 import { QnAContent } from "./qa-content";
 import { FileUploadForm } from "./files-content";
 import { MailContent } from "./mail-content";
-import { getOrgSourcesQuery } from "@/server/actions/sources/queries";
 
-export function TabsSection({ source }: any) {
+// Remove async
+export function TabsSection({ source, subscription, stats }: { source: any, subscription: any, stats: any }) {
     const [activeTab, setActiveTab] = useState<string>("files");
 
     return (
@@ -79,21 +79,32 @@ export function TabsSection({ source }: any) {
                 </Tabs.Trigger> */}
             </Tabs.List>
 
-            <Tabs.Content value="files" className="p-4">
-                <FileUploadForm source={source} />
-            </Tabs.Content>
-            <Tabs.Content value="text" className="p-4">
-                <TextContent source={source} />
-            </Tabs.Content>
-            <Tabs.Content value="website" className="p-4">
-                <WebsiteContent source={source} />
-            </Tabs.Content>
-            <Tabs.Content value="qna" className="p-4">
-                <QnAContent source={source} />
-            </Tabs.Content>
-            <Tabs.Content value="mail" className="p-4">
-                <MailContent />
-            </Tabs.Content>
+            {/* Lazy load tab contents */}
+            {activeTab === "files" && (
+                <Tabs.Content value="files" className="p-4">
+                    <FileUploadForm source={source} subscription={subscription} stats={stats} />
+                </Tabs.Content>
+            )}
+            {activeTab === "text" && (
+                <Tabs.Content value="text" className="p-4">
+                    <TextContent source={source} subscription={subscription} stats={stats}/>
+                </Tabs.Content>
+            )}
+            {activeTab === "website" && (
+                <Tabs.Content value="website" className="p-4">
+                    <WebsiteContent source={source} subscription={subscription} stats={stats}/>
+                </Tabs.Content>
+            )}
+            {activeTab === "qna" && (
+                <Tabs.Content value="qna" className="p-4">
+                    <QnAContent source={source} subscription={subscription} stats={stats}/>
+                </Tabs.Content>
+            )}
+            {activeTab === "mail" && (
+                <Tabs.Content value="mail" className="p-4">
+                    <MailContent />
+                </Tabs.Content>
+            )}
         </Tabs.Root>
     );
 }

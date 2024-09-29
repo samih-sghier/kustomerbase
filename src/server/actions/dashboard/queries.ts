@@ -1,94 +1,85 @@
 import { db } from "@/server/db";
-import { tenant, property, sgAlert, subscriptions, users, membersToOrganizations, watchlist } from "@/server/db/schema";
-import { eq, count, sum } from "drizzle-orm";
+import { property, sgAlert, subscriptions, users, membersToOrganizations, emailLogs, connected } from "@/server/db/schema";
+import { eq, count, and } from "drizzle-orm";
 import { protectedProcedure } from "@/server/procedures";
 import { getOrganizations } from "@/server/actions/organization/queries";
 
 // Function to get dashboard information
 export async function getDashboardInfo() {
-    // Ensure proper authorization
     await protectedProcedure();
-
-    // Retrieve the current organization
     const { currentOrg } = await getOrganizations();
 
-    // Return zero values if organization is not found
     if (!currentOrg) {
         return {
-            totalRent: formatCurrency(0),
-            numberOfTenants: 0,
-            numberOfAlerts: 0,
-            numberOfProperties: 0,
-            numberOfOrganizationMembers: 0,
-            numberWatchlist: 0
+            emailsSent: 0,
+            emailsSentGrowth: 0,
+            activeUsers: 0,
+            activeUsersGrowth: 0,
+            connectedEmails: 0,
+            connectedEmailsGrowth: 0,
+            inquiries: 0,
+            inquiriesGrowth: 0,
+            avgResponseTime: "0m",
+            avgResponseTimeChange: 0,
+            alerts: 0,
+            emailRules: 0,
+            emailRulesGrowth: 0,
+            apiUsage: 0,
+            apiUsageChange: 0
         };
     }
 
-
     const organizationId = currentOrg.id;
 
-    // Fetch total rental value for the organization
-    const rentalValueResult = await db
-        .select({ totalRentalValue: sum(property.price) })
-        .from(property)
-        .where(eq(property.organizationId, organizationId)) // Assuming property table has organizationId
-        .execute();
-
-    const rentalValue = rentalValueResult[0]?.totalRentalValue ?? 0;
-
-    // Fetch number of tenants for the organization
-    const numberOfTenants = await db
+    const emailsSent = await db
         .select({ count: count() })
-        .from(tenant)
-        .where(eq(tenant.organizationId, organizationId))
+        .from(emailLogs)
+        .where(eq(emailLogs.orgId, organizationId))
         .execute()
-        .then(res => res[0]?.count ?? 0); // Safely access the count value;
+        .then(res => res[0]?.count ?? 0);
 
-
-
-    // Fetch number of alerts for the organization
-    const numberOfAlerts = await db
-        .select({ count: count() })
-        .from(sgAlert)
-        .innerJoin(tenant, eq(sgAlert.tenantId, tenant.id))
-        .where(eq(tenant.organizationId, organizationId))
-        .execute()
-        .then(res => res[0]?.count ?? 0); // Safely access the count value;
-
-
-
-
-    // Fetch number of properties for the organization
-    const numberOfProperties = await db
-        .select({ count: count() })
-        .from(property)
-        .where(eq(property.organizationId, organizationId)) // Assuming property table has organizationId
-        .execute()
-        .then(res => res[0]?.count ?? 0); // Safely access the count value;
-
-    // Dummy value for number of organization members; update this based on actual logic
-    const numberOfOrganizationMembers = await db
+    const activeUsers = await db
         .select({ count: count() })
         .from(membersToOrganizations)
         .where(eq(membersToOrganizations.organizationId, organizationId))
         .execute()
-        .then(res => res[0]?.count ?? 0); // Safely access the count value;
+        .then(res => res[0]?.count ?? 0);
 
-    const numberWatchlist = await db
+    const connectedEmails = await db
         .select({ count: count() })
-        .from(watchlist)
-        .where(eq(watchlist.organizationId, organizationId))
+        .from(connected)
+        .where(eq(connected.orgId, organizationId))
         .execute()
         .then(res => res[0]?.count ?? 0);
 
-    const totalRent = formatCurrency(rentalValue);
+    const automatedResponses = await db
+        .select({ count: count() })
+        .from(emailLogs)
+        .where(and(
+            eq(emailLogs.orgId, organizationId),
+            eq(emailLogs.status, 'sent')
+        ))
+        .execute()
+        .then(res => res[0]?.count ?? 0);
+
+    // Implement logic for other metrics...
+
     return {
-        totalRent,
-        numberOfTenants,
-        numberOfAlerts,
-        numberOfProperties,
-        numberOfOrganizationMembers,
-        numberWatchlist
+        emailsSent,
+        emailsSentGrowth: 5, // Placeholder, implement actual growth calculation
+        activeUsers,
+        activeUsersGrowth: 3, // Placeholder
+        connectedEmails,
+        connectedEmailsGrowth: 2, // Placeholder
+        inquiries: 10, // Placeholder
+        inquiriesGrowth: 2, // Placeholder
+        avgResponseTime: "5m", // Placeholder
+        avgResponseTimeChange: -2, // Placeholder
+        alerts: 0, // Placeholder
+        emailRules: 15, // Placeholder
+        emailRulesGrowth: 2, // Placeholder
+        apiUsage: 1000, // Placeholder
+        apiUsageChange: 5 // Placeholder
     };
 }
 

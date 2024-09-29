@@ -297,61 +297,7 @@ export const alertTypeEnum = pgEnum("alert_type", [
     "Court Complaints",
 ]);
 
-// Define the watchlist table
-// Define the watchlist table with a compound primary key or unique index
-// Define the watchlist table
-export const watchlist = createTable(
-    "watchlist",
-    {
-        id: varchar("id", { length: 255 })
-            .notNull()
-            .primaryKey()
-            .default(sql`gen_random_uuid()`),
-        organizationId: varchar("organizationId", { length: 255 })
-            .notNull()
-            .references(() => organizations.id, { onDelete: "cascade" }),
-        propertyId: varchar("propertyId", { length: 255 })
-            .references(() => property.id, { onDelete: "set null" }),
-        tenantId: varchar("tenantId", { length: 255 })
-            .references(() => tenant.id, { onDelete: "set null" }),
-        alertType: alertTypeEnum("alertType").notNull(),
-        createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-        updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow().defaultNow(),
-    },
-    (table) => ({
-        // Create a compound index to ensure uniqueness
-        uniqueIndex: index("unique_watchlist_constraint")
-            .on(table.organizationId, table.propertyId, table.tenantId, table.alertType),
-    })
-);
 
-export const watchlistRelations = relations(watchlist, ({ one }) => ({
-    organization: one(organizations, {
-        fields: [watchlist.organizationId],
-        references: [organizations.id],
-    }),
-    property: one(property, {
-        fields: [watchlist.propertyId],
-        references: [property.id],
-    }),
-    tenant: one(tenant, {
-        fields: [watchlist.tenantId],
-        references: [tenant.id],
-    }),
-}));
-
-
-export const watchlistInsertSchema = createInsertSchema(watchlist, {
-    organizationId: z.string().uuid("Invalid organization ID format"),
-    propertyId: z.string().uuid("Invalid property ID format"),
-    tenantId: z.string().optional(),
-    alertType: z.enum([
-        "Subleasing",
-        "Unauthorized Tenants",
-        "Notice to Vacate",
-        "Court Complaints",
-    ])
-});
 
 
 export const propertyRelations = relations(property, ({ one }) => ({
@@ -603,60 +549,6 @@ export const connectedSelectSchema = z.object({
     createdAt: z.date().optional() // Date format, adjust as needed
 });
 
-export const tenant = createTable("tenant", {
-    id: varchar("id", { length: 255 })
-        .notNull()
-        .primaryKey()
-        .default(sql`gen_random_uuid()`),
-    firstName: varchar("firstName", { length: 255 }).notNull(),
-    organizationId: varchar("organizationId", { length: 255 }).notNull(),
-    lastName: varchar("lastName", { length: 255 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull().unique(),
-    phone: varchar("phone", { length: 20 }),
-    address: text("address"),
-    status: tenantStatusEnum("status").default("Pending").notNull(),
-    type: tenantTypeEnum("type").default("Individual").notNull(),
-    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-});
-
-export const tenantRelations = relations(tenant, ({ many }) => ({
-    properties: many(property),
-}));
-
-export const tenantInsertSchema = createInsertSchema(tenant, {
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    email: z.string().email("Email must be a valid email address"),
-    phone: z.string().optional(),
-    address: z.string().optional(),
-    status: z.enum(["Active", "Inactive", "Pending"]),
-    type: z.enum(["Individual", "Corporate"]),
-    organizationId: z.string(),
-});
-
-export const tenantUpdateSchema = z.object({
-    id: z.string().uuid("Invalid ID format").optional(), // ID is usually not updated
-    firstName: z.string().min(1, "First name is required").max(255).optional(),
-    lastName: z.string().min(1, "Last name is required").max(255).optional(),
-    email: z.string().email("Email must be a valid email address").optional(),
-    phone: z.string().max(20).optional(),
-    address: z.string().optional(),
-    status: z.enum(["Active", "Inactive", "Pending"]).optional(), // Enum values as part of the schema
-    type: z.enum(["Individual", "Corporate"]), // Enum values as part of the schema
-    organizationId: z.string().uuid("Invalid organization ID format").optional(),
-});
-
-export const tenantSelectSchema = createSelectSchema(tenant, {
-    firstName: z.string().min(1, "First name must be at least 1 character long"),
-    lastName: z.string().min(1, "Last name must be at least 1 character long"),
-    email: z.string().email("Email must be a valid email address"),
-    phone: z.string().optional(),
-    address: z.string().optional(),
-    status: z.enum(["Active", "Inactive", "Pending"]),
-    type: z.enum(["Individual", "Corporate"]),
-    organizationId: z.string().uuid("Invalid organization ID format"),
-    createdAt: z.date().optional() // Adjust according to how you handle dates
-});
 
 // Feedback schema
 
@@ -778,8 +670,8 @@ export const sgAlert = createTable(
             .notNull()
             .references(() => organizations.id, { onDelete: "cascade" }),
         address: varchar("address", { length: 255 }),
-        tenantId: varchar("tenantId", { length: 255 })
-            .references(() => tenant.id, { onDelete: "set null" }),
+        // tenantId: varchar("tenantId", { length: 255 })
+        //     .references(() => tenant.id, { onDelete: "set null" }),
         alertType: alertTypeEnum("alertType").notNull(),
         alertLink: varchar("alertLink", { length: 255 }),
         archived: boolean("archived").default(false).notNull(),
@@ -800,10 +692,6 @@ export const sgAlertRelations = relations(sgAlert, ({ one }) => ({
     property: one(property, {
         fields: [sgAlert.propertyId],
         references: [property.id],
-    }),
-    tenant: one(tenant, {
-        fields: [sgAlert.tenantId],
-        references: [tenant.id],
     }),
 }));
 

@@ -1,4 +1,3 @@
-
 import { AppPageShell } from "@/app/(app)/_components/page-shell";
 import { dashboardPageConfig } from "@/app/(app)/(user)/dashboard/_constants/page-config";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,13 +10,18 @@ import {
     UsersIcon, // For Organization Members
     EyeIcon, // For Watch List
     ShieldIcon, // For Subscription Plan
-    BarChartIcon // For Delinquency Score
+    BarChartIcon, // For Delinquency Score
+    SendIcon,
+    LinkIcon,
+    MessageSquareIcon,
+    ClockIcon,
+    AlertCircleIcon,
+    SlidersIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button"; // Assuming you have a Button component
 import { siteUrls } from "@/config/urls";
 import { redirect, useRouter } from "next/navigation";
 import { getDashboardInfo } from "@/server/actions/dashboard/queries";
-import { formatCurrency } from "date-fns";
 import { getOrgSubscription } from "@/server/actions/stripe_subscription/query";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
@@ -37,28 +41,66 @@ export default async function DashboardPage() {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
-                                Total Rental Value
+                                Automated Emails Sent
                             </CardTitle>
-                            <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
+                            <SendIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{dashInfo.totalRent}</div>
+                            <div className="text-2xl font-bold">{dashInfo.emailsSent}</div>
                             <p className="text-xs text-muted-foreground">
-                                +0.0% from last month
+                                +{dashInfo.emailsSentGrowth}% from last month
                             </p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
-                                New Leads
+                                Active Users
                             </CardTitle>
-                            <Users2Icon className="h-4 w-4 text-muted-foreground" />
+                            <UsersIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{dashInfo.numberOfTenants}</div>
+                            <div className="text-2xl font-bold">{dashInfo.activeUsers}</div>
+
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Connected Emails
+                            </CardTitle>
+                            <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{dashInfo.connectedEmails}</div>
+
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Inquiries
+                            </CardTitle>
+                            <MessageSquareIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{dashInfo.inquiries}</div>
                             <p className="text-xs text-muted-foreground">
-                                +0.0% from last month
+                                +{dashInfo.inquiriesGrowth}% from last month
+                            </p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Avg. Response Time
+                            </CardTitle>
+                            <ClockIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{dashInfo.avgResponseTime}</div>
+                            <p className="text-xs text-muted-foreground">
+                                {dashInfo.avgResponseTimeChange > 0 ? '+' : '-'}{Math.abs(dashInfo.avgResponseTimeChange)}% from last month
                             </p>
                         </CardContent>
                     </Card>
@@ -67,59 +109,22 @@ export default async function DashboardPage() {
                             <CardTitle className="text-sm font-medium">
                                 Alerts
                             </CardTitle>
+                            <AlertCircleIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{dashInfo.alerts}</div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Credit Token Usage
+                            </CardTitle>
                             <ActivityIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">
-                                {dashInfo.numberOfAlerts >= 0
-                                    ? (dashInfo.numberOfAlerts > 0 ? `+${dashInfo.numberOfAlerts}` : dashInfo.numberOfAlerts)
-                                    : "0"}
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                                +0.0% from last month
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Watch List
-                            </CardTitle>
-                            <EyeIcon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{dashInfo.numberWatchlist}</div>
-                            <p className="text-xs text-muted-foreground">
-                                +0.0% from last month
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Organization Members
-                            </CardTitle>
-                            <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{dashInfo.numberOfOrganizationMembers}</div>
-                            {/* <p className="text-xs text-muted-foreground">
-                                +10.1% from last month
-                            </p> */}
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Properties
-                            </CardTitle>
-                            <HomeIcon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{dashInfo.numberOfProperties}</div>
-                            {/* <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
-                            </p> */}
+                            <div className="text-2xl font-bold">{dashInfo.apiUsage}</div>
                         </CardContent>
                     </Card>
                     <Card className="relative">
@@ -129,10 +134,9 @@ export default async function DashboardPage() {
                             </CardTitle>
                             <ShieldIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
-                        <CardContent className="relative pb-12"> {/* Add extra padding to bottom */}
+                        <CardContent className="relative pb-12">
                             <div className="flex items-center gap-2">
                                 <div className="text-2xl font-bold">{subscription ? subscription.plan?.title : "Free"}</div>
-
                                 {subscription?.status && (
                                     <Badge variant="secondary">
                                         {subscription.status}
@@ -145,10 +149,8 @@ export default async function DashboardPage() {
                                         {subscription.status === "active" &&
                                             "Renews at " +
                                             format(subscription.renews_at, "PP")}
-
                                         {subscription.status === "paused" &&
                                             "Your subscription is paused"}
-
                                         {subscription.status === "canceled" &&
                                             subscription.ends_at &&
                                             `${new Date(subscription.ends_at) >
@@ -161,36 +163,10 @@ export default async function DashboardPage() {
                                     "No expiration"
                                 )}
                             </p>
-
-                            {/* <div className="absolute bottom-4 right-4">
-                                <Button>
-                                    Manage
-                                </Button>
-                            </div> */}
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Delinquency Score
-                            </CardTitle>
-                            <BarChartIcon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">0%</div>
-                            <p className="text-xs text-muted-foreground">
-                                +0% from last month
-                            </p>
                         </CardContent>
                     </Card>
                 </div>
-                {/* 
-                <div className="flex min-h-44 w-full items-center justify-center rounded-md border-2 border-dashed border-border p-4">
-                    <p className="text-sm text-muted-foreground">
-                        Your Content here, Above is a dummy data
-                    </p>
-                </div> */}
             </div>
-        </AppPageShell >
+        </AppPageShell>
     );
 }

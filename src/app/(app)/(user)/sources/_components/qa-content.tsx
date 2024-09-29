@@ -10,6 +10,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { removeQaSourceField, updateQaSourceField } from '@/server/actions/sources/mutations';
+import { toast } from 'sonner';
 
 // Define schema for validation
 const qnaSchema = z.object({
@@ -26,9 +27,22 @@ interface Source {
     qa_source: Record<string, string> | null;
 }
 
-export function QnAContent({ source }: { source: Source }) {
+export function QnAContent({ source, stats, subscription }: { source: Source, stats: any, subscription: any }) {
     const [loading, setLoading] = useState(false);
     const [removedKeys, setRemovedKeys] = useState<Set<string>>(new Set());
+
+    const {
+        textInputChars,
+        linkChars,
+        totalChars,
+        linkCount,
+        qaChars,
+        qaCount,
+        fileChars,
+        fileCount,
+        trainChatbot,
+        lastTrainedDate
+    } = stats;
 
     // Transform source.qa_source into the format expected by the form
     const transformedInitialData = React.useMemo(() => {
@@ -66,10 +80,17 @@ export function QnAContent({ source }: { source: Source }) {
         try {
             // Prepare the update object with simple key-value pairs
             const qaSourceUpdate: Record<string, string> = {};
+            let newQaChars = 0;
             data.qnaPairs.forEach(pair => {
                 qaSourceUpdate[pair.question] = pair.answer;
+                newQaChars += pair.question.length + pair.answer.length;
             });
-
+            const newTotalChars = (totalChars - qaChars) + newQaChars;
+            if (newTotalChars > subscription?.charactersPerChatbot) {
+                toast.error(`Q&A content exceeds the character limit for your subscription. Current total: ${totalChars}, New Q&A total: ${newQaChars}, Limit: ${subscription?.charactersPerChatbot}`);
+                setLoading(false);
+                return;
+            }
             await updateQaSourceField(qaSourceUpdate);
 
             // Prepare keys for removal
@@ -79,7 +100,7 @@ export function QnAContent({ source }: { source: Source }) {
                 setRemovedKeys(new Set()); // Clear the removedKeys after processing
             }
 
-            console.log("Q&A pairs updated successfully");
+            toast.success("Q&A pairs updated successfully!");
         } catch (error) {
             console.error("Error updating questions and answers:", error);
         } finally {
