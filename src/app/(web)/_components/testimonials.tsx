@@ -51,7 +51,7 @@ export function Testimonials() {
                                         (columnGroupIdx ===
                                             testimonials.length - 1 &&
                                             columnIdx ===
-                                                columnGroup.length - 1)
+                                            columnGroup.length - 1)
                                         ? "xl:row-span-2"
                                         : "xl:row-start-1",
                                     "space-y-8",

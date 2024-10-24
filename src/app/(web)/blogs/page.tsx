@@ -21,7 +21,7 @@ export default async function BlogsPage() {
         <WebPageWrapper>
             <WebPageHeader title="Blog">
                 <p className="text-center text-base">
-                    <span>Get the latest news and updates</span>
+                    <span>Learn more about bettereply through our blog!</span>
                 </p>
             </WebPageHeader>
 

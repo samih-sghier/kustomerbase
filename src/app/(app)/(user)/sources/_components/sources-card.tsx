@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
@@ -8,15 +8,30 @@ import { toast } from "sonner";
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
 import { useMutation } from '@tanstack/react-query';
 import { Icons } from '@/components/ui/icons';
-import { trainFineTunedModelForCurrentOrg } from '@/server/actions/training/mutation';
 import { OrgSubscription } from '@/types/org-subscription';
+
+// Add a function to make the HTTP request to the correct endpoint
+async function trainLlamaIndexForCurrentOrg() {
+    const response = await fetch('/api/rag', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // Add any necessary body data here
+        // body: JSON.stringify({ /* your data */ }),
+    });
+    
+    if (!response.ok) {
+        throw new Error('Failed to train Llama index');
+    }
+}
 
 // Utility function for formatting large numbers with commas
 export function formatNumberWithCommas(number: number) {
     return new Intl.NumberFormat().format(number);
 }
 
-interface SourceStats {
+export interface SourceStats {
     textInputChars: number;
     linkChars: number;
     totalChars: number;
@@ -25,8 +40,9 @@ interface SourceStats {
     qaCount: number;
     fileChars: number;
     fileCount: number;
-    trainChatbot: boolean;
     lastTrainedDate: string | null;
+    mailCount: number;
+    mailChars: number;
 }
 
 export function SourcesCard({ stats, subscription }: { stats: SourceStats, subscription: any }) {
@@ -39,16 +55,43 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
         qaCount,
         fileChars,
         fileCount,
-        trainChatbot,
-        lastTrainedDate
+        lastTrainedDate,
+        mailCount,
+        mailChars
     } = stats;
 
+    const [previousStats, setPreviousStats] = useState<SourceStats | null>(null);
+    const [changesDetected, setChangesDetected] = useState(false);
+
+    // Function to check for changes
+    const checkForChanges = () => {
+        if (previousStats) {
+            setChangesDetected(
+                previousStats.textInputChars !== textInputChars ||
+                previousStats.linkChars !== linkChars ||
+                previousStats.totalChars !== totalChars ||
+                previousStats.linkCount !== linkCount ||
+                previousStats.qaChars !== qaChars ||
+                previousStats.qaCount !== qaCount ||
+                previousStats.fileChars !== fileChars ||
+                previousStats.fileCount !== fileCount ||
+                previousStats.mailCount !== mailCount ||
+                previousStats.mailChars !== mailChars
+            );
+        }
+    };
+
+    // Effect to check for changes whenever stats change
+    useEffect(() => {
+        checkForChanges();
+        setPreviousStats(stats); // Update previous stats after checking
+    }, [stats]);
 
     // Mutation to train the chatbot
     const { mutate: trainChatbotMutate, isPending: trainChatbotIsPending } = useMutation({
         mutationFn: async () => {
             // Call the API to train the chatbot
-            return await trainFineTunedModelForCurrentOrg();
+            return await trainLlamaIndexForCurrentOrg();
         },
         onSuccess: () => {
             toast.success('Chatbot training finished!');
@@ -74,7 +117,7 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
     };
 
     return (
-        <Card className="w-full lg:w-100 shadow-md rounded-md border border-gray-200 bg-white p-4">
+        <Card className="w-full lg:w-100 shadow-md rounded-md border border-gray-200 p-4">
             <CardContent>
                 <h3 className="text-lg font-semibold mb-4">Sources</h3>
                 <div className="space-y-2 mb-4">
@@ -90,6 +133,9 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
                     {qaCount > 0 && (
                         <p className="text-sm">{formatNumberWithCommas(qaCount)} Q&A ({formatNumberWithCommas(qaChars)} chars)</p>
                     )}
+                    {mailCount > 0 && (
+                        <p className="text-sm">{formatNumberWithCommas(mailCount)} Mail ({formatNumberWithCommas(mailChars)} chars)</p>
+                    )}
                     <p className="text-base font-bold">
                         {formatNumberWithCommas(totalChars)} / {formatNumberWithCommas(subscription.plan?.charactersPerChatbot)} limit
                     </p>
@@ -101,19 +147,19 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
                         : "Never been trained"}
                 </p>
 
-                {trainChatbot && lastTrainedDate && (
+                {/* {changesDetected && (
                     <p className="text-sm font-medium text-red-500 mb-4">
                         Changes detected
                     </p>
-                )}
+                )} */}
 
                 <Button
                     className="w-full"
-                    disabled={!trainChatbot || trainChatbotIsPending || trainBotIsTransitionPending}
+                    disabled={trainChatbotIsPending || trainBotIsTransitionPending}
                     onClick={onTrainBot}
                 >
                     {trainChatbotIsPending ? <Icons.loader className="h-4 w-4 mr-2" /> : null}
-                    {!lastTrainedDate ? "Train Mailbot" : "Retrain Mailbot"}
+                    {!lastTrainedDate ? "Train" : "Retrain"}
                 </Button>
             </CardContent>
         </Card>

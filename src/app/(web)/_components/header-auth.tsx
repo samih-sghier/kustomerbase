@@ -7,7 +7,7 @@ import { Fragment } from "react";
 
 export async function HeaderAuth() {
     const user = await getUser();
-
+    
     return (
         <section className="flex items-center space-x-2">
             {user ? (

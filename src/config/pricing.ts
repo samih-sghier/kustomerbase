@@ -189,7 +189,7 @@ export const pricingPlans: PricingPlan[] = [
         chatbots: 2,
         charactersPerChatbot: 11000000,
         teamMembers: 1,
-        links: 2,
+        links: Infinity,
         priceId: {
             monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_MONTHLY ?? "",
             yearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_HOBBY_YEARLY ?? ""

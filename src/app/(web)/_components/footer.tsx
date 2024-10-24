@@ -1,7 +1,7 @@
 import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
-import { navigation, companyFooterNavigation } from "@/config/header";
+import { navigation, companyFooterNavigation, usefulLinks } from "@/config/header";
 import { siteConfig } from "@/config/site";
 import { siteUrls } from "@/config/urls";
 import { cn } from "@/lib/utils";
@@ -104,8 +104,8 @@ export function WebFooter() {
                         />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <h3 className="text-sm font-semibold">Useful Links</h3>
-                        {navigation.map((item) => (
+                        <h3 className="text-sm font-semibold">Links</h3>
+                        {usefulLinks.map((item) => (
                             <FooterLink
                                 key={item.label}
                                 href={item.href}
@@ -127,7 +127,7 @@ export function WebFooter() {
                     </div>
                 </div>
                 <div className="col-span-full mt-8 text-center text-sm text-muted-foreground">
-                    <p>&copy; {year} SubletGuard. All rights reserved.</p>
+                    <p>&copy; {year} bettereply. All rights reserved.</p>
                 </div>
             </footer>
         </div>

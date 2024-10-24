@@ -17,17 +17,16 @@ import { getAllPaginatedAlertsQuery } from "@/server/actions/alert/queries";
 // Define filterable columns for the DataTable
 const filterableColumns: DataTableFilterableColumn<AlertData>[] = [
     {
-        id: "alertType",
-        title: "Alert Type",
-        options: alertTypeEnum.enumValues.map((v) => ({
-            label: v,
-            value: v,
-        })),
+        id: "recipient",
+        title: "Recipient",
+        options: [],
     },
     {
-        id: "address",
-        title: "Property Address",
-        options: [], // Define specific options if necessary
+        id: "archived",
+        title: "Archived", // Changed title for clarity
+        options: [
+            
+        ],
     },
 
     // {
@@ -48,7 +47,7 @@ type AlertTableProps = {
 
 // Define searchable columns for the DataTable
 const searchableColumns: DataTableSearchableColumn<AlertData>[] = [
-    // { id: "address", placeholder: "Search by address..." },
+    { id: "subject", placeholder: "Search by subject..." },
     // { id: "lastName", placeholder: "Search tenant name..." }
 ];
 
@@ -64,17 +63,16 @@ export function AlertTable({ watchListPromise }: AlertTableProps) {
     // Ensure that the new fields are included
     const alertData: AlertData[] = data.map((item) => ({
         id: item.id!,
-        alertType: item.alertType,
-        createdAt: item.createdAt,
+        summary: item.summary || "", // Added to match the table structure
+        createdAt: item.createdAt.toISOString(), // Convert to string
+        updatedAt: item.updatedAt ? item.updatedAt.toISOString() : "", // Convert to string
         organizationId: item.organizationId,
-        propertyId: item.propertyId!, // Assert that propertyId is a string
-        tenantId: item.tenantId!,     // Assert that tenantId is a string
-        firstName: item.tenant?.firstName || "", // Include tenant details
-        lastName: item.tenant?.lastName || "",
-        email: item.tenant?.email || "",
-        address: item.property?.address || "", // Include property details
-        title: item.property?.title || "",
-        unitNumber: item.property?.unitNumber || "",
+        account: item.account || "", // Added to match the table structure
+        recipient: item.recipient || "", // Added to match the table structure
+        escalationLink: item.escalationLink || "", // Added to match the table structure
+        archived: item.archived || false, // Added to match the table structure
+        subject: item.subject || "", // Added to match the table structure
+        threadId: item.threadId || "", // Added to match the table structure
     }));
 
     const { table } = useDataTable({

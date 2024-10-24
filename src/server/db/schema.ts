@@ -14,6 +14,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { type AdapterAccount } from "next-auth/adapters";
+import { json } from "stream/consumers";
 import { z } from "zod";
 
 /**
@@ -253,41 +254,6 @@ export const orgRequestInsertSchema = createInsertSchema(orgRequests);
 
 // Property schema
 
-export const propertyStatusEnum = pgEnum("property-status", [
-    "Available",
-    "Leased",
-    "Pending",
-]);
-
-export const propertyTypeEnum = pgEnum("property-type", [
-    "Apartment",
-    "Condominium",
-    "Townhouse",
-    "Studio Apartment",
-    "Loft",
-    "Duplex",
-    "Multi-Family Home",
-]);
-
-export const property = createTable("property", {
-    id: varchar("id", { length: 255 })
-        .notNull()
-        .primaryKey()
-        .default(sql`gen_random_uuid()`),
-    organizationId: varchar("organizationId", { length: 255 })
-        .notNull()
-        .references(() => organizations.id, { onDelete: "cascade" }),
-    title: varchar("title", { length: 255 }).notNull(),
-    description: text("description").notNull(),
-    price: integer("price").notNull(),
-    address: varchar("address", { length: 255 }).notNull(),
-    status: propertyStatusEnum("status").default("Available").notNull(),
-    type: propertyTypeEnum("type").notNull(),
-    placeId: text("placeId").notNull(),
-    unitNumber: text("unitNumber").notNull(),
-    tenantCapacity: integer("tenantCapacity").notNull(),
-    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-});
 
 // Enum for alert types
 export const alertTypeEnum = pgEnum("alert_type", [
@@ -297,72 +263,6 @@ export const alertTypeEnum = pgEnum("alert_type", [
     "Court Complaints",
 ]);
 
-
-
-
-export const propertyRelations = relations(property, ({ one }) => ({
-    organization: one(organizations, {
-        fields: [property.organizationId],
-        references: [organizations.id],
-    }),
-}));
-
-export const propertyInsertSchema = createInsertSchema(property, {
-    title: z.string().min(3, "Title must be at least 3 characters long").max(255, "Title must be at most 255 characters long"),
-    description: z.string().min(2, "Description must be at least 10 characters long").optional(),
-    price: z.number().min(0, "Price must be a positive number"),
-    address: z.string().min(3, "Address must be at least 3 characters long").max(255, "Address must be at most 255 characters long"),
-    status: z.enum(["Available", "Leased", "Pending"]),
-    organizationId: z.string(),
-    type: z.enum(["Apartment",
-        "Condominium",
-        "Townhouse",
-        "Studio Apartment",
-        "Loft",
-        "Duplex",
-        "Multi-Family Home"]),
-    unitNumber: z.string(),
-    placeId: z.string(),
-    tenantCapacity: z.number().positive("Capacity must be a positive number").optional()
-});
-
-export const propertySelectSchema = createSelectSchema(property, {
-    title: z.string().min(3, "Title must be at least 3 characters long").max(255, "Title must be at most 255 characters long"),
-    description: z.string().min(2, "Description must be at least 10 characters long").optional(),
-    price: z.number().min(0, "Price must be a positive number"),
-    address: z.string().min(3, "Address must be at least 3 characters long").max(255, "Address must be at most 255 characters long"),
-    status: z.enum(["Available", "Leased", "Pending"]),
-    type: z.enum(["Apartment",
-        "Condominium",
-        "Townhouse",
-        "Studio Apartment",
-        "Loft",
-        "Duplex",
-        "Multi-Family Home"]),
-    unitNumber: z.string(),
-    placeId: z.string(),
-    tenantCapacity: z.number().positive("Capacity must be a positive number").optional()
-});
-
-export const propertyUpdateSchema = z.object({
-    title: z.string().min(3, "Title must be at least 3 characters long").max(255, "Title must be at most 255 characters long").optional(),
-    description: z.string().min(2, "Description must be at least 10 characters long").optional(),
-    price: z.number().min(0, "Price must be a positive number"),
-    address: z.string().min(3, "Address must be at least 3 characters long").max(255, "Address must be at most 255 characters long").optional(),
-    status: z.enum(["Available", "Leased", "Pending"]).optional(),
-    type: z.enum([
-        "Apartment",
-        "Condominium",
-        "Townhouse",
-        "Studio Apartment",
-        "Loft",
-        "Duplex",
-        "Multi-Family Home"
-    ]),
-    placeId: z.string(),
-    unitNumber: z.string(),
-    tenantCapacity: z.number().positive("Capacity must be a positive number").optional()
-});
 
 // tenants schema
 
@@ -430,9 +330,10 @@ export const sources = createTable("sources", {
     qa_source: jsonb("qa_source"), // Stores question-answer pairs
     // Text source
     text_source: text("text_source"), // Stores large text data
+    mail_source: jsonb("mail_source"), // Stores mail source
     // Website crawling results as JSONB (URL-text map)
     website_data: jsonb("website_data"), // Stores page links and corresponding text
-    modelId: text("modelId"), // Stores question-answer pairs
+    llamaIndex: jsonb("llamaIndex"), // Stores question-answer pairs
     lastTrained: timestamp("lastTrained", { mode: "date" }),
     // Documents as JSONB (file name-text map)
     documents: jsonb("documents"), // Stores file names and corresponding text
@@ -445,8 +346,9 @@ export const sourcesInsertSchema = z.object({
     orgId: z.string(), // Organization ID
     qa_source: z.record(z.string(), z.string()).nullable(), // Map of question-answer pairs
     text_source: z.string().nullable(), // Large text data
+    mail_source: z.record(z.string(), z.string()).nullable(), // URL-text map
     website_data: z.record(z.string(), z.string()).nullable(), // URL-text map
-    modelId: z.string().nullable(), // Large text data
+    llamaIndex: z.string().nullable(), // Large text data
     lastTrained: z.string().optional(), // ISO date string for last update timestamp
     documents: z.record(z.string(), z.string()).nullable(), // File name-text map
     createdAt: z.date().optional(), // ISO date string for creation timestamp
@@ -458,8 +360,9 @@ export const sourcesUpdateSchema = z.object({
     orgId: z.string().optional(), // Optional field; typically not updated
     qa_source: z.record(z.string(), z.string()).nullable(), // Map of question-answer pairs
     text_source: z.string().nullable(), // Large text data
-    modelId: z.string().nullable(), // Large text data
+    llamaIndex: z.string().nullable(), // Large text data
     lastTrained: z.string().optional(), // Large text data
+    mail_source: z.record(z.string(), z.string()).nullable(), // URL-text map
     website_data: z.record(z.string(), z.string()).nullable(), // URL-text map
     documents: z.record(z.string(), z.string()).nullable(), // File name-text map
     createdAt: z.date().optional(), // ISO date string for creation timestamp
@@ -471,6 +374,7 @@ export const sourcesSelectSchema = z.object({
     orgId: z.string(), // Foreign key to organizations table
     qa_source: z.record(z.string(), z.string()).nullable(), // Map of question-answer pairs
     text_source: z.string().nullable(), // Large text data
+    mail_source: z.record(z.string(), z.string()).nullable(), // URL-text map
     website_data: z.record(z.string(), z.string()).nullable(), // URL-text map
     documents: z.record(z.string(), z.string()).nullable(), // File name-text map
     createdAt: z.string().optional(), // ISO date string for creation timestamp
@@ -657,59 +561,36 @@ export const waitlistUsersSchema = createInsertSchema(waitlistUsers, {
 });
 
 
-export const sgAlert = createTable(
-    "alert",
-    {
-        id: varchar("id", { length: 255 })
-            .notNull()
-            .primaryKey()
-            .default(sql`gen_random_uuid()`),
-        propertyId: varchar("propertyId", { length: 255 })
-            .references(() => property.id, { onDelete: "set null" }),
-        organizationId: varchar("organizationId", { length: 255 })
-            .notNull()
-            .references(() => organizations.id, { onDelete: "cascade" }),
-        address: varchar("address", { length: 255 }),
-        // tenantId: varchar("tenantId", { length: 255 })
-        //     .references(() => tenant.id, { onDelete: "set null" }),
-        alertType: alertTypeEnum("alertType").notNull(),
-        alertLink: varchar("alertLink", { length: 255 }),
-        archived: boolean("archived").default(false).notNull(),
-        platform: varchar("platform", { length: 255 }),
-        detectedOn: timestamp("detectedOn", { mode: "date" }).notNull().defaultNow(),
-    },
-    (table) => ({
-        uniqueAlertIndex: index("unique_alert_constraint")
-            .on(table.organizationId, table.propertyId, table.tenantId, table.alertType, table.detectedOn),
-    })
-);
+export const sgAlert = createTable("escalations", {
+    id: varchar("id", { length: 255 })
+        .notNull()
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    organizationId: varchar("organizationId", { length: 255 })
+        .notNull()
+        .references(() => organizations.id, { onDelete: "cascade" }),
+    archived: boolean("archived").default(false).notNull(),
+    summary: varchar("summary").notNull(),
+    subject: varchar("subject").notNull(),
+    account: varchar("account", { length: 255 }).notNull(),
+    recipient: varchar("recipient", { length: 255 }).notNull(),
+    threadId: varchar("threadId", { length: 255 }).notNull(),
+    escalationLink: varchar("escalationLink"),
+    updatedAt: timestamp("updatedAt", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+});
 
-export const sgAlertRelations = relations(sgAlert, ({ one }) => ({
-    organization: one(organizations, {
-        fields: [sgAlert.organizationId],
-        references: [organizations.id],
-    }),
-    property: one(property, {
-        fields: [sgAlert.propertyId],
-        references: [property.id],
-    }),
-}));
 
 export const sgAlertInsertSchema = createInsertSchema(sgAlert, {
-    propertyId: z.string().uuid("Invalid property ID format").optional(),
     organizationId: z.string().uuid("Invalid organization ID format"),
-    address: z.string().optional(),
-    tenantId: z.string().uuid("Invalid tenant ID format").optional(),
-    alertType: z.enum([
-        "Subleasing",
-        "Unauthorized Tenants",
-        "Notice to Vacate",
-        "Court Complaints",
-    ]),
-    alertLink: z.string().url().optional(),
     archived: z.boolean().optional(),
-    platform: z.string().optional(),
-    detectedOn: z.date().optional(),
+    summary: z.string().min(1, "Summary is required"), 
+    account: z.string().min(1, "Account is required"),
+    recipient: z.string().min(1, "Recipient is required"), 
+    escalationLink: z.string().url().optional(), 
+    updatedAt: z.date().optional(),
+    createdAt: z.date().optional(),
+
 });
 
 

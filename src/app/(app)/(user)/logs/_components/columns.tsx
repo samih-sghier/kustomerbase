@@ -88,14 +88,14 @@ const getBadgeVariant = (status: EmailStatus): 'default' | 'secondary' | 'destru
 };
 
 export const columns: ColumnDef<EmailLogData>[] = [
-    {
-        accessorKey: "messageId",
-        header: "Message ID",
-        cell: ({ row }) => row.original.messageId || "N/A",
-    },
+    // {
+    //     accessorKey: "messageId",
+    //     header: "Message ID",
+    //     cell: ({ row }) => row.original.messageId || "N/A",
+    // },
     {
         accessorKey: "email",
-        header: "Sender",
+        header: "Account",
         cell: ({ row }) => row.original.email,
     },
     {

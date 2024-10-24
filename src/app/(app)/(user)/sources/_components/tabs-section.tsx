@@ -21,7 +21,7 @@ export function TabsSection({ source, subscription, stats }: { source: any, subs
 
     return (
         <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col">
-            <Tabs.List className="flex border-b border-gray-300 bg-white">
+            <Tabs.List className="flex border-b border-gray-300">
                 <Tabs.Trigger
                     value="files"
                     className="flex items-center px-4 py-2 text-sm font-medium transition-colors duration-300 ease-in-out hover:bg-gray-200 focus:outline-none relative"
@@ -66,7 +66,7 @@ export function TabsSection({ source, subscription, stats }: { source: any, subs
                         className={`absolute bottom-0 left-0 w-full h-1 bg-primary transition-transform transform ${activeTab === "qna" ? "scale-x-100" : "scale-x-0"} origin-left`}
                     />
                 </Tabs.Trigger>
-                {/* <Tabs.Trigger
+                <Tabs.Trigger
                     value="mail"
                     className="flex items-center px-4 py-2 text-sm font-medium transition-colors duration-300 ease-in-out hover:bg-gray-200 focus:outline-none relative"
                     style={{ backgroundColor: 'var(--tab-bg-default)' }}
@@ -76,7 +76,7 @@ export function TabsSection({ source, subscription, stats }: { source: any, subs
                     <div
                         className={`absolute bottom-0 left-0 w-full h-1 bg-primary transition-transform transform ${activeTab === "mail" ? "scale-x-100" : "scale-x-0"} origin-left`}
                     />
-                </Tabs.Trigger> */}
+                </Tabs.Trigger>
             </Tabs.List>
 
             {/* Lazy load tab contents */}
@@ -102,7 +102,7 @@ export function TabsSection({ source, subscription, stats }: { source: any, subs
             )}
             {activeTab === "mail" && (
                 <Tabs.Content value="mail" className="p-4">
-                    <MailContent />
+                    <MailContent source={source} stats={stats} subscription={subscription} />
                 </Tabs.Content>
             )}
         </Tabs.Root>

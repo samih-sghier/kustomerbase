@@ -345,3 +345,74 @@ export async function removeTextSourceField() {
     revalidatePath('/sources');
 
 }
+
+// Function to update mail_source field
+export async function updateMailSourceField(mailSourceUpdate: Record<string, string>) {
+    try {
+        const { currentOrg } = await getOrganizations();
+        if (!currentOrg) {
+            throw new Error("Current organization not found");
+        }
+
+        await ensureDefaultSourceExists(currentOrg.id);
+
+        const existingRecord = await db
+            .select()
+            .from(sources)
+            .where(eq(sources.orgId, currentOrg.id))
+            .limit(1)
+            .execute();
+
+        if (!existingRecord || existingRecord.length === 0) {
+            throw new Error("No source record found for the current organization.");
+        }
+
+        const currentRecord = existingRecord[0];
+
+        const updatedMailSource = {
+            ...(currentRecord?.mail_source || {}),
+            ...mailSourceUpdate
+        };
+
+        await db
+            .update(sources)
+            .set({ mail_source: updatedMailSource, updatedOn: new Date() })
+            .where(eq(sources.orgId, currentOrg.id))
+            .execute();
+
+        revalidatePath('/sources');
+    } catch (error) {
+        console.error("Error in updateMailSourceField:", error);
+        throw error;
+    }
+}
+
+// Function to remove specific mail_source entries
+export async function removeMailSourceField(keys: Set<string>) {
+    const { currentOrg } = await getOrganizations();
+    await ensureDefaultSourceExists(currentOrg.id);
+
+    const existingRecord = await db
+        .select()
+        .from(sources)
+        .where(eq(sources.orgId, currentOrg.id))
+        .limit(1)
+        .execute();
+
+    if (!existingRecord || existingRecord.length === 0) {
+        throw new Error("No source record found for the current organization.");
+    }
+
+    const currentRecord = existingRecord[0];
+    const currentMailSource = currentRecord?.mail_source || {};
+    const updatedMailSource = Object.fromEntries(
+        Object.entries(currentMailSource).filter(([key]) => !keys.has(key))
+    );
+
+    await db
+        .update(sources)
+        .set({ mail_source: updatedMailSource, updatedOn: new Date() })
+        .where(eq(sources.orgId, currentOrg.id))
+        .execute();
+    revalidatePath('/sources');
+}

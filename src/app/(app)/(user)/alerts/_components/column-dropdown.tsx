@@ -21,14 +21,12 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
-import { WatchListData } from "../../logs/_components/columns";
 
 type AlertType = (typeof alertTypeEnum.enumValues)[number];
 
 export function ColumnDropdown({
-    alertType,
     id,
-}: WatchListData) {
+}: any) {
     const router = useRouter();
 
     // Mutation to update the alert type of a watchlist item
@@ -64,7 +62,7 @@ export function ColumnDropdown({
     // Mutation to remove a watchlist item
     const { mutateAsync: removeWatchListItemMutate, isPending: removeWatchListItemIsPending } =
         useMutation({
-            mutationFn: ({ id }: { id: string }) => removeWatchListItemMutation({ id }),
+            mutationFn: ({ id }: { id: string }) => archiveAlertMutation({ id }),
         });
 
     const [removeWatchListItemIsTransitionPending, startAwaitableRemoveWatchListItemTransition] =
@@ -96,7 +94,7 @@ export function ColumnDropdown({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-screen max-w-[12rem]">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
+{/* 
                 <DropdownMenuSeparator />
 
                 <DropdownMenuSub>
@@ -119,7 +117,7 @@ export function ColumnDropdown({
                             ))}
                         </DropdownMenuRadioGroup>
                     </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                </DropdownMenuSub> */}
 
                 <DropdownMenuSeparator />
 
@@ -130,7 +128,7 @@ export function ColumnDropdown({
                     onClick={onRemoveWatchListItem}
                     className="text-red-600"
                 >
-                    Remove
+                    Archive
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

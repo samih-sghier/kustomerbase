@@ -2,5 +2,6 @@ import { siteConfig } from "@/config/site";
 
 export const loginPageConfig = {
     title: "Login",
-    description: `Login to ${siteConfig.name} to get started building your next project.`,
+    description: `Access ${siteConfig.name} to streamline your email tasks and boost productivity.`,
 } as const;
+

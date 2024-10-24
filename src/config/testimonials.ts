@@ -19,7 +19,7 @@ type Testimonial = {
 };
 
 export const featuredTestimonial: Testimonial = {
-    body: "SubletGuard has been fantastic in helping us prevent lease breaches and avoid costly litigation. The system catches potential issues early, so we can handle them before they escalate. It's made managing properties so much smoother!",
+    body: "bettereply has been fantastic in helping us streamline our email management. The system catches potential issues early, so we can handle them before they escalate. It's made managing communications so much smoother!",
     author: {
         name: "Brenna",
         handle: "Pinnacle Property Pros",
@@ -29,13 +29,11 @@ export const featuredTestimonial: Testimonial = {
     },
 };
 
-
-
 export const testimonials: Testimonial[][][] = [
     [
         [
             {
-                body: "SubletGuard has been instrumental in ensuring our properties remain compliant and secure. Their platform is easy to use and highly effective.",
+                body: "bettereply has been instrumental in ensuring our email communications are efficient and effective. Their platform is easy to use and highly effective.",
                 author: {
                     name: "Leslie",
                     handle: "Urban Nest Realty",
@@ -43,20 +41,11 @@ export const testimonials: Testimonial[][][] = [
                         "https://utfs.io/f/e9364a67-9c41-421d-bb94-b7101f618d1f-1uet02.png",
                 },
             },
-            {
-                body: "We've significantly reduced the risk of unauthorized subleasing thanks to SubletGuard. Their service is invaluable for property management.",
-                author: {
-                    name: "Jose",
-                    handle: "Vista Realty Group",
-                    imageUrl:
-                        "https://utfs.io/f/5437bc02-991a-4c44-8492-9c35d696c3f5-e00rau.png",
-                },
-            },
             // More testimonials...
         ],
         [
             {
-                body: "SubletGuard has revolutionized how we handle subleasing issues. It's a must-have for any property manager serious about compliance.",
+                body: "bettereply has revolutionized how we handle email responses. It's a must-have for any business serious about customer engagement.",
                 author: {
                     name: "Jessica",
                     handle: "Walton Properties LLC",
@@ -70,7 +59,7 @@ export const testimonials: Testimonial[][][] = [
     [
         [
             {
-                body: "Thanks to SubletGuard, managing our rental properties has become much smoother. Their platform ensures we stay compliant without hassle.",
+                body: "Thanks to bettereply, managing our email communications has become much smoother. Their platform ensures we stay responsive without hassle.",
                 author: {
                     name: "Tom",
                     handle: "Greenfield Estates",
@@ -78,12 +67,11 @@ export const testimonials: Testimonial[][][] = [
                         "https://utfs.io/f/e6ed2635-d6e0-4acf-abb9-3466525c819e-5hoeg9.jpg",
                 },
             },
-
             // More testimonials...
         ],
         [
             {
-                body: "SubletGuard has been a game-changer for us. It's simplified our operations and ensured our properties are always in compliance.",
+                body: "bettereply has been a game-changer for us. It's simplified our operations and ensured our communications are always timely.",
                 author: {
                     name: "Leonard",
                     handle: "Horizon Haven Realty",
@@ -91,18 +79,7 @@ export const testimonials: Testimonial[][][] = [
                         "https://utfs.io/f/291a4aa7-892f-4eb3-be3b-0661fbc665c7-i5ejyz.jpg",
                 },
             },
-            {
-                body: "Thanks to SubletGuard, managing our rental properties has become much smoother. Their platform ensures we stay compliant without hassle.",
-                author: {
-                    name: "Eric",
-                    handle: "Harmony Real Estate",
-                    imageUrl:
-                        "https://utfs.io/f/41f0eac5-9949-47b0-9bc1-2d39fe892775-biu686.png",
-                },
-            },
             // More testimonials...
         ],
     ],
 ];
-
-

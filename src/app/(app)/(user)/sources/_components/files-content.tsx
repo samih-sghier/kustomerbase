@@ -168,7 +168,7 @@ export function FileUploadForm({ source, subscription, stats }: { source: any, s
     const pdfjs = usePDFJS();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
-    
+
     const {
         textInputChars,
         linkChars,
@@ -182,7 +182,6 @@ export function FileUploadForm({ source, subscription, stats }: { source: any, s
         lastTrainedDate
     } = stats;
     const processFile = useCallback(async (file: File) => {
-        toast.info("Processing " + file.name);
 
         try {
             let text = '';
@@ -312,7 +311,7 @@ export function FileUploadForm({ source, subscription, stats }: { source: any, s
         <>
             <Card>
                 <CardContent className="flex items-center gap-4">
-                    <div className="bg-white p-6 rounded-lg w-full max-w-lg">
+                    <div className="p-6 rounded-lg w-full max-w-lg">
                         <div className="mb-4">
                             <h2 className="text-xl font-semibold">Upload and Convert Documents</h2>
                             <p className="text-sm text-muted-foreground">
@@ -340,9 +339,9 @@ export function FileUploadForm({ source, subscription, stats }: { source: any, s
                         </div>
 
                         <div className="mt-7">
-                            <div className="relative flex items-center justify-center mb-4">
+                            <div className="relative flex items-center justify-center mb-5">
                                 <div className="border-t border-gray-300 w-full"></div>
-                                <span className="absolute bg-white px-2 text-sm text-muted-foreground">Attached Files: </span>
+                                <span className="absolute px-2 text-sm text-muted-foreground">Attached Files: </span>
                             </div>
                             {convertedData && convertedData.size > 0 ? (
                                 <ul className="list-disc pl-5">

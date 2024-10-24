@@ -41,6 +41,16 @@ const nextConfig = {
     },
     // This is required to support PostHog trailing slash API requests
     skipTrailingSlashRedirect: true,
+    webpack: (config) => {
+        // See https://webpack.js.org/configuration/resolve/#resolvealias
+        config.resolve.alias = {
+            ...config.resolve.alias,
+            sharp$: false,
+            "onnxruntime-node$": false,
+        };
+        return config;
+    },
+
 };
 
 export default withMDX(nextConfig);

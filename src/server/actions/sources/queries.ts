@@ -58,10 +58,10 @@ export async function getSourceStatsQuery() {
         qaCount: 0,
         qaChars: 0,
         totalChars: 0,
-        trainChatbot: true,
-        lastTrainedDate: orgSources.lastTrained
-        
-
+        mailCount: 0,
+        mailChars: 0,
+        lastTrainedDate: orgSources.lastTrained,
+        updatedOn: orgSources.updatedOn
     };
 
     // Count documents
@@ -82,10 +82,14 @@ export async function getSourceStatsQuery() {
         stats.qaChars = Object.entries(orgSources.qa_source).reduce((sum, [q, a]) => sum + q.length + a.length, 0);
     }
 
-    stats.trainChatbot = !orgSources.lastTrained || !orgSources.updatedOn || orgSources.updatedOn > orgSources.lastTrained;
+    if (orgSources.mail_source) {
+        stats.mailCount = Object.keys(orgSources.mail_source).length;
+        stats.mailChars = Object.values(orgSources.mail_source).reduce((sum, text) => sum + text.length, 0);
+    }
+
 
     // Calculate total
-    stats.totalChars = stats.fileChars + stats.textInputChars + stats.linkChars + stats.qaChars;
+    stats.totalChars = stats.fileChars + stats.textInputChars + stats.linkChars + stats.qaChars + stats.mailChars;
 
     return stats;
 }

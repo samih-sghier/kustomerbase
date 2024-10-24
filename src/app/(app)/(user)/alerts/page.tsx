@@ -19,12 +19,11 @@ const searchParamsSchema = z.object({
     page: z.coerce.number().default(1),
     per_page: z.coerce.number().default(10),
     sort: z.string().optional(),
-    email: z.string().optional(),
-    alertType: z.string().optional(), // Changed from 'status' to 'alertType'
-    tenantName: z.string().optional(),
-    address: z.string().optional(),
-    title: z.string().optional(),
-    organizationId: z.string().optional()
+    summary: z.string().optional(),
+    subject: z.string().optional(),
+    account: z.string().optional(),
+    recipient: z.string().optional(),
+    archived: z.boolean().optional()
 });
 
 export default async function AlertsPage({ searchParams }: AlertsPageProps) {
@@ -44,7 +43,7 @@ export default async function AlertsPage({ searchParams }: AlertsPageProps) {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
-                                All Alerts
+                                All Escalations
                             </CardTitle>
                             <BellIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
@@ -58,7 +57,7 @@ export default async function AlertsPage({ searchParams }: AlertsPageProps) {
                     <Card >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
-                                New Alerts
+                                New Escalations
                             </CardTitle>
                             <InboxIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
@@ -73,7 +72,7 @@ export default async function AlertsPage({ searchParams }: AlertsPageProps) {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
-                                Archived Alerts
+                                Archived Escalations
                             </CardTitle>
                             <ArchiveIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>

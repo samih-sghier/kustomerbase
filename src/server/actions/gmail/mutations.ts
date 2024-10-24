@@ -360,6 +360,7 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
                 refresh_token: connectedData.refresh_token,
                 access_token: connectedData.access_token,
                 expires_at: connectedData.expires_at,
+                isActive: true,
                 // Update any other fields as needed
             })
             .where(and(
@@ -374,6 +375,7 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
             .values({
                 ...connectedData,
                 orgId: connectedData.orgId ?? currentOrg?.id,
+                isActive: true,
             })
             .execute();
     }

@@ -27,18 +27,12 @@ export const navigation: NavigationItem[] = [
         id: "pricing",
         href: siteUrls.pricing,
         label: "Pricing",
-        badge: "Beta",
     },
-    {
-        id: "support",
-        href: siteUrls.support,
-        label: "Support",
-    },
-    {
-        id: "blogs",
-        href: siteUrls.blogs,
-        label: "Blogs",
-    },
+    // {
+    //     id: "blogs",
+    //     href: siteUrls.blogs,
+    //     label: "Blogs",
+    // },
     {
         id: "docs",
         href: siteUrls.docs,
@@ -48,6 +42,24 @@ export const navigation: NavigationItem[] = [
         id: "changelogs",
         href: siteUrls.changelogs,
         label: "Changelogs",
+    },
+];
+
+export const usefulLinks: NavigationItem[] = [
+    {
+        id: "blogs",
+        href: siteUrls.blogs,
+        label: "Blog",
+    },
+    {
+        id: "support",
+        href: siteUrls.support,
+        label: "Support",
+    },
+    {
+        id: "contact",
+        href: siteUrls.contact,
+        label: "Contact",
     },
 ];
 
@@ -63,8 +75,8 @@ export const companyFooterNavigation: NavigationItem[] = [
         label: "Terms of Service",
     },
     {
-        id: "contact",
-        href: siteUrls.contact,
-        label: "Contact",
-    }
+        id: "careers",
+        href: 'https://x.com/sghierr',
+        label: "Careers",
+    },
 ];

@@ -7,24 +7,22 @@
 export const siteConfig = {
     name: "bettereply.",
     description:
-        "Safeguard your properties with SubletGuard! Detect unauthorized subleasing and keep your rentals secure with our advanced monitoring system.",
+        "Enhance your email management with bettereply! Automate responses and streamline customer interactions while focusing on what matters most.",
     orgImage:
         "https://utfs.io/f/30ef05da-6556-4b2f-9428-bf5b706f3bd4-xt0cyj.png",
-    contactEmail: "hello@subletguard.com",
-    noReplyEmail: "no-reply@subletguard.com",
+    contactEmail: "hello@bettereply.com",
+    noReplyEmail: "no-reply@bettereply.com",
     catchyPhrases: [
-        "Protect Your Rentals, Detect Unauthorized Subleases!",
-        "Stay One Step Ahead with SubletGuard!",
-        "Your Shield Against Unapproved Subletting!",
-        "Monitor, Detect, Secure – SubletGuard!",
-        "Keep Your Properties Safe with SubletGuard!",
-        "The Ultimate Defense Against Unauthorized Subleasing!",
-        "Guard Your Leases with Confidence!",
-        "Real-Time Detection for Real Peace of Mind!",
-        "Stay in Control of Your Rentals!",
-        "Prevent Unauthorized Subleases with Ease!",
-        "Sublease Alert",
-
+        "Transform Your Inbox with bettereply!",
+        "Automate Responses, Elevate Customer Experience!",
+        "Your Intelligent Email Assistant!",
+        "Focus on What Matters – Let AI Handle the Rest!",
+        "Stay Ahead with Smart Email Management!",
+        "Effortless Communication with bettereply!",
+        "Your Partner in Email Efficiency!",
+        "Real-Time Support, Just a Click Away!",
+        "Simplify Your Email Workflow!",
+        "Empower Your Team with AI-Driven Insights!",
+        "Experience the Future of Email Management!",
     ]
 } as const;
-

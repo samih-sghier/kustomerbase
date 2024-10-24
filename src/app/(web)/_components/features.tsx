@@ -8,13 +8,13 @@ export default function Features() {
         <section className="flex flex-col items-center justify-center gap-20 py-20">
             <div className="grid gap-3">
                 <h2 className="text-center text-2xl font-bold text-foreground sm:text-3xl">
-                    Subletguard Features
+                    AI-Powered Features
                 </h2>
                 <Balancer
                     as="p"
                     className="max-w-2xl text-center text-base text-muted-foreground sm:text-xl"
                 >
-                    Subletguard features are designed to help you prevent illegal subleasing, track property compliance, and manage tenant activities effectively.
+                    Our AI-driven features are designed to enhance customer interactions, streamline communication, and provide accurate responses to queries.
                 </Balancer>
             </div>
             <div className="grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">

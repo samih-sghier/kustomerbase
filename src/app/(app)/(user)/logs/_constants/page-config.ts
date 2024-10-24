@@ -1,4 +1,5 @@
 export const emailLogsPageConfig = {
-    title: "Watch List",
-    description: "Create and manage a watch list for your properties and tenants.",
+    title: "Email Logs",
+    description: "View logs of all email communications of your connected accounts.",
 } as const;
+

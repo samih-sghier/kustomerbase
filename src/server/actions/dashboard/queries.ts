@@ -1,6 +1,6 @@
 import { db } from "@/server/db";
-import { property, sgAlert, subscriptions, users, membersToOrganizations, emailLogs, connected } from "@/server/db/schema";
-import { eq, count, and } from "drizzle-orm";
+import { sgAlert, subscriptions, users, membersToOrganizations, emailLogs, connected, sources, } from "@/server/db/schema";
+import { eq, count, and, isNotNull, or, ne } from "drizzle-orm";
 import { protectedProcedure } from "@/server/procedures";
 import { getOrganizations } from "@/server/actions/organization/queries";
 
@@ -17,13 +17,10 @@ export async function getDashboardInfo() {
             activeUsersGrowth: 0,
             connectedEmails: 0,
             connectedEmailsGrowth: 0,
-            inquiries: 0,
-            inquiriesGrowth: 0,
-            avgResponseTime: "0m",
-            avgResponseTimeChange: 0,
+            sources: 0,
+            scheduledEmails: 0,
+            // avgResponseTimeChange: 0,
             alerts: 0,
-            emailRules: 0,
-            emailRulesGrowth: 0,
             apiUsage: 0,
             apiUsageChange: 0
         };
@@ -52,13 +49,28 @@ export async function getDashboardInfo() {
         .execute()
         .then(res => res[0]?.count ?? 0);
 
-    const automatedResponses = await db
+    const sourcesNotNull = await db
         .select({ count: count() })
-        .from(emailLogs)
-        .where(and(
-            eq(emailLogs.orgId, organizationId),
-            eq(emailLogs.status, 'sent')
-        ))
+        .from(sources)
+        .where(
+            and(
+                eq(sources.orgId, organizationId), // Ensure correct organization
+                or(
+                    isNotNull(sources.qa_source), // JSON is not null (non-empty check to be handled logically)
+                    and(isNotNull(sources.text_source), ne(sources.text_source, '')), // Ensure text is not empty
+                    isNotNull(sources.mail_source), // JSON is not null (non-empty check to be handled logically)
+                    isNotNull(sources.website_data), // JSON is not null (non-empty check to be handled logically)
+                    isNotNull(sources.documents) // JSON is not null (non-empty check to be handled logically)
+                )
+            )
+        )
+        .execute()
+        .then(res => res[0]?.count ?? 0);
+
+        const alerts = await db
+        .select({ count: count() })
+        .from(sgAlert)
+        .where(eq(sgAlert.organizationId, organizationId))
         .execute()
         .then(res => res[0]?.count ?? 0);
 
@@ -66,18 +78,14 @@ export async function getDashboardInfo() {
 
     return {
         emailsSent,
-        emailsSentGrowth: 5, // Placeholder, implement actual growth calculation
+        emailsSentGrowth: 0, // Placeholder, implement actual growth calculation
         activeUsers,
-        activeUsersGrowth: 3, // Placeholder
+        activeUsersGrowth: 0, // Placeholder
         connectedEmails,
-        connectedEmailsGrowth: 2, // Placeholder
-        inquiries: 10, // Placeholder
-        inquiriesGrowth: 2, // Placeholder
-        avgResponseTime: "5m", // Placeholder
-        avgResponseTimeChange: -2, // Placeholder
-        alerts: 0, // Placeholder
-        emailRules: 15, // Placeholder
-        emailRulesGrowth: 2, // Placeholder
+        connectedEmailsGrowth: 0, // Placeholder
+        sources: sourcesNotNull, // Placeholder
+        scheduledEmails: 0, // Placeholder
+        alerts, // Placeholder
         apiUsage: 1000, // Placeholder
         apiUsageChange: 5 // Placeholder
     };

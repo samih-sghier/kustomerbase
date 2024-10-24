@@ -120,7 +120,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             // Check link count limit
             const maxLinks = Number(subscription.links);
             const currentLinkCount = links.length;
-            
+
             if (currentLinkCount >= maxLinks) {
                 toast.error(`You have reached the maximum number of links allowed for your plan (${maxLinks}).`);
                 return;
@@ -146,7 +146,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                 const maxChars = subscription.charactersPerChatbot;
                 const currentChars = totalChars;
                 const remainingChars = Math.max(0, maxChars - currentChars);
-                
+
                 let truncatedText = text;
                 if (text.length > remainingChars) {
                     truncatedText = text.slice(0, remainingChars);
@@ -209,14 +209,14 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                     const response = await fetch(`https://r.jina.ai/${link.url}`);
                     const text = await response.text();
                     completedLinks += 1;
-                    
+
                     const remainingChars = Math.max(0, maxChars - (initialTotalChars + totalNewChars));
                     let truncatedText = text;
                     if (text.length > remainingChars) {
                         truncatedText = text.slice(0, remainingChars);
                         toast.warning(`Some content was truncated to fit within your plan's character limit.`);
                     }
-                    
+
                     totalNewChars += truncatedText.length;
                     setProgress(Math.round((completedLinks / totalLinks) * 100));
 
@@ -254,7 +254,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
 
         try {
             const linkToFetch = type === 'page' ? crawlLink : sitemapLink;
-            
+
             if (type === 'page') {
                 urlSchema.parse(linkToFetch);
             } else if (type === 'sitemap') {
@@ -358,7 +358,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             {/* OR Divider */}
             <div className="relative flex items-center justify-center">
                 <div className="border-t border-gray-300 w-full"></div>
-                <span className="absolute bg-white px-2 text-sm text-muted-foreground">Or</span>
+                <span className="absolute px-2 text-sm text-muted-foreground">Or</span>
             </div>
 
             {/* Sitemap Section */}
@@ -383,7 +383,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             {/* OR Divider */}
             <div className="relative flex items-center justify-center">
                 <div className="border-t border-gray-300 w-full"></div>
-                <span className="absolute bg-white px-2 text-sm text-muted-foreground">Included Links</span>
+                <span className="absolute px-2 text-sm text-muted-foreground">Included Links</span>
             </div>
 
             {/* Included Links Section */}
@@ -425,8 +425,14 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                     {links.map((link) => (
                         <div key={link.id} className="flex items-center bg-gray-100 p-2 rounded-md">
                             <div className="flex items-center space-x-2 flex-grow">
-                                <Badge>Link</Badge>
-                                <p className="text-sm flex-grow">{link.url}</p>
+                                {link.llmData ? (
+                                    <Badge variant="success">Trained</Badge>
+                                ) : fetching || isAddingLink ? (
+                                    <Badge variant="info">Training...</Badge>
+                                ) : (
+                                    <Badge variant="destructive">Error</Badge>
+                                )}
+                                <p className="text-m text-muted-foreground flex-grow">{link.url}</p>
                                 {link.llmData && (
                                     <p className="text-xs text-muted-foreground ml-4">
                                         {link.llmData.length} chars

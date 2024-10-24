@@ -150,7 +150,7 @@ const navigation: SidebarNavItems[] = [
             //     href: siteUrls.dashboard.logs,
             // },
             {
-                label: "Alerts",
+                label: "Escalations",
                 icon: AlertOctagonIcon,
                 href: siteUrls.dashboard.alerts,
             },

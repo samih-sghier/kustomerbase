@@ -71,12 +71,12 @@ export default async function UserTenantPage() {
                                             emailConnected.isActive
                                                 ? "success"
                                                 : !emailConnected.isActive
-                                                    ? "secondary"
+                                                    ? "destructive"
                                                     : "info"
                                         }
                                         className="w-fit"
                                     >
-                                        {emailConnected.isActive ? "active" : "reconnect"}
+                                        {emailConnected.isActive ? "active" : "disconnected"}
                                     </Badge>
                                 </div>
                             </CardContent>

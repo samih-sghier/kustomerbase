@@ -1,207 +1,220 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/ui/icons";
-import { signIn, signOut } from "next-auth/react";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { toast } from "sonner";
-import {
-    DialogFooter,
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from "@/components/ui/dialog";
-import { Cross2Icon } from "@radix-ui/react-icons";
+import { updateMailSourceField, removeMailSourceField } from '@/server/actions/sources/mutations';
 
-// Types for better readability
-type Provider = "google" | "outlook";
-type Account = string;
+// Update the schema
+const mailSchema = z.object({
+    mailSamples: z.array(z.object({
+        description: z.string().min(1, "Brief description is required"),
+        value: z.string().min(1, "Email value is required"),
+    })),
+});
 
-const mockAccounts = {
-    google: ["support@subletguard.com"] as Account[],
-    outlook: ["sales@yo.com"] as Account[],
-};
+type MailSample = z.infer<typeof mailSchema>['mailSamples'][number];
 
-export function MailContent() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [accounts, setAccounts] = useState(mockAccounts);
-    const [isOpen, setIsOpen] = useState(false);
-    const [actionType, setActionType] = useState<'connect' | 'disconnect' | null>(null);
-    const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
-    const [provider, setProvider] = useState<Provider | null>(null);
+interface Source {
+    mail_source: Record<string, string> | null;
+}
 
-    const handleConnect = async (provider: Provider) => {
-        setIsLoading(true);
+export function MailContent({ source, stats, subscription }: { source: Source, stats: any, subscription: any }) {
+    const [loading, setLoading] = useState(false);
+    const [removedKeys, setRemovedKeys] = useState<Set<string>>(new Set());
+
+    // Transform source.mail_source into the format expected by the form
+    const transformedInitialData = React.useMemo(() => {
+        if (!source?.mail_source) {
+            return [];
+        }
+
+        return Object.entries(source.mail_source).map(([description, value]) => ({
+            key: description,
+            description,
+            value
+        }));
+    }, [source?.mail_source]);
+
+    // Initialize the form with validation schema
+    const form = useForm<z.infer<typeof mailSchema>>({
+        resolver: zodResolver(mailSchema),
+        defaultValues: {
+            mailSamples: transformedInitialData,
+        },
+    });
+
+    // Initialize form with existing data on component mount
+    useEffect(() => {
+        form.reset({ mailSamples: transformedInitialData });
+    }, [transformedInitialData, form]);
+
+    const { fields, append, remove } = useFieldArray({
+        control: form.control,
+        name: "mailSamples",
+    });
+
+    const onSubmit = async (data: z.infer<typeof mailSchema>) => {
+        setLoading(true);
         try {
-            // Simulate account connection (replace with real OAuth flow)
-            const accountInfo = `user${Math.floor(Math.random() * 100)}@${provider}.com`;
-            await signIn(provider, {
-                callbackUrl: "/dashboard",
-                redirect: true,
+            if (!data.mailSamples || !Array.isArray(data.mailSamples)) {
+                throw new Error('Invalid form data: mailSamples is not an array');
+            }
+
+            const mailSourceUpdate: Record<string, string> = {};
+            let newMailChars = 0;
+
+            data.mailSamples.forEach((sample, index) => {
+                if (!sample || typeof sample !== 'object') {
+                    console.error(`Invalid sample at index ${index}:`, sample);
+                    return; // Skip this invalid sample
+                }
+
+                const { description, value } = sample;
+
+                if (typeof description !== 'string' || typeof value !== 'string') {
+                    console.error(`Invalid description or value at index ${index}:`, { description, value });
+                    return; // Skip this invalid sample
+                }
+
+                mailSourceUpdate[description] = value;
+                newMailChars += description.length + value.length;
             });
-            setAccounts(prev => ({
-                ...prev,
-                [provider]: [...prev[provider], accountInfo]
-            }));
-            toast.success(`Connected ${provider} account.`);
+
+
+            // Check if stats and subscription are defined
+            if (stats && subscription) {
+                // Check character limit
+                const currentTotalChars = stats.totalChars || 0;
+                const currentMailChars = stats.mailChars || 0;
+                const newTotalChars = (currentTotalChars - currentMailChars) + newMailChars;
+                
+                if (newTotalChars > subscription.charactersPerChatbot) {
+                    toast.error(`Mail content exceeds the character limit for your subscription. Current total: ${currentTotalChars}, New mail total: ${newMailChars}, Limit: ${subscription.charactersPerChatbot}`);
+                    setLoading(false);
+                    return;
+                }
+            } else {
+                console.warn('Stats or subscription data is missing. Skipping character limit check.');
+            }
+
+            console.log('Updating mail source field:', mailSourceUpdate);
+            const updateResult = await updateMailSourceField(mailSourceUpdate);
+            console.log('Update result:', updateResult);
+
+            // Process removals
+            if (removedKeys.size > 0) {
+                console.log('Removing keys:', Array.from(removedKeys));
+                const removeResult = await removeMailSourceField(removedKeys);
+                console.log('Remove result:', removeResult);
+                setRemovedKeys(new Set());
+            }
+
+            toast.success("Sample emails updated successfully!");
         } catch (error) {
-            toast.error("An error occurred. Please try again later.");
+            console.error("Detailed error updating sample emails:", error);
+            if (error instanceof Error) {
+                toast.error(`Error updating sample emails: ${error.message}`);
+            } else {
+                toast.error("An unexpected error occurred while updating sample emails.");
+            }
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
-    const handleDisconnect = async () => {
-        if (!provider || !selectedAccount) return;
+    const handleRemove = (index: number, description: string) => {
+        // Update removedKeys state
+        setRemovedKeys(prev => {
+            const updated = new Set(prev);
+            updated.add(description); 
+            return updated;
+        });
 
-        setIsLoading(true);
-        try {
-            await signOut({ redirect: false });
-            setAccounts(prev => ({
-                ...prev,
-                [provider]: prev[provider].filter(acc => acc !== selectedAccount)
-            }));
-            toast.success(`${selectedAccount} disconnected successfully.`);
-        } catch (error) {
-            toast.error("An error occurred. Please try again later.");
-        } finally {
-            setIsLoading(false);
-            setIsOpen(false);
-        }
-    };
-
-    const ProviderIcon = ({ provider }: { provider: Provider }) => {
-        switch (provider) {
-            case "google":
-                return <Icons.google className="h-4 w-4 fill-foreground" />;
-            case "outlook":
-                return <Icons.microsoft className="h-4 w-4 fill-foreground" />;
-            default:
-                return null;
-        }
-    };
-
-    const CombinedAccountList = () => {
-        const combinedProviders = [
-            ...accounts.google.map(account => ({ account, provider: 'google' })),
-            ...accounts.outlook.map(account => ({ account, provider: 'outlook' }))
-        ];
-
-        return (
-            <div className="flex flex-col space-y-2 mt-4">
-                <p className="text-md font-medium">Connected Accounts:</p>
-                {combinedProviders.length > 0 ? (
-                    combinedProviders.map(({ account, provider }, index) => (
-                        <div key={index} className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <ProviderIcon provider={provider} />
-                                <span>{account}</span>
-                            </div>
-                            <Button
-                                onClick={() => {
-                                    setSelectedAccount(account);
-                                    setProvider(provider);
-                                    setActionType('disconnect');
-                                    setIsOpen(true);
-                                }}
-                                variant="outline"
-                                className="w-auto gap-2 text-red-500"
-                                disabled={isLoading}
-                            >
-                                <Cross2Icon className="h-4 w-4 fill-red-500" />
-                                <span>Disconnect</span>
-                            </Button>
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-sm text-gray-500">No accounts connected.</p>
-                )}
-            </div>
-        );
+        // Remove item from the form array
+        remove(index);
+        removeMailSourceField(new Set([description]));
     };
 
     return (
-        <div className="flex flex-col space-y-4">
-            <p className="text-lg font-semibold mb-4">Manage Your Email Services</p>
-
-            <div className="flex flex-col space-y-2">
-                <Button
-                    onClick={() => handleConnect('google')}
-                    variant="outline"
-                    className="w-full gap-2"
-                    disabled={isLoading}
-                >
-                    <Icons.google className="h-4 w-4 fill-foreground" />
-                    <span>Connect Gmail</span>
-                </Button>
-
-                {/* <Button
-                    onClick={() => handleConnect('outlook')}
-                    variant="outline"
-                    className="w-full gap-2"
-                    disabled={isLoading}
-                >
-                    <Icons.microsoft className="h-4 w-4 fill-foreground" />
-                    <span>Connect Outlook</span>
-                </Button> */}
+        <div className="space-y-6">
+            <div className="flex justify-between items-center mb-4">
+                <p className="text-lg font-semibold">Sample Emails for Training</p>
+                <div className="flex space-x-2">
+                    <Button
+                        type="button"
+                        onClick={() => append({ key: `new_${Date.now()}`, subject: "", value: "" })}
+                        variant="outline"
+                    >
+                        + Add Sample Email
+                    </Button>
+                    <Button type="submit" form="mail-form" disabled={loading}>
+                        {loading ? "Processing..." : "Save Changes"}
+                    </Button>
+                </div>
             </div>
 
-            {/* Combined list of connected accounts */}
-            <CombinedAccountList />
-
-            {/* Shared Confirmation Dialog */}
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
-                    <Button type="button" className="hidden">Open Dialog</Button>
-                </DialogTrigger>
-                <DialogContent className="max-h-screen overflow-auto p-6 bg-white rounded-lg shadow-lg">
-                    <DialogHeader>
-                        <DialogTitle className="text-lg font-semibold mb-4">
-                            {actionType === 'disconnect' ? 'Confirm Disconnection' : 'Connect Account'}
-                        </DialogTitle>
-                        <DialogDescription className="mb-4">
-                            {actionType === 'disconnect'
-                                ? `Are you sure you want to disconnect ${selectedAccount} from ${provider}?`
-                                : 'Please follow the steps to connect your account.'}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        {actionType === 'disconnect' ? (
-                            <>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => setIsOpen(false)}
-                                    disabled={isLoading}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="button"
-                                    onClick={handleDisconnect}
-                                    disabled={isLoading}
-                                >
-                                    Confirm
-                                </Button>
-                            </>
-                        ) : (
+            <Form {...form}>
+                <form
+                    id="mail-form"
+                    onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                        console.error('Form validation errors:', errors);
+                    })}
+                    className="space-y-4"
+                >
+                    {fields.map((field, index) => (
+                        <div key={field.id} className="space-y-4 p-4 border rounded-md">
+                            <FormField
+                                control={form.control}
+                                name={`mailSamples.${index}.description`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Brief Description</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter brief description of the email..."
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name={`mailSamples.${index}.value`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Email Value</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder="Enter email value..."
+                                                {...field}
+                                                rows={5}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <Button
                                 type="button"
-                                onClick={() => {
-                                    if (provider) handleConnect(provider);
-                                    setIsOpen(false);
-                                }}
-                                disabled={isLoading}
+                                onClick={() => handleRemove(index, fields[index].description)}
+                                variant="outline"
+                                className="text-red-600"
                             >
-                                Connect
+                                Remove
                             </Button>
-                        )}
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                        </div>
+                    ))}
+                </form>
+            </Form>
         </div>
     );
 }

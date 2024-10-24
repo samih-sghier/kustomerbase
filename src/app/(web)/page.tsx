@@ -26,7 +26,7 @@ export default async function HomePage() {
         <WebPageWrapper>
             <WebPageHeader
                 badge="Focus on what matters"
-                title={`Custom ChatGPT for your business`}
+                title={`Custom ChatGPT for your Inbox`}
             >
                 <Balancer
                     as="p"
@@ -51,7 +51,7 @@ export default async function HomePage() {
                             className: "bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300"
                         })}
                     >
-                        Build your bot 🤖
+                        Automate your emails 🤖
                         <ArrowRightIcon className="ml-1 h-4 w-4" />
                     </Link>
 

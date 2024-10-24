@@ -54,7 +54,6 @@ export function EmailLogsTable({ emailLogsPromise }: EmailLogsTableProps) {
         subject: item.subject || "",
         content: item.content,
         status: item.status,
-        content: item.content || "",
         messageId: item.messageId || "",
         createdAt: item.createdAt,
         updatedOn: item.updatedOn,

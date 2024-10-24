@@ -1,4 +1,4 @@
 export const alertsPageConfig = {
-    title: "Alerts",
-    description: "Track and respond to illegal subletting alerts.",
+    title: "Escalations",
+    description: "Track and respond to email escalations.",
 } as const;
