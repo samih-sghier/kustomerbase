@@ -16,7 +16,7 @@ import { ArrowRightIcon } from "lucide-react";
 import HowItWorks from "@/app/(web)/_components/howitworks";
 
 export const metadata: Metadata = {
-    title: "Protect Your Rentals, Detect Unauthorized Subleases!",
+    title: "Custom ChatGPT for your data",
 };
 
 export const dynamic = "force-static";
@@ -61,7 +61,7 @@ export default async function HomePage() {
             <div className="-m-2 w-full rounded-xl bg-foreground/5 p-2 ring-1 ring-inset ring-foreground/10 lg:-m-4 lg:rounded-2xl lg:p-4">
                 <div className="relative aspect-video w-full rounded-md bg-muted">
                     <Image
-                        src="https://utfs.io/f/02eb2bb2-9910-422d-bc56-1d7e8dcac1ac-5w20ij.png"
+                        src="https://utfs.io/f/z1SQx2HK8PtsaFzGPt8VkwuCAY9BKDHeQtXhMpfi8qSyO5xl"
                         alt="dashboard preview"
                         fill
                         className="block rounded-md border border-border dark:hidden"
@@ -69,7 +69,7 @@ export default async function HomePage() {
                     />
 
                     <Image
-                        src="https://utfs.io/f/77743ecd-cb78-4a3b-b07e-4516baf51827-i57epb.png"
+                        src="https://utfs.io/f/z1SQx2HK8PtsY15Q8uvaYyIlbV8gfnFD97GK6rEtwcUpWJx5"
                         alt="dashboard preview"
                         fill
                         className="hidden rounded-md border border-border dark:block"

@@ -45,14 +45,10 @@ export async function getSourceStatsQuery() {
         where: eq(sources.orgId, currentOrg.id),
     });
 
-    if (!orgSources) {
-        throw new Error("No sources found for this organization");
-    }
-
     const stats = {
         fileCount: 0,
         fileChars: 0,
-        textInputChars: orgSources.text_source?.length || 0,
+        textInputChars: orgSources?.text_source?.length || 0,
         linkCount: 0,
         linkChars: 0,
         qaCount: 0,
@@ -60,29 +56,29 @@ export async function getSourceStatsQuery() {
         totalChars: 0,
         mailCount: 0,
         mailChars: 0,
-        lastTrainedDate: orgSources.lastTrained,
-        updatedOn: orgSources.updatedOn
+        lastTrainedDate: orgSources?.lastTrained,
+        updatedOn: orgSources?.updatedOn
     };
 
     // Count documents
-    if (orgSources.documents) {
+    if (orgSources?.documents) {
         stats.fileCount = Object.keys(orgSources.documents).length;
         stats.fileChars = Object.values(orgSources.documents).reduce((sum, text) => sum + text.length, 0);
     }
 
     // Count website data
-    if (orgSources.website_data) {
+    if (orgSources?.website_data) {
         stats.linkCount = Object.keys(orgSources.website_data).length;
         stats.linkChars = Object.values(orgSources.website_data).reduce((sum, text) => sum + text.length, 0);
     }
 
     // Count Q&A
-    if (orgSources.qa_source) {
+    if (orgSources?.qa_source) {
         stats.qaCount = Object.keys(orgSources.qa_source).length;
         stats.qaChars = Object.entries(orgSources.qa_source).reduce((sum, [q, a]) => sum + q.length + a.length, 0);
     }
 
-    if (orgSources.mail_source) {
+    if (orgSources?.mail_source) {
         stats.mailCount = Object.keys(orgSources.mail_source).length;
         stats.mailChars = Object.values(orgSources.mail_source).reduce((sum, text) => sum + text.length, 0);
     }

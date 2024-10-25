@@ -1,11 +1,15 @@
-import { Montserrat, Open_Sans } from "next/font/google";
+import { Inter, Bricolage_Grotesque } from "next/font/google";
 
-export const fontSans = Montserrat({
+export const fontSans = Inter({
     subsets: ["latin"],
     variable: "--font-sans",
+    display: "swap", // Ensures fallback is shown while custom font loads
+    fallback: ["sans-serif"],
 });
 
-export const fontHeading = Open_Sans({
+export const fontHeading = Bricolage_Grotesque({
     subsets: ["latin"],
     variable: "--font-heading",
+    display: "swap",
+    fallback: ["sans-serif"],
 });

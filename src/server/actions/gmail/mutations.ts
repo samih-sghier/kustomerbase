@@ -18,7 +18,7 @@ import { count } from 'console';
 // Replace these with your own credentials
 const CLIENT_ID = env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = env.GOOGLE_CLIENT_SECRET;
-const REDIRECT_URI = "http://localhost:3000/api/gmail/authorize";
+const REDIRECT_URI = `${env.NEXTAUTH_URL}/api/gmail/authorize`;
 
 const oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 const gmail = google.gmail({ version: 'v1', auth: oauth2Client });

@@ -9,6 +9,7 @@ import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
 import { useMutation } from '@tanstack/react-query';
 import { Icons } from '@/components/ui/icons';
 import { OrgSubscription } from '@/types/org-subscription';
+import { freePricingPlan, pricingPlans } from '@/config/pricing';
 
 // Add a function to make the HTTP request to the correct endpoint
 async function trainLlamaIndexForCurrentOrg() {
@@ -137,7 +138,7 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
                         <p className="text-sm">{formatNumberWithCommas(mailCount)} Mail ({formatNumberWithCommas(mailChars)} chars)</p>
                     )}
                     <p className="text-base font-bold">
-                        {formatNumberWithCommas(totalChars)} / {formatNumberWithCommas(subscription.plan?.charactersPerChatbot)} limit
+                        {formatNumberWithCommas(totalChars)} / {formatNumberWithCommas(subscription ? subscription?.plan?.charactersPerChatbot : freePricingPlan?.charactersPerChatbot)} limit
                     </p>
                 </div>
 

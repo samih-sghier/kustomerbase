@@ -81,7 +81,7 @@ export function WebFooter() {
                             rel="noreferrer"
                         >
                             <Icons.twitter className="h-4 w-4" />
-                            <span className="sr-only">Subletguard twitter</span>
+                            <span className="sr-only">bettereply twitter</span>
                         </Link>
                         <ThemeToggle />
                     </div>

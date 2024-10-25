@@ -7,7 +7,7 @@
 export const siteConfig = {
     name: "bettereply.",
     description:
-        "Enhance your email management with bettereply! Automate responses and streamline customer interactions while focusing on what matters most.",
+        "Custom ChatGPT for your business",
     orgImage:
         "https://utfs.io/f/30ef05da-6556-4b2f-9428-bf5b706f3bd4-xt0cyj.png",
     contactEmail: "hello@bettereply.com",

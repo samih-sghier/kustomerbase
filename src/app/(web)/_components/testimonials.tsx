@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { Icons } from "@/components/ui/icons";
 import { featuredTestimonial, testimonials } from "@/config/testimonials";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +37,9 @@ export function Testimonials() {
                             src={featuredTestimonial.author.logoUrl}
                             alt=""
                         />
+                        <Icons.twitter className="h-5 w-auto flex-none" />
+
+            
                     </figcaption>
                 </figure>
                 {testimonials.map((columnGroup, columnGroupIdx) => (
@@ -79,7 +83,10 @@ export function Testimonials() {
                                                 </div>
                                                 <div className="text-muted-foreground">{`@${testimonial.author.handle}`}</div>
                                             </div>
+                                            <Icons.twitter className="h-3 w-auto flex-none" />
+
                                         </figcaption>
+                                        
                                     </figure>
                                 ))}
                             </div>

@@ -77,6 +77,10 @@ export async function getOrgSubscription() {
             return null;
         }
 
+        if (subscription.status === 'canceled' || (subscription.cancel_at_period_end && subscription.current_period_end < Date.now() / 1000)) {
+            return null; // Return null if the subscription is expired
+        }
+
 
         // const customer = await stripe.customers.retrieve(subscription.customer as string);
 

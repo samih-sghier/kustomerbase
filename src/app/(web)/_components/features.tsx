@@ -2,6 +2,7 @@ import { type Feature, features } from "@/config/features";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Balancer from "react-wrap-balancer";
+import { fontSans, fontHeading } from "@/lib/fonts"; // Importing the fonts
 
 export default function Features() {
     return (
@@ -49,13 +50,13 @@ function FeatureCard({
                     index % 2 === 0 ? "order-1" : "order-2",
                 )}
             >
-                <div className="relative aspect-video w-full rounded-md bg-muted">
+                <div className="relative aspect-video w-full rounded-md bg-muted" style={{ backgroundColor: imageDark && '#1e1e1e' }}>
                     <Image
                         src={image}
                         alt={title}
                         fill
                         className={cn(
-                            "block rounded-md border border-border",
+                            "block rounded-md border border-border object-contain", // Changed to object-contain
                             imageDark && "dark:hidden",
                         )}
                         priority
@@ -66,7 +67,7 @@ function FeatureCard({
                             src={imageDark}
                             alt={title}
                             fill
-                            className="hidden rounded-md border border-border dark:block"
+                            className="hidden rounded-md border border-border dark:block object-contain" // Changed to object-contain
                             priority
                         />
                     )}

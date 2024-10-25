@@ -215,7 +215,7 @@ export const pricingPlans: PricingPlan[] = [
         uniqueFeatures: ["5 chatbots", "3 team members", "Option to choose GPT-4 and GPT-4-Turbo"],
         messageCredits: 10000,
         chatbots: 5,
-        charactersPerChatbot: 11,
+        charactersPerChatbot: 11000000,
         teamMembers: 3,
         links: Infinity,
         priceId: {
@@ -252,3 +252,6 @@ export const pricingPlans: PricingPlan[] = [
         },
     },
 ];
+
+
+export const freePricingPlan = pricingPlans.find(plan => plan.id === pricingIds.free); // Retrieve the free pricing plan
