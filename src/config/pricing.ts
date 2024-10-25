@@ -127,7 +127,7 @@ export const pricingFeatures: PricingFeature[] = [
     },
     {
         id: "14",
-        title: "Remove 'Powered by Chatbase'",
+        title: "Remove 'Powered by bettereply.'",
         includedIn: [pricingIds.unlimited],
     },
     {
@@ -240,7 +240,7 @@ export const pricingPlans: PricingPlan[] = [
         buttonHighlighted: false,
         planLimit: 10,
         usersLimit: 5,
-        uniqueFeatures: ["10 chatbots", "5 team members", "Remove 'Powered by Chatbase'", "Use your own custom domains", "Advanced Analytics"],
+        uniqueFeatures: ["10 chatbots", "5 team members", "Remove 'Powered by bettereply.'", "Use your own custom domains", "Advanced Analytics"],
         messageCredits: 40000,
         chatbots: 10,
         charactersPerChatbot: Infinity,

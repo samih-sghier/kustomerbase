@@ -6,7 +6,7 @@ export default function HowItWorks() {
     const [expandedStep, setExpandedStep] = useState<number>(1); // Default to the first step expanded
 
     const steps = [
-        { number: 1, title: "Import your data", description: "Connect your data sources, upload files, or add a website for crawling, and Chatbase will use all of that data to train your chatbot." },
+        { number: 1, title: "Import your data", description: "Connect your data sources, upload files, or add a website for crawling, and bettereply will use all of that data to train your chatbot." },
         { number: 2, title: "Train the AI", description: "Use the uploaded data to train the AI, ensuring it understands your customer queries and responses." },
         { number: 3, title: "Connect your email account", description: "Link your email account to enable the AI to respond to customer queries directly." },
         { number: 4, title: "Sit back and relax", description: "Once everything is set up, let the AI handle customer queries while you focus on other tasks. You'll only need to address escalations that require your attention." },
