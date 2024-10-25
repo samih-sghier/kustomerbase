@@ -18,13 +18,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                     Unlock the Future with AI
                 </h2>
                 <p className="font-light text-muted-foreground">
-                    Your intelligent assistant is just a login away. Let's get started! 
-                    <Link
-                        href={siteUrls.subletguard}
-                        className="font-medium text-foreground underline underline-offset-4"
-                    >
-                        bettereply.com
-                    </Link>
+                    Your intelligent assistant is just a login away. Let's get started!
                 </p>
             </section>
 

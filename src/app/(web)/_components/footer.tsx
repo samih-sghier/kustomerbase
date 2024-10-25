@@ -29,7 +29,7 @@ export function WebFooter() {
                                     className: "w-6 h-6 fill-primary",
                                 }}
                             />
-                            <span className="sr-only">SubletGuard logo</span>
+                            <span className="sr-only">bettereply logo</span>
                         </Link>
                         <Balancer as="p" className="text-muted-foreground">
                             {siteConfig.description}
@@ -57,7 +57,7 @@ export function WebFooter() {
                             rel="noreferrer"
                         >
                             <Icons.gitHub className="h-4 w-4" />
-                            <span className="sr-only">SubletGuard github</span>
+                            <span className="sr-only">bettereply github</span>
                         </Link> */}
                         {/* <Link
                             href={siteUrls.github}
@@ -69,7 +69,7 @@ export function WebFooter() {
                             rel="noreferrer"
                         >
                             <Icons.instagram className="h-4 w-4" />
-                            <span className="sr-only">Subletguard instagram</span>
+                            <span className="sr-only">bettereply instagram</span>
                         </Link> */}
                         <Link
                             href={siteUrls.twitter}
