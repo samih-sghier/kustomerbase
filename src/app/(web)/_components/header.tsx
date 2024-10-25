@@ -19,7 +19,7 @@ export function WebHeader() {
 
                     <Link href={siteUrls.home}>
                         <Icons.logo />
-                        <span className="sr-only">SubletGuard logo</span>
+                        <span className="sr-only">bettereply logo</span>
                     </Link>
                 </div>
 

@@ -1,4 +1,5 @@
 import { relations, sql } from "drizzle-orm";
+import { bigint } from "drizzle-orm/mysql-core";
 import {
     boolean,
     index,
@@ -400,9 +401,9 @@ export const connected = createTable("connected", {
     isActive: boolean("isActive").default(true),
     expires_at: integer("expires_at"),
     lastOn: timestamp("lastOn", { mode: "date" }),
-    //gmail wathclist
+    //gmail watchlist
     historyId: integer("historyId").notNull(),
-    expiration: integer("expiration"),
+    expiration: timestamp("expiration"),
     lastThreadId: varchar("lastThreadId", { length: 255 }),
     updatedOn: timestamp("updatedOn", { mode: "date" }).defaultNow(),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
@@ -415,7 +416,7 @@ export const connectedInsertSchema = z.object({
     access_token: z.string().min(1, "Access token is required"),
     refresh_token: z.string().min(1, "Refresh token is required"),
     historyId: z.number().int(), // Add expiration as optional
-    expiration: z.number().int().optional(), // Add expiration as optional
+    expiration: z.date().optional(), // Add expiration as optional
     purpose: z.string().optional(),
     isActive: z.boolean().default(true),
     provider: z.string().min(1, "Provider is required"),

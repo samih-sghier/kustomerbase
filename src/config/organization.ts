@@ -1,5 +1,5 @@
 // export all organization related config here
 
 export const orgConfig = {
-    cookieName: "subletguard:current-organization",
+    cookieName: "bettereply:current-organization",
 } as const;
