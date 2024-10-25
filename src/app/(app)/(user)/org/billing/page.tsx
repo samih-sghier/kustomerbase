@@ -2,7 +2,10 @@ import { AvailablePlans } from "@/app/(app)/(user)/org/billing/_components/avail
 import { CurrentPlan } from "@/app/(app)/(user)/org/billing/_components/current-plan";
 import { orgBillingPageConfig } from "@/app/(app)/(user)/org/billing/_constants/page-config";
 import { AppPageShell } from "@/app/(app)/_components/page-shell";
+import { SidebarLoading } from "@/app/(app)/_components/sidebar";
 import { getOrgSubscription } from "@/server/actions/stripe_subscription/query";
+import { Suspense } from "react";
+import OrgBillingLoading from "./loading";
 
 export const dynamic = "force-dynamic";
 

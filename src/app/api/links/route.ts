@@ -127,7 +127,7 @@ async function getLinksFromSitemap(sitemapUrl: string, allLinks: Set<string>): P
       });
     }
   } catch (error) {
-    console.error(`Failed to get sitemap links from ${sitemapUrl}:`, error);
+    console.error(`Failed to get sitemap links from ${sitemapUrl}:` + error?.message);
   }
 }
 

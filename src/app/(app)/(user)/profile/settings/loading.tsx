@@ -1,6 +1,7 @@
 import { AppPageLoading } from "@/app/(app)/_components/page-loading";
 import { profileSettingsPageConfig } from "@/app/(app)/(user)/profile/settings/_constants/page-config";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
 
 export default function ProfileSettingsLoading() {
     return (

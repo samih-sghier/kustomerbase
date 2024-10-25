@@ -4,6 +4,9 @@ import { z } from "zod";
 import { getAllPaginatedEmailLogsQuery } from "@/server/actions/logs/queries";
 import { emailLogsPageConfig } from "./_constants/page-config";
 import { EmailLogsTable } from "./_components/logs-table";
+import { Suspense } from "react";
+import { SidebarLoading } from "../../_components/sidebar";
+import EmailLogsLoading from "./loading";
 
 type EmailLogsPageProps = {
     searchParams: SearchParams;
@@ -28,6 +31,7 @@ export default async function EmailLogsPage({ searchParams }: EmailLogsPageProps
         <AppPageShell
             title={emailLogsPageConfig.title}
             description={emailLogsPageConfig.description}
+
         >
             <div className="w-full space-y-5">
                 <EmailLogsTable emailLogsPromise={emailLogsPromise} />

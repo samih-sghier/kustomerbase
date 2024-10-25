@@ -8,7 +8,8 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { clearSourceFields, removeWebsiteDataField, updateWebsiteDataField } from '@/server/actions/sources/mutations';
 import { sourcesUpdateSchema } from '@/server/db/schema';
-import { PricingPlan } from '@/config/pricing';
+import { freePricingPlan, PricingPlan } from '@/config/pricing';
+import { c } from 'node_modules/fumadocs-ui/dist/layout-WuS8Ab4e';
 
 const urlSchema = z.string().url().min(1, 'URL cannot be empty');
 const sitemapSchema = z.string().url().min(1, 'Sitemap URL cannot be empty');
@@ -126,7 +127,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                 return;
             }
 
-            const newId = links.length > 0 ? links[links.length - 1].id + 1 : 1;
+            const newId = links.length > 0 ? Math.max(...links.map(link => link.id)) + 1 : 1;
             const newLinkEntry = { id: newId, url: urlToValidate };
 
             setLinks(prevLinks => [...prevLinks, newLinkEntry]);
@@ -279,7 +280,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             const filteredNewLinks = newLinks.filter(link => !existingUrls.has(normalizeUrl(link.url)));
 
             // Check link count limit
-            const maxLinks = Number(subscription.links);
+            const maxLinks = Number(subscription ? subscription.links : freePricingPlan?.links);
             const availableSlots = Math.max(0, maxLinks - links.length);
             const linksToAdd = filteredNewLinks.slice(0, availableSlots);
 

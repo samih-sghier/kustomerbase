@@ -2,7 +2,7 @@ import { AppPageLoading } from "@/app/(app)/_components/page-loading";
 import { Skeleton } from "@/components/ui/skeleton";
 import { propertiesPageConfig } from "./_constants/page-config";
 
-export default function DashboardLoading() {
+export default function SourcesLoading() {
     return (
         <AppPageLoading
             title={propertiesPageConfig.title}
