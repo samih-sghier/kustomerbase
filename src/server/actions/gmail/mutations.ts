@@ -297,6 +297,7 @@ export async function authorizeGmailMutationSend(metadata?: MetaData) {
 
     const authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
+        prompt: 'consent', // Forces the consent screen to show
         scope: [
             'https://www.googleapis.com/auth/gmail.modify',
             'https://www.googleapis.com/auth/gmail.send',  // Added write scope
@@ -314,6 +315,7 @@ export async function authorizeGmailMutationRead(metadata?: MetaData) {
 
     const authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
+        prompt: 'consent', // Forces the consent screen to show
         scope: [
             'https://www.googleapis.com/auth/gmail.modify',
             'https://www.googleapis.com/auth/gmail.send',
