@@ -21,6 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
+import { removeAlertMutation } from "@/server/actions/alert/mutation";
 
 type AlertType = (typeof alertTypeEnum.enumValues)[number];
 
@@ -60,9 +61,9 @@ export function ColumnDropdown({
     };
 
     // Mutation to remove a watchlist item
-    const { mutateAsync: removeWatchListItemMutate, isPending: removeWatchListItemIsPending } =
+    const { mutateAsync: removeAlertItemMutate, isPending: removeWatchListItemIsPending } =
         useMutation({
-            mutationFn: ({ id }: { id: string }) => archiveAlertMutation({ id }),
+            mutationFn: ({ id }: { id: string }) => removeAlertMutation(id),
         });
 
     const [removeWatchListItemIsTransitionPending, startAwaitableRemoveWatchListItemTransition] =
@@ -71,15 +72,15 @@ export function ColumnDropdown({
     const onRemoveWatchListItem = async () => {
         toast.promise(
             async () => {
-                await removeWatchListItemMutate({ id });
+                await removeAlertItemMutate({ id });
                 await startAwaitableRemoveWatchListItemTransition(() => {
                     router.refresh();
                 });
             },
             {
-                loading: "Removing watchlist item...",
-                success: "Watchlist item removed",
-                error: "Failed to remove watchlist item.",
+                loading: "Removing escalation item...",
+                success: "Escalation removed",
+                error: "Failed to remove escalation item.",
             }
         );
     };

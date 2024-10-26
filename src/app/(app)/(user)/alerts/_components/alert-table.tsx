@@ -21,13 +21,13 @@ const filterableColumns: DataTableFilterableColumn<AlertData>[] = [
         title: "Recipient",
         options: [],
     },
-    {
-        id: "archived",
-        title: "Archived", // Changed title for clarity
-        options: [
+    // {
+    //     id: "archived",
+    //     title: "Archived", // Changed title for clarity
+    //     options: [
             
-        ],
-    },
+    //     ],
+    // },
 
     // {
     //     id: "lastName",

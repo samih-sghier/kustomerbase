@@ -48,11 +48,11 @@ const AlertViewDialog = ({ alert }: { alert: AlertData }) => {
             <div className="mt-4 space-y-4">
                 <div className="grid grid-cols-[150px,1fr] gap-x-4 text-sm">
                     <span className="font-semibold">Summary:</span>
-                    <span className="text-gray-700">{alert.summary}</span>
+                    <span className="font-semibold-700">{alert.summary}</span>
                 </div>
                 <div className="grid grid-cols-[150px,1fr] gap-x-4 text-sm">
                     <span className="font-semibold">Created At:</span>
-                    <span className="text-gray-700">{format(new Date(alert.createdAt), "PPpp")}</span>
+                    <span className="font-semibold-700">{format(new Date(alert.createdAt), "PPpp")}</span>
                 </div>
                 <div className="grid grid-cols-[150px,1fr] gap-x-4 text-sm">
                     <span className="font-semibold">Account:</span>

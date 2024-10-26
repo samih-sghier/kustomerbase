@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
 import { WatchListData } from "./columns";
+import { removeLogMutation } from "@/server/actions/logs/mutation";
 
 type AlertType = (typeof alertTypeEnum.enumValues)[number];
 
@@ -62,9 +63,9 @@ export function ColumnDropdown({
     };
 
     // Mutation to remove a watchlist item
-    const { mutateAsync: removeWatchListItemMutate, isPending: removeWatchListItemIsPending } =
+    const { mutateAsync: removeLogItemMutate, isPending: removeWatchListItemIsPending } =
         useMutation({
-            mutationFn: ({ id }: { id: string }) => removeWatchListItemMutation({ id }),
+            mutationFn: ({ id }: { id: string }) => removeLogMutation(id),
         });
 
     const [removeWatchListItemIsTransitionPending, startAwaitableRemoveWatchListItemTransition] =
@@ -73,15 +74,15 @@ export function ColumnDropdown({
     const onRemoveWatchListItem = async () => {
         toast.promise(
             async () => {
-                await removeWatchListItemMutate({ id });
+                await removeLogItemMutate({ id });
                 await startAwaitableRemoveWatchListItemTransition(() => {
                     router.refresh();
                 });
             },
             {
-                loading: "Removing watchlist item...",
-                success: "Watchlist item removed",
-                error: "Failed to remove watchlist item.",
+                loading: "Removing email log...",
+                success: "Email log removed",
+                error: "Failed to remove email log.",
             }
         );
     };
@@ -99,7 +100,7 @@ export function ColumnDropdown({
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuSub>
+                {/* <DropdownMenuSub>
                     <DropdownMenuSubTrigger>Edit Alert Type</DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
                         <DropdownMenuRadioGroup
@@ -119,7 +120,7 @@ export function ColumnDropdown({
                             ))}
                         </DropdownMenuRadioGroup>
                     </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                </DropdownMenuSub> */}
 
                 <DropdownMenuSeparator />
 
