@@ -197,7 +197,7 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
             frequency: metadata.frequency || undefined,
             isActive: true,
             historyId: watchResponse.historyId || -1,
-            expiration: watchResponse.expiration || 0,
+            expiration: BigInt(watchResponse.expiration || 0),
             purpose,
         });
 
@@ -335,8 +335,9 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
     const connectedParse = await connectedInsertSchema.safeParseAsync(props);
 
     if (!connectedParse.success) {
-        console.log("error validation " + JSON.stringify(props));
-        console.log(props);
+        throw new Error("Invalid connected item", {
+            cause: connectedParse.error.errors,
+        });
     }
 
     const connectedData = connectedParse.data;
@@ -357,14 +358,14 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
             .update(connected)
             .set({
                 refresh_token: connectedData?.refresh_token,
-                access_token: connectedData?.access_token,
-                expires_at: connectedData?.expires_at,
+                access_token: connectedData.access_token,
+                expires_at: connectedData.expires_at,
                 isActive: true,
                 // Update any other fields as needed
             })
             .where(and(
-                eq(connected.email, connectedData?.email),
-                eq(connected.orgId, currentOrg?.id ?? connectedData?.orgId)
+                eq(connected.email, connectedData.email),
+                eq(connected.orgId, currentOrg?.id ?? connectedData.orgId)
             ))
             .execute();
     } else {
@@ -373,7 +374,7 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
             .insert(connected)
             .values({
                 ...connectedData,
-                orgId: connectedData?.orgId ?? currentOrg?.id,
+                orgId: connectedData.orgId ?? currentOrg?.id,
                 isActive: true,
             })
             .execute();
