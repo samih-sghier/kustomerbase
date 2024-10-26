@@ -403,7 +403,7 @@ export const connected = createTable("connected", {
     lastOn: timestamp("lastOn", { mode: "date" }),
     //gmail watchlist
     historyId: integer("historyId").notNull(),
-    expiration: timestamp("expiration"),
+    expiration: integer("expiration"),
     lastThreadId: varchar("lastThreadId", { length: 255 }),
     updatedOn: timestamp("updatedOn", { mode: "date" }).defaultNow(),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
@@ -416,7 +416,7 @@ export const connectedInsertSchema = z.object({
     access_token: z.string().min(1, "Access token is required"),
     refresh_token: z.string().min(1, "Refresh token is required"),
     historyId: z.number().int(), // Add expiration as optional
-    expiration: z.date().optional(), // Add expiration as optional
+    expiration: z.number().optional(), // Add expiration as optional
     purpose: z.string().optional(),
     isActive: z.boolean().default(true),
     provider: z.string().min(1, "Provider is required"),

@@ -197,7 +197,7 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
             frequency: metadata.frequency || undefined,
             isActive: true,
             historyId: watchResponse.historyId || -1,
-            expiration: new Date(watchResponse.expiration || 0),
+            expiration: watchResponse.expiration || 0,
             purpose,
         });
 

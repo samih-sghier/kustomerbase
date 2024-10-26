@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     try {
         // Exchange the authorization code for tokens
         const { tokens, email, metadata } = await handleOAuthCallbackMutation({ code, state });
-        const emails = await listEmailsMutation(tokens);
+        // const emails = await listEmailsMutation(tokens);
         
 
         // Optionally, you can store the tokens or any other information here
