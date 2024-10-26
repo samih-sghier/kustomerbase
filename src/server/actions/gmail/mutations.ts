@@ -335,6 +335,7 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
     const connectedParse = await connectedInsertSchema.safeParseAsync(props);
 
     if (!connectedParse.success) {
+        console.error(connectedParse.error.errors);
         throw new Error("Invalid connected item", {
             cause: connectedParse.error.errors,
         });
