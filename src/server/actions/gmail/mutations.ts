@@ -335,7 +335,8 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
     const connectedParse = await connectedInsertSchema.safeParseAsync(props);
 
     if (!connectedParse.success) {
-        console.log("error validation " + connectedParse);
+        console.log("error validation " + JSON.stringify(props));
+        console.log(props);
     }
 
     const connectedData = connectedParse.data;
