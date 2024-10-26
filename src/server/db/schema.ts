@@ -416,7 +416,7 @@ export const connectedInsertSchema = z.object({
     access_token: z.string().min(1, "Access token is required"),
     refresh_token: z.string().min(1, "Refresh token is required"),
     historyId: z.number().int(), // Add expiration as optional
-    expiration: z.number().optional(), // Add expiration as optional
+    expiration: z.bigint().optional(), // Add expiration as optional
     purpose: z.string().optional(),
     isActive: z.boolean().default(true),
     provider: z.string().min(1, "Provider is required"),

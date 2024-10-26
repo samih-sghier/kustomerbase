@@ -316,7 +316,7 @@ export async function authorizeGmailMutationRead(metadata?: MetaData) {
         access_type: 'offline',
         scope: [
             'https://www.googleapis.com/auth/gmail.modify',
-            'https://www.googleapis.com/auth/gmail.send', 
+            'https://www.googleapis.com/auth/gmail.send',
 
         ],
         state: JSON.stringify(metadata)
@@ -335,9 +335,7 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
     const connectedParse = await connectedInsertSchema.safeParseAsync(props);
 
     if (!connectedParse.success) {
-        throw new Error("Invalid connected item", {
-            cause: connectedParse.error.errors,
-        });
+        console.log("error validation " + connectedParse);
     }
 
     const connectedData = connectedParse.data;
@@ -347,8 +345,8 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
         .select()
         .from(connected)
         .where(and(
-            eq(connected.email, connectedData.email),
-            eq(connected.orgId, currentOrg?.id ?? connectedData.orgId)
+            eq(connected.email, connectedData?.email),
+            eq(connected.orgId, currentOrg?.id ?? connectedData?.orgId)
         ))
         .execute();
 
@@ -357,15 +355,15 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
         return await db
             .update(connected)
             .set({
-                refresh_token: connectedData.refresh_token,
-                access_token: connectedData.access_token,
-                expires_at: connectedData.expires_at,
+                refresh_token: connectedData?.refresh_token,
+                access_token: connectedData?.access_token,
+                expires_at: connectedData?.expires_at,
                 isActive: true,
                 // Update any other fields as needed
             })
             .where(and(
-                eq(connected.email, connectedData.email),
-                eq(connected.orgId, currentOrg?.id ?? connectedData.orgId)
+                eq(connected.email, connectedData?.email),
+                eq(connected.orgId, currentOrg?.id ?? connectedData?.orgId)
             ))
             .execute();
     } else {
@@ -374,7 +372,7 @@ export async function createConnectedMutation(props: CreateConnectedProps) {
             .insert(connected)
             .values({
                 ...connectedData,
-                orgId: connectedData.orgId ?? currentOrg?.id,
+                orgId: connectedData?.orgId ?? currentOrg?.id,
                 isActive: true,
             })
             .execute();
