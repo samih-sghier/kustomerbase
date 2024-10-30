@@ -10,6 +10,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Icons } from "@/components/ui/icons";
+import { siteUrls } from "@/config/urls";
 import { sendOrgRequestMutation } from "@/server/actions/organization/mutations";
 import type { getOrgByIdQuery } from "@/server/actions/organization/queries";
 import { useMutation } from "@tanstack/react-query";
@@ -45,7 +46,7 @@ export function RequestCard({ org, orgId }: RequestCardProps) {
                         Request to join {org?.name}
                     </CardTitle>
                     <CardDescription className="text-center">
-                        You can send joinning request to {org?.name}.
+                        Send a request to become a member
                     </CardDescription>
                 </div>
             </CardHeader>

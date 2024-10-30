@@ -35,7 +35,7 @@ export async function sendOrgInviteEmail({
         await resend.emails.send({
             from: siteConfig.noReplyEmail,
             to: email,
-            subject: `You have been Inited to a Team | ${siteConfig.name}`,
+            subject: `You have been Invited to a Team | ${siteConfig.name}`,
             html: `
                 <div>
                     <a href="${siteUrls.subletguard}">${siteConfig.name}</a>

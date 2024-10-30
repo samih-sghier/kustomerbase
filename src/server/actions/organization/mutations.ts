@@ -186,6 +186,30 @@ type OrgRequestProps = {
 export async function sendOrgRequestMutation({ orgId }: OrgRequestProps) {
     const { user } = await protectedProcedure();
 
+    // Check if the user is already a member of the organization
+    const existingMember = await db.query.membersToOrganizations.findFirst({
+        where: and(
+            eq(membersToOrganizations.organizationId, orgId),
+            eq(membersToOrganizations.memberId, user.id)
+        )
+    });
+
+    if (existingMember) {
+        throw new Error("You are already a member of this organization.");
+    }
+
+    // Check if the user already has a pending invite for the organization
+    const existingRequest = await db.query.orgRequests.findFirst({
+        where: and(
+            eq(orgRequests.organizationId, orgId),
+            eq(orgRequests.userId, user.id)
+        )
+    });
+
+    if (existingRequest) {
+        throw new Error("You already have a pending invite for this organization.");
+    }
+
     const orgRequestParse = await orgRequestInsertSchema.safeParseAsync({
         organizationId: orgId,
         userId: user.id,

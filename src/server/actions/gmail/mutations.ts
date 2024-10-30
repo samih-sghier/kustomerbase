@@ -435,11 +435,12 @@ export async function removeConnectedItemMutation({
             access_token,
             refresh_token,
         });
-
         if (stopWatchResult.error) {
             console.error("Error stopping the watch:", stopWatchResult.error);
             // You might want to handle the error differently depending on your needs
         }
+    } else {
+        console.error("Error to stop gmail watch");
     }
 
 

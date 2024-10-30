@@ -89,7 +89,6 @@ async function buildLlamaIndex(org: { name: string }, source: any): Promise<any>
 // Save LlamaIndex to database
 async function saveLlamaIndexToDb(orgId: string, index: any) {
   try {
-    console.log("index", index);
     await db.update(sources).set({
       llamaIndex: index, // Store the serialized index
       lastTrained: new Date(),
