@@ -39,7 +39,7 @@ export type PricingPlan = {
         monthly: string;
         yearly: string;
     };
-    messageCredits: number;
+    monthlyTokens: number;
     chatbots: number;
     charactersPerChatbot: number;
     teamMembers: number;
@@ -161,7 +161,7 @@ export const pricingPlans: PricingPlan[] = [
         planLimit: 1,
         usersLimit: 1,
         uniqueFeatures: ["1 chatbot", "400,000 characters/chatbot", "1 team member", "Limit to 10 links to train on"],
-        messageCredits: 20,
+        monthlyTokens: 20000,
         chatbots: 1,
         charactersPerChatbot: 400000,
         teamMembers: 1,
@@ -185,7 +185,7 @@ export const pricingPlans: PricingPlan[] = [
         planLimit: 2,
         usersLimit: 1,
         uniqueFeatures: ["2 chatbots", "11,000,000 characters/chatbot", "Unlimited links to train on", "API access", "Integrations", "Basic Analytics"],
-        messageCredits: 2000,
+        monthlyTokens: 150000,
         chatbots: 2,
         charactersPerChatbot: 11000000,
         teamMembers: 1,
@@ -213,7 +213,7 @@ export const pricingPlans: PricingPlan[] = [
         planLimit: 5,
         usersLimit: 3,
         uniqueFeatures: ["5 chatbots", "3 team members", "Option to choose GPT-4 and GPT-4-Turbo"],
-        messageCredits: 10000,
+        monthlyTokens: 1000000,
         chatbots: 5,
         charactersPerChatbot: 11000000,
         teamMembers: 3,
@@ -241,7 +241,7 @@ export const pricingPlans: PricingPlan[] = [
         planLimit: 10,
         usersLimit: 5,
         uniqueFeatures: ["10 chatbots", "5 team members", "Remove 'Powered by bettereply.'", "Use your own custom domains", "Advanced Analytics"],
-        messageCredits: 40000,
+        monthlyTokens: 5000000,
         chatbots: 10,
         charactersPerChatbot: Infinity,
         teamMembers: 5,

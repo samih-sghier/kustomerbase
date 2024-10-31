@@ -28,6 +28,7 @@ import { format } from "date-fns";
 import { Suspense } from "react";
 import { SidebarLoading } from "../../_components/sidebar";
 import DashboardLoading from "./loading";
+import { formatNumberWithCommas } from "../sources/_components/sources-card";
 
 export default async function DashboardPage() {
     const dashInfo = await getDashboardInfo();
@@ -118,7 +119,7 @@ export default async function DashboardPage() {
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
-                                    Credit Token Usage
+                                    Token Usage
                                 </CardTitle>
                                 <ActivityIcon className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>

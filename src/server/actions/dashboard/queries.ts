@@ -3,6 +3,8 @@ import { sgAlert, subscriptions, users, membersToOrganizations, emailLogs, conne
 import { eq, count, and, isNotNull, or, ne } from "drizzle-orm";
 import { protectedProcedure } from "@/server/procedures";
 import { getOrganizations } from "@/server/actions/organization/queries";
+import { freePricingPlan } from "@/config/pricing";
+import { getOrgTokens, getOrgTokensBasedOnPlan } from "../stripe_subscription/query";
 
 // Function to get dashboard information
 export async function getDashboardInfo() {
@@ -67,7 +69,7 @@ export async function getDashboardInfo() {
         .execute()
         .then(res => res[0]?.count ?? 0);
 
-        const alerts = await db
+    const alerts = await db
         .select({ count: count() })
         .from(sgAlert)
         .where(eq(sgAlert.organizationId, organizationId))
@@ -75,6 +77,8 @@ export async function getDashboardInfo() {
         .then(res => res[0]?.count ?? 0);
 
     // Implement logic for other metrics...
+    const tokenUsage: number | undefined = currentOrg.tokens || await getOrgTokens();
+    const maxTokens: number | undefined = await getOrgTokensBasedOnPlan();
 
     return {
         emailsSent,
@@ -86,9 +90,15 @@ export async function getDashboardInfo() {
         sources: sourcesNotNull, // Placeholder
         scheduledEmails: 0, // Placeholder
         alerts, // Placeholder
-        apiUsage: 1000, // Placeholder
-        apiUsageChange: 5 // Placeholder
+        apiUsage: `${formatNumber(tokenUsage)} / ${formatNumber(maxTokens)}`, // Use the new formatNumber function
+        apiUsageChange: 0 // Placeholder
     };
+}
+
+export function formatNumber(number: number): string {
+    if (number < 1_000) return number.toString(); // Return the number as is if less than 1,000
+    if (number < 1_000_000) return `${Math.floor(number / 1_000)}k`; // Format as 'k' for thousands with space
+    return `${(number / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`; // Format as 'M' for millions
 }
 
 // currencyUtils.ts

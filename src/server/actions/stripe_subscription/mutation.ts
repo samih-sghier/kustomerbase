@@ -3,10 +3,10 @@
 import { pricingPlans } from "@/config/pricing";
 import { getOrgSubscription } from "@/server/actions/stripe_subscription/query";
 import { db } from "@/server/db";
-import { subscriptions, webhookEvents } from "@/server/db/schema";
+import { organizations, subscriptions, webhookEvents } from "@/server/db/schema";
 import stripe from "@/server/stripe";
 import { webhookHasData, webhookHasMeta } from "@/validations/stripe"; // Update import to Stripe
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { Stripe } from "stripe"; // Import Stripe's types
 import { getOrganizations } from "../organization/queries";
@@ -78,6 +78,8 @@ export async function processWebhookEvent(webhookEvent: { id?: string; body: Str
                 // console.log("subscription that was created ", subscription)
 
                 const priceId = subscription.items.data[0]?.price.id;
+                const orgId = subscription?.metadata?.org_id;
+
 
 
                 // Find the plan in your pricing configuration
@@ -92,7 +94,7 @@ export async function processWebhookEvent(webhookEvent: { id?: string; body: Str
                     // Update the subscription in the database
                     const updateData: NewSubscription = {
                         stripeSubscriptionId: subscription.id,
-                        orgId: subscription?.metadata?.org_id || "", // Handle optional metadata
+                        orgId: orgId || "", // Handle optional metadata
                         priceId: priceId || "",
                         orderId: subscription.items.data[0]?.id || "" // Adjust as needed
                     };
@@ -105,6 +107,12 @@ export async function processWebhookEvent(webhookEvent: { id?: string; body: Str
                                 target: subscriptions.orgId,
                                 set: updateData
                             });
+
+                        await db
+                            .update(organizations)
+                            .set({ tokens: plan.monthlyTokens })
+                            .where(eq(organizations.id, orgId || "NO_ORG_ID"))
+                            .execute();
                         // console.log("data to be inserted", updateData)
                     } catch (error) {
                         processingError = `Failed to upsert Subscription #${updateData.stripeSubscriptionId} to the database.`;

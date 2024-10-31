@@ -51,24 +51,28 @@ type StepCardProps = {
 
 
 
-
 function StepCard({ number, title, description, isExpanded, onClick }: StepCardProps) {
     return (
-        <div onClick={onClick} className="cursor-pointer grid gap-4 rounded-lg border border-border bg-muted/50 p-6 transition-colors duration-300 hover:bg-muted/20 dark:bg-muted/70 dark:border-dark-border h-40"> {/* Set a fixed height */}
-            <div className="flex items-center justify-between h-full"> {/* Use full height for alignment */}
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-full text-primary-dark dark:bg-primary-dark dark:text-primary-light">
-                        <span className="text-2xl font-bold">{number}</span>
+        <div
+            onClick={onClick}
+            className="cursor-pointer grid gap-4 rounded-lg border border-border bg-muted/50 p-4 transition-colors duration-300 hover:bg-muted/20 dark:bg-muted/70 dark:border-dark-border" // Adjusted padding
+        >
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 flex-wrap"> {/* Added flex-wrap for better handling */}
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full text-primary-dark dark:bg-primary-dark dark:text-primary-light">
+                        <span className="text-xl font-bold">{number}</span> {/* Adjusted font size */}
                     </div>
-                    <h3 className="text-xl font-bold text-foreground dark:text-foreground-dark">
+                    <h3 className="text-lg font-bold text-foreground dark:text-foreground-dark"> {/* Adjusted font size */}
                         {title}
                     </h3>
                 </div>
-                <span className="text-gray-500">{isExpanded ? '▼' : '►'}</span> {/* Down arrow for expanded state */}
+                <span className="text-gray-500">{isExpanded ? '▼' : '►'}</span>
             </div>
-            <div className={`mt-2 transition-all duration-300 ${isExpanded ? 'max-h-20' : 'max-h-0 overflow-hidden'}`}> {/* Control height of description */}
+            
+            <div className={`mt-2 transition-all duration-300 ${isExpanded ? 'max-h-20' : 'max-h-0 overflow-hidden'}`}>
                 <p className="text-base text-muted-foreground">{description}</p>
             </div>
         </div>
     );
 }
+

@@ -1,3 +1,4 @@
+import { freePricingPlan } from "@/config/pricing";
 import { relations, sql } from "drizzle-orm";
 import { bigint } from "drizzle-orm/mysql-core";
 import {
@@ -131,6 +132,7 @@ export const organizations = createTable("organization", {
         .primaryKey()
         .default(sql`gen_random_uuid()`),
     name: varchar("name", { length: 255 }).notNull(),
+    tokens: integer("tokens").default(freePricingPlan?.monthlyTokens || 0),
     email: varchar("email", { length: 255 }).notNull(),
     image: varchar("image", { length: 255 }),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
@@ -294,6 +296,7 @@ export const emailLogs = createTable("email_logs", {
     threadId: varchar("threadId", { length: 255 }),
     messageId: varchar("messageId", { length: 255 }),
     response_data: jsonb("response_data"),
+    tokens: integer("tokens").default(0),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
     updatedOn: timestamp("updatedOn").notNull().defaultNow(),
 });

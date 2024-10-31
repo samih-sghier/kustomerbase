@@ -21,22 +21,22 @@ export function Testimonials() {
                         <p>{`“${featuredTestimonial.body}”`}</p>
                     </blockquote>
                     <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-4 border-t border-border px-6 py-4 sm:flex-nowrap">
-                        <img
+                        {/* <img
                             className="h-10 w-10 flex-none rounded-full bg-muted/5"
                             src={featuredTestimonial.author.imageUrl}
                             alt=""
-                        />
+                        /> */}
                         <div className="flex-auto">
                             <div className="font-semibold">
                                 {featuredTestimonial.author.name}
                             </div>
                             <div className="text-muted-foreground">{`@${featuredTestimonial.author.handle}`}</div>
                         </div>
-                        <img
+                        {/* <img
                             className="h-10 w-auto flex-none"
                             src={featuredTestimonial.author.logoUrl}
                             alt=""
-                        />
+                        /> */}
                         <Icons.twitter className="h-5 w-auto flex-none" />
 
             
@@ -70,13 +70,13 @@ export function Testimonials() {
                                             <p>{`“${testimonial.body}”`}</p>
                                         </blockquote>
                                         <figcaption className="mt-6 flex items-center gap-x-4">
-                                            <img
+                                            {/* <img
                                                 className="h-10 w-10 rounded-full bg-muted/5"
                                                 src={
                                                     testimonial.author.imageUrl
                                                 }
                                                 alt=""
-                                            />
+                                            /> */}
                                             <div>
                                                 <div className="font-semibold">
                                                     {testimonial.author.name}

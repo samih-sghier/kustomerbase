@@ -1,13 +1,13 @@
 "use server";
 
-import { pricingPlans } from "@/config/pricing";
+import { freePricingPlan, pricingPlans } from "@/config/pricing";
 import { siteUrls } from "@/config/urls";
 import { env } from "@/env";
 import { getAbsoluteUrl } from "@/lib/utils";
 import { getOrganizations } from "@/server/actions/organization/queries";
 import { getUser } from "@/server/auth";
 import { db } from "@/server/db";
-import { subscriptions } from "@/server/db/schema";
+import { organizations, subscriptions } from "@/server/db/schema";
 import { protectedProcedure } from "@/server/procedures";
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
@@ -56,6 +56,64 @@ export async function getCheckoutURL(variantId?: string, embed = false) {
 
     return session.url;
 }
+
+
+export async function getOrgTokens() {
+    await protectedProcedure();
+
+    const { currentOrg } = await getOrganizations();
+
+    if (!currentOrg) {
+        throw new Error("Organization not found.");
+    }
+
+
+    return currentOrg?.tokens || await getOrgTokensBasedOnPlan(); 
+}
+
+export async function getOrgTokensBasedOnPlan() {
+    await protectedProcedure(); // Ensure the user is authenticated
+
+    const { currentOrg } = await getOrganizations(); // Get the current organization
+
+    if (!currentOrg) {
+        throw new Error("Organization not found.");
+    }
+
+    // Fetch the user's plan
+    const subscription = await getOrgSubscription(); // This function should return the user's current plan
+
+    if (!subscription) {
+        return freePricingPlan?.monthlyTokens;
+    }
+
+    // Determine the number of tokens based on the user's plan
+    let tokens;
+
+    // Assuming userPlan has a property that defines the token limit
+    switch (subscription.planTitle) {
+        case pricingPlans[0]?.title:
+            tokens = pricingPlans[0]?.monthlyTokens; // Adjust based on your free plan structure
+            break;
+        case pricingPlans[1]?.title:
+            tokens = pricingPlans[1]?.monthlyTokens; // Adjust based on your free plan structure
+            break;
+        case pricingPlans[2]?.title:
+            tokens = pricingPlans[2]?.monthlyTokens 
+            break;
+        case pricingPlans[3]?.title:
+            tokens = pricingPlans[3]?.monthlyTokens ; // Adjust based on your premium plan structure
+            break;
+        default:
+            tokens = freePricingPlan?.monthlyTokens; // Default case if no valid plan is found
+            break;
+    }
+
+    // Optionally, you can also check if the organization has a specific allocation
+    // For example, if the organization has a specific number of tokens that should be used
+    return tokens; // Return the calculated tokens based on the user's plan
+}
+
 
 export async function getOrgSubscription() {
     try {

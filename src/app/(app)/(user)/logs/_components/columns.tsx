@@ -25,6 +25,7 @@ export type EmailLogData = {
     content: string;
     status: EmailStatus;
     threadId: string;
+    tokens: number;
     messageId: string;
     createdAt: Date;
     updatedOn: Date;
@@ -104,9 +105,9 @@ export const columns: ColumnDef<EmailLogData>[] = [
         cell: ({ row }) => row.original.recipient,
     },
     {
-        accessorKey: "subject",
-        header: "Subject",
-        cell: ({ row }) => <TruncatedContent content={row.original.subject} />,
+        accessorKey: "tokens",
+        header: "Tokens Used",
+        cell: ({ row }) => row.original.tokens,
     },
     {
         accessorKey: "content",
