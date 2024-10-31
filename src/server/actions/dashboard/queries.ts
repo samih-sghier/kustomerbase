@@ -77,8 +77,8 @@ export async function getDashboardInfo() {
         .then(res => res[0]?.count ?? 0);
 
     // Implement logic for other metrics...
-    const tokenUsage: number | undefined = currentOrg.tokens || await getOrgTokens();
-    const maxTokens: number | undefined = await getOrgTokensBasedOnPlan();
+    const tokenUsage: number | undefined = currentOrg.tokens || 0;
+    const maxTokens: number | undefined = currentOrg.max_tokens || await getOrgTokensBasedOnPlan();
 
     return {
         emailsSent,

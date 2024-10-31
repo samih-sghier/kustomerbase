@@ -33,6 +33,7 @@ const FormSchema = z.object({
             : z.enum(["default"]),
     billing: z.enum(["monthly", "yearly"]),
 });
+
 export function AvailablePlans({ subscription }: AvailablePlansProps) {
     const form = useForm({
         resolver: zodResolver(FormSchema),
@@ -91,10 +92,10 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
                                                     (plan) =>
                                                         plan.priceId
                                                             ?.monthly ===
-                                                            subscription?.plan?.priceId ||
+                                                            subscription?.plan?.priceId?.monthly ||
                                                         plan.priceId
                                                             ?.yearly ===
-                                                            subscription?.plan?.priceId,
+                                                            subscription?.plan?.priceId?.yearly,
                                                 )
                                                     ? "monthly"
                                                     : "yearly"
@@ -156,10 +157,10 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
                                                     (plan) =>
                                                         plan.priceId
                                                             ?.monthly ===
-                                                            subscription?.plan?.priceId ||
+                                                            subscription?.priceId ||
                                                         plan.priceId
                                                             ?.yearly ===
-                                                            subscription?.plan?.priceId,
+                                                            subscription?.priceId,
                                                 )?.id ?? pricingPlans[0]?.id
                                             }
                                             className="space-y-2"

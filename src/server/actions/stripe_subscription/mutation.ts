@@ -67,16 +67,13 @@ export async function processWebhookEvent(webhookEvent: { id?: string; body: Str
             case 'invoice.payment_succeeded':
             case 'invoice.payment_failed':
                 const invoice = eventBody.data.object as Stripe.Invoice;
-
                 break;
-
             case 'customer.subscription.created':
             case 'customer.subscription.updated':
             case 'customer.subscription.deleted':
                 // Handle subscription events
                 const subscription = eventBody.data.object;
                 // console.log("subscription that was created ", subscription)
-
                 const priceId = subscription.items.data[0]?.price.id;
                 const orgId = subscription?.metadata?.org_id;
 
@@ -110,7 +107,7 @@ export async function processWebhookEvent(webhookEvent: { id?: string; body: Str
 
                         await db
                             .update(organizations)
-                            .set({ tokens: plan.monthlyTokens })
+                            .set({ max_tokens: plan.monthlyTokens })
                             .where(eq(organizations.id, orgId || "NO_ORG_ID"))
                             .execute();
                         // console.log("data to be inserted", updateData)

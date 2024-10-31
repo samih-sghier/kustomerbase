@@ -67,12 +67,12 @@ export const pricingFeatures: PricingFeature[] = [
     },
     {
         id: "2",
-        title: "Chatbots",
+        title: "Accounts",
         includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
         id: "3",
-        title: "Characters/chatbot",
+        title: "characters data",
         includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard],
     },
     {
@@ -184,7 +184,7 @@ export const pricingPlans: PricingPlan[] = [
         buttonHighlighted: false,
         planLimit: 2,
         usersLimit: 1,
-        uniqueFeatures: ["2 chatbots", "11,000,000 characters/chatbot", "Unlimited links to train on", "API access", "Integrations", "Basic Analytics"],
+        uniqueFeatures: ["2 chatbots", "11,000,000 characters/chatbot", "Unlimited links to train on", "API access", "Integrations"],
         monthlyTokens: 150000,
         chatbots: 2,
         charactersPerChatbot: 11000000,

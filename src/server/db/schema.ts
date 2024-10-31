@@ -132,7 +132,8 @@ export const organizations = createTable("organization", {
         .primaryKey()
         .default(sql`gen_random_uuid()`),
     name: varchar("name", { length: 255 }).notNull(),
-    tokens: integer("tokens").default(freePricingPlan?.monthlyTokens || 0),
+    tokens: integer("tokens").default(0),
+    max_tokens: integer("max_tokens").default(freePricingPlan?.monthlyTokens || 0),
     email: varchar("email", { length: 255 }).notNull(),
     image: varchar("image", { length: 255 }),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
