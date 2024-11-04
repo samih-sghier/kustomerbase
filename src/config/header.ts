@@ -76,7 +76,7 @@ export const companyFooterNavigation: NavigationItem[] = [
     },
     {
         id: "careers",
-        href: 'https://x.com/sghierr',
+        href: 'https://x.com/samihss',
         label: "Careers",
     },
 ];
