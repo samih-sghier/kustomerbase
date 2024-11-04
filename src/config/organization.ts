@@ -1,5 +1,5 @@
 // export all organization related config here
 
 export const orgConfig = {
-    cookieName: "bettereply:current-organization",
+    cookieName: "inboxpilot:current-organization",
 } as const;

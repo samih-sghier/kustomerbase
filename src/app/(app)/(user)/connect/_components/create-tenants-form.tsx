@@ -127,14 +127,14 @@ export function ConnectEmailForm({ defaultOpen, orgId }: { defaultOpen: boolean,
                                                 <SelectValue placeholder="Select frequency" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="0">Instantly</SelectItem>
-                                                <SelectItem value="2">After 2 minutes</SelectItem>
+                                                <SelectItem value="0">less than 1 minute</SelectItem>
+                                                {/* <SelectItem value="2">After 2 minutes</SelectItem>
                                                 <SelectItem value="60">After 1 hour</SelectItem>
                                                 <SelectItem value="240">After 4 hours</SelectItem>
                                                 <SelectItem value="1440">After 24 hours</SelectItem>
                                                 <SelectItem value="2880">After 48 hours</SelectItem>
                                                 <SelectItem value="4320">After 72 hours</SelectItem>
-                                                <SelectItem value="manual">Only when approved</SelectItem>
+                                                <SelectItem value="manual">Only when approved</SelectItem> */}
                                             </SelectContent>
 
 

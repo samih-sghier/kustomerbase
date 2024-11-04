@@ -8,9 +8,9 @@
  */
 
 export const siteUrls = {
-    publicUrl: "https://bettereply.com/",
-    github: "https://github.com/bettereply",
-    twitter: "https://x.com/bettereply",
+    publicUrl: "https://inboxpilot.co/",
+    github: "https://github.com/Inboxpilot",
+    twitter: "https://x.com/Inboxpilot",
     home: "/",
     pricing: "/pricing",
     features: "/features",
@@ -20,7 +20,7 @@ export const siteUrls = {
     changelogs: "/changelogs",
     maintenance: "/maintenance",
     waitlist: "/waitlist",
-    subletguard: "https://bettereply.com",
+    subletguard: "https://inboxpilot.co",
     privacy: "/privacy",
     terms: "/terms",
     contact: "/contact",

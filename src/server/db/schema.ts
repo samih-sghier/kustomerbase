@@ -565,6 +565,8 @@ export const waitlistUsersSchema = createInsertSchema(waitlistUsers, {
     name: z.string().min(3, "Name must be at least 3 characters long"),
 });
 
+export const escalationPriority = pgEnum("priority", ["low", "medium", "high"]);
+
 
 export const sgAlert = createTable("escalations", {
     id: varchar("id", { length: 255 })
@@ -580,6 +582,8 @@ export const sgAlert = createTable("escalations", {
     account: varchar("account", { length: 255 }).notNull(),
     recipient: varchar("recipient", { length: 255 }).notNull(),
     threadId: varchar("threadId", { length: 255 }).notNull(),
+    category: varchar("category", { length: 255 }).default("Other"),
+    priority: escalationPriority("priority").default("low"),
     escalationLink: varchar("escalationLink"),
     updatedAt: timestamp("updatedAt", { mode: "date" }),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),

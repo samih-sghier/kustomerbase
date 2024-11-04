@@ -29,7 +29,7 @@ export function WebFooter() {
                                     className: "w-6 h-6 fill-primary",
                                 }}
                             />
-                            <span className="sr-only">bettereply logo</span>
+                            <span className="sr-only">Inboxpilot logo</span>
                         </Link>
                         <Balancer as="p" className="text-muted-foreground">
                             {siteConfig.description}
@@ -57,7 +57,7 @@ export function WebFooter() {
                             rel="noreferrer"
                         >
                             <Icons.gitHub className="h-4 w-4" />
-                            <span className="sr-only">bettereply github</span>
+                            <span className="sr-only">Inboxpilot github</span>
                         </Link> */}
                         {/* <Link
                             href={siteUrls.github}
@@ -69,7 +69,7 @@ export function WebFooter() {
                             rel="noreferrer"
                         >
                             <Icons.instagram className="h-4 w-4" />
-                            <span className="sr-only">bettereply instagram</span>
+                            <span className="sr-only">Inboxpilot instagram</span>
                         </Link> */}
                         <Link
                             href={siteUrls.twitter}
@@ -81,7 +81,7 @@ export function WebFooter() {
                             rel="noreferrer"
                         >
                             <Icons.twitter className="h-4 w-4" />
-                            <span className="sr-only">bettereply twitter</span>
+                            <span className="sr-only">Inboxpilot twitter</span>
                         </Link>
                         <ThemeToggle />
                     </div>
@@ -127,7 +127,7 @@ export function WebFooter() {
                     </div>
                 </div>
                 <div className="col-span-full mt-8 text-center text-sm text-muted-foreground">
-                    <p>&copy; {year} bettereply. All rights reserved.</p>
+                    <p>&copy; {year} Inboxpilot All rights reserved.</p>
                 </div>
             </footer>
         </div>

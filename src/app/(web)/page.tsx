@@ -51,7 +51,7 @@ export default async function HomePage() {
                             className: "bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300"
                         })}
                     >
-                        Automate your emails 🤖
+                        Build your Mailbot 📧
                         <ArrowRightIcon className="ml-1 h-4 w-4" />
                     </Link>
 

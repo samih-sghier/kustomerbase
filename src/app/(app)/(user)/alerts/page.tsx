@@ -21,8 +21,8 @@ const searchParamsSchema = z.object({
     sort: z.string().optional(),
     summary: z.string().optional(),
     subject: z.string().optional(),
-    account: z.string().optional(),
-    recipient: z.string().optional(),
+    priority: z.string().optional(),
+    category: z.string().optional(),
     archived: z.boolean().optional()
 });
 

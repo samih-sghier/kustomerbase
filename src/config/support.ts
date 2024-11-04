@@ -27,24 +27,24 @@ export const supportInfos: SupportInfo[] = [
         title: "Say Hello",
         description:
             "Get in touch with us to learn more about our products and services.",
-        email: "hello@bettereply.com",
-        buttonHref: `mailto:support@bettereply.com`,
+        email: "hello@inboxpilot.co",
+        buttonHref: `mailto:support@inboxpilot.co`,
         buttonText: "Get in touch",
     },
     {
         title: "Tech Support",
         description:
             "Get help with any technical issues you are facing. Our team will help you resolve any issues.",
-        email: "tech@bettereply.com",
-        buttonHref: `mailto:support@bettereply.com`,
+        email: "tech@inboxpilot.co",
+        buttonHref: `mailto:support@inboxpilot.co`,
         buttonText: "Get in touch",
     },
     {
         title: "Sales",
         description:
             "Get help with any sales-related questions. Our team will help you with any sales inquiries.",
-        email: "support@bettereply.com",
-        buttonHref: `mailto:support@bettereply.com`,
+        email: "support@inboxpilot.co",
+        buttonHref: `mailto:support@inboxpilot.co`,
         buttonText: "Get in touch",
     },
     {

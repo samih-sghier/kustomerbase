@@ -1,9 +1,9 @@
 // Import necessary modules
 import { db } from "@/server/db";
-import {  sgAlert } from "@/server/db/schema";
+import {  escalationPriority, sgAlert } from "@/server/db/schema";
 import { protectedProcedure } from "@/server/procedures";
 import { unstable_noStore as noStore } from "next/cache";
-import { and, asc, count, desc, eq, gte, ilike, inArray, lte, or, where } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, inArray, lte, or } from "drizzle-orm";
 import { z } from "zod";
 import { getOrganizations } from "../organization/queries";
 import { endOfDay, startOfDay, subDays } from "date-fns";
@@ -17,7 +17,10 @@ const paginatedSgAlertPropsSchema = z.object({
     subject: z.string().optional(),
     account: z.string().optional(),
     recipient: z.string().optional(),
-    archived: z.boolean().optional()
+    archived: z.boolean().optional(),
+    priority: z.string().optional(),
+
+
 });
 
 type GetPaginatedSgAlertQueryProps = z.infer<typeof paginatedSgAlertPropsSchema>;
@@ -41,6 +44,8 @@ export async function getAllPaginatedAlertsQuery(
         "asc" | "desc" | undefined
     ]) ?? ["createdAt", "desc"];
 
+    const statuses = (input.priority?.split(".") as (typeof sgAlert.$inferSelect.priority)[]) ?? escalationPriority.enumValues;
+
     // Fetch paginated data with filters
     const { data, total } = await db.transaction(async (tx) => {
         const response = await tx.query.sgAlert.findMany({
@@ -50,8 +55,7 @@ export async function getAllPaginatedAlertsQuery(
                     input.account ? ilike(sgAlert.account, `%${input.account}%`) : undefined,
                     input.recipient ? ilike(sgAlert.recipient, `%${input.recipient}%`) : undefined,
                     input.subject ? ilike(sgAlert.subject, `%${input.subject}%`) : undefined,
-
-
+                    escalationPriority.length > 0 ? inArray(sgAlert.priority, statuses) : undefined,
                 ),
                 eq(sgAlert.organizationId, currentOrg.id),
                 input.archived !== undefined ? eq(sgAlert.archived, input.archived) : undefined

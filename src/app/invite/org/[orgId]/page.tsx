@@ -1,4 +1,4 @@
-import { getOrgByIdQuery } from "@/server/actions/organization/queries";
+import { getOrgByIdQuery, getUserOrgsQuery } from "@/server/actions/organization/queries";
 import { RequestCard } from "@/app/invite/org/[orgId]/_components/request-card";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
@@ -16,12 +16,14 @@ export default async function OrgRequestPage({
 }: OrgRequestProps) {
     const org = await getOrgByIdQuery({ orgId });
 
-
     const user = await getUser();
 
     if (!user) {
         return <LoginPromptPage orgName={org?.name || ''} />
     }
+
+    const users = await getUserOrgsQuery();
+
 
     if (!org) {
         return notFound();

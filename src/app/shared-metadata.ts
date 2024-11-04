@@ -30,8 +30,8 @@ export const defaultMetadata: Metadata = {
         "Email Marketing Tools",
         "Email Marketing Services",
     ],
-    authors: [{ name: "bettereply", url: "https://x.com/bettereply" }],
-    creator: "bettereply",
+    authors: [{ name: "Inboxpilot", url: "https://x.com/Inboxpilot" }],
+    creator: "Inboxpilot",
 };
 
 export const twitterMetadata: Metadata["twitter"] = {
@@ -39,7 +39,7 @@ export const twitterMetadata: Metadata["twitter"] = {
     description: siteConfig.description,
     card: "summary_large_image",
     images: [siteConfig.orgImage],
-    creator: "@bettereply",
+    creator: "@Inboxpilot",
 };
 
 export const ogMetadata: Metadata["openGraph"] = {

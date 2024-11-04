@@ -11,6 +11,7 @@
  * 2. Add title and includedIn to the new feature object. (includedIn is an array of pricing plan ids that include this feature)
  */
 import { env } from "@/env";
+import { siteConfig } from "./site";
 
 export type PricingPlan = {
     id: string;
@@ -127,7 +128,7 @@ export const pricingFeatures: PricingFeature[] = [
     },
     {
         id: "14",
-        title: "Remove 'Powered by bettereply.'",
+        title: `Remove 'Powered by ${siteConfig.name}co'`,
         includedIn: [pricingIds.unlimited],
     },
     {
@@ -240,7 +241,7 @@ export const pricingPlans: PricingPlan[] = [
         buttonHighlighted: false,
         planLimit: 10,
         usersLimit: 5,
-        uniqueFeatures: ["10 chatbots", "5 team members", "Remove 'Powered by bettereply.'", "Use your own custom domains", "Advanced Analytics"],
+        uniqueFeatures: [`10 chatbots", "5 team members", "Remove 'Powered by ${siteConfig.name}'", "Use your own custom domains", "Advanced Analytics`],
         monthlyTokens: 5000000,
         chatbots: 10,
         charactersPerChatbot: Infinity,

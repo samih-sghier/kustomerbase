@@ -20,6 +20,8 @@ export interface AlertData {
     updatedAt?: string; // Optional to match the table structure
     organizationId: string;
     threadId: string;
+    category: string;
+    priority: string;
     account: string;
     recipient: string;
     escalationLink?: string; // Optional to match the table structure
@@ -42,13 +44,23 @@ const TruncatedContent = ({ content }: { content: string }) => {
 const AlertViewDialog = ({ alert }: { alert: AlertData }) => {
     return (
         <DialogContent className="sm:max-w-[700px]">
-            <DialogHeader>
+            {/* <DialogHeader>
                 <DialogTitle className="text-lg font-bold">{alert.subject}</DialogTitle>
-            </DialogHeader>
+            </DialogHeader> */}
             <div className="mt-4 space-y-4">
                 <div className="grid grid-cols-[150px,1fr] gap-x-4 text-sm">
                     <span className="font-semibold">Summary:</span>
                     <span className="font-semibold-700">{alert.summary}</span>
+                </div>
+                <div className="grid grid-cols-[150px,1fr] gap-x-4 text-sm">
+                    <span className="font-semibold">Category:</span>
+                    <span className="font-semibold-700">{alert.category}</span>
+                </div>
+                <div className="grid grid-cols-[150px,1fr] gap-x-4 text-sm">
+                    <span className="font-semibold">Priority:</span>
+                    <Badge variant={alert.priority === 'high' ? 'destructive' : alert.priority === 'medium' ? 'info' : 'default'} className="w-fit">
+                        {alert.priority}
+                    </Badge>
                 </div>
                 <div className="grid grid-cols-[150px,1fr] gap-x-4 text-sm">
                     <span className="font-semibold">Created At:</span>
@@ -56,11 +68,11 @@ const AlertViewDialog = ({ alert }: { alert: AlertData }) => {
                 </div>
                 <div className="grid grid-cols-[150px,1fr] gap-x-4 text-sm">
                     <span className="font-semibold">Account:</span>
-                    <Badge variant="success" className="w-fit">{alert.account}</Badge> {/* Added badge for account */}
+                    {alert.account}
                 </div>
                 <div className="grid grid-cols-[150px,1fr] gap-x-4 text-sm">
                     <span className="font-semibold">Recipient:</span>
-                    <Badge variant="info" className="w-fit">{alert.recipient}</Badge> {/* Added badge for recipient */}
+                    {alert.recipient}
                 </div>
             </div>
         </DialogContent>
@@ -78,61 +90,62 @@ export const columns: ColumnDef<AlertData>[] = [
                         <TruncatedContent content={row.original.summary} />
                     </div>
                 </DialogTrigger>
-                <AlertViewDialog alert={row.original} /> {/* Added dialog for alert details */}
+                <AlertViewDialog alert={row.original} />
             </Dialog>
         ),
         filterFn: (row, id, value) => {
             return !!value.includes(row.getValue(id));
         },
-    },
-    {
-        accessorKey: 'subject',
-        header: 'Subject',
-        cell: ({ row }) => (
-            <Dialog>
-                <DialogTrigger asChild>
-                    <div className="cursor-pointer">
-                        <TruncatedContent content={row.original.subject} />
-                    </div>
-                </DialogTrigger>
-                <AlertViewDialog alert={row.original} /> {/* Added dialog for alert details */}
-            </Dialog>
-        ),
-        filterFn: (row, id, value) => {
-            return !!value.includes(row.getValue(id));
-        },
-    },
-    {
-        accessorKey: 'account',
-        header: 'Account',
-        cell: ({ row }) => (
-            <Dialog>
-                <DialogTrigger asChild>
-                    <div className="cursor-pointer">
-                        <Badge variant="success" >
-                            {row.original.account}
-                        </Badge>
-                    </div>
-                </DialogTrigger>
-                <AlertViewDialog alert={row.original} /> {/* Added dialog for alert details */}
-            </Dialog>
-        ),
     },
     {
         accessorKey: 'recipient',
-        header: 'Recipient',
+        header: 'Contact',
         cell: ({ row }) => (
             <Dialog>
                 <DialogTrigger asChild>
                     <div className="cursor-pointer">
-                        <Badge variant="info" >
-                            {row.original.recipient}
+                        <TruncatedContent content={row.original.recipient} />
+                    </div>
+                </DialogTrigger>
+                <AlertViewDialog alert={row.original} />
+            </Dialog>
+        ),
+        filterFn: (row, id, value) => {
+            return !!value.includes(row.getValue(id));
+        },
+    },
+    {
+        accessorKey: 'category',
+        header: 'Category',
+        cell: ({ row }) => (
+            <Dialog>
+                <DialogTrigger asChild>
+                    <div className="cursor-pointer">
+                        <span className="font-semibold">{row.original.category}</span>
+                    </div>
+                </DialogTrigger>
+                <AlertViewDialog alert={row.original} />
+            </Dialog>
+        ),
+    },
+    {
+        accessorKey: 'priority',
+        header: 'Priority',
+        cell: ({ row }) => (
+            <Dialog>
+                <DialogTrigger asChild>
+                    <div className="cursor-pointer">
+                        <Badge variant={row.original.priority === 'high' ? 'destructive' : row.original.priority === 'medium' ? 'info' : 'secondary'} className="w-fit">
+                            {row.original.priority}
                         </Badge>
                     </div>
                 </DialogTrigger>
-                <AlertViewDialog alert={row.original} /> {/* Added dialog for alert details */}
+                <AlertViewDialog alert={row.original} />
             </Dialog>
         ),
+        filterFn: (row, id, value) => {
+            return !!value.includes(row.getValue(id));
+        },
     },
     {
         accessorKey: 'createdAt',
@@ -144,7 +157,7 @@ export const columns: ColumnDef<AlertData>[] = [
                         {row.original.createdAt && format(new Date(row.original.createdAt), 'PPpp')}
                     </span>
                 </DialogTrigger>
-                <AlertViewDialog alert={row.original} /> {/* Added dialog for alert details */}
+                <AlertViewDialog alert={row.original} />
             </Dialog>
 
         ),
@@ -162,6 +175,6 @@ export const columns: ColumnDef<AlertData>[] = [
     {
         id: 'actions',
         header: 'Actions',
-        cell: ({ row }) => <ColumnDropdown {...row.original} />, // Ensure ColumnDropdown is defined
+        cell: ({ row }) => <ColumnDropdown {...row.original} />,
     },
 ];

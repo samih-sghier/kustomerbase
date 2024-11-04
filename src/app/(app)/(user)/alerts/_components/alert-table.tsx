@@ -4,7 +4,7 @@ import { DataTable } from "@/app/(app)/_components/data-table";
 import { type ColumnDef } from "@tanstack/react-table";
 import React, { useMemo } from "react";
 import { getWatchListColumns, type AlertData } from "./columns";
-import { alertTypeEnum } from "@/server/db/schema";
+import { alertTypeEnum, escalationPriority } from "@/server/db/schema";
 import { useDataTable } from "@/hooks/use-data-table";
 import type {
     DataTableFilterableColumn,
@@ -13,19 +13,21 @@ import type {
 import { getAllPaginatedAlertsQuery } from "@/server/actions/alert/queries";
 
 
-
 // Define filterable columns for the DataTable
 const filterableColumns: DataTableFilterableColumn<AlertData>[] = [
     {
-        id: "recipient",
-        title: "Recipient",
-        options: [],
-    },
+        id: "priority",
+        title: "Priority",
+        options: escalationPriority.enumValues.map((v) => ({
+            label: v,
+            value: v,
+        })),
+    }
     // {
     //     id: "archived",
     //     title: "Archived", // Changed title for clarity
     //     options: [
-            
+
     //     ],
     // },
 
@@ -47,7 +49,7 @@ type AlertTableProps = {
 
 // Define searchable columns for the DataTable
 const searchableColumns: DataTableSearchableColumn<AlertData>[] = [
-    { id: "subject", placeholder: "Search by subject..." },
+    { id: "recipient", placeholder: "Search by contact..." },
     // { id: "lastName", placeholder: "Search tenant name..." }
 ];
 
@@ -73,6 +75,8 @@ export function AlertTable({ watchListPromise }: AlertTableProps) {
         archived: item.archived || false, // Added to match the table structure
         subject: item.subject || "", // Added to match the table structure
         threadId: item.threadId || "", // Added to match the table structure
+        category: item.category || "Other", // Added to match the table structure
+        priority: item.priority || "low"
     }));
 
     const { table } = useDataTable({

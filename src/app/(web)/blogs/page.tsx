@@ -9,6 +9,7 @@ import Link from "next/link";
 import { type Metadata } from "next";
 import { blogPageConfig } from "@/app/(web)/blogs/_constants/page-config";
 import { blogs } from "@/app/source";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
     title: blogPageConfig.title,
@@ -21,7 +22,7 @@ export default async function BlogsPage() {
         <WebPageWrapper>
             <WebPageHeader title="Blog">
                 <p className="text-center text-base">
-                    <span>Learn more about bettereply. through our blog!</span>
+                    <span>Learn more about {siteConfig.name} through our blog!</span>
                 </p>
             </WebPageHeader>
 

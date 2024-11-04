@@ -1,1 +1,1 @@
-export const new_user_setup_step_cookie = "bettereply:new_user_setup_step";
+export const new_user_setup_step_cookie = "Inboxpilot:new_user_setup_step";
