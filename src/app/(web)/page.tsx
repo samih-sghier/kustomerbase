@@ -81,7 +81,7 @@ export default async function HomePage() {
             <Promotion />
             <HowItWorks />
             <Features />
-            <Testimonials />
+            {/* <Testimonials /> */}
         </WebPageWrapper>
     );
 }
