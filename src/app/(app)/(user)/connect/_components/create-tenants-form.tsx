@@ -41,6 +41,10 @@ export function ConnectEmailForm({ defaultOpen, orgId }: { defaultOpen: boolean,
 
 
     const handleConnect = async (provider: string, data: any) => {
+        if (true) {
+            toast.error("upgrade big dog");
+            return
+        }
         if (provider === 'google') {
             try {
                 const authUrl = await authorizeGmailMutationSend({ ...data, orgId, provider });
@@ -98,7 +102,7 @@ export function ConnectEmailForm({ defaultOpen, orgId }: { defaultOpen: boolean,
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="customer_support">Customer Support</SelectItem>
-                                                <SelectItem value="leads">Leads</SelectItem>
+                                                <SelectItem value="sales">Sales</SelectItem>
                                                 <SelectItem value="multipurpose">Multipurpose</SelectItem>
                                             </SelectContent>
                                         </Select>
