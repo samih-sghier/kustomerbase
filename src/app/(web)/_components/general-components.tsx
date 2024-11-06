@@ -40,15 +40,18 @@ export function WebPageHeader({
     return (
         <div className="flex flex-col items-center justify-center gap-5">
             {badge && (
-                <Badge size="md" variant="secondary">
-                    <p className="text-center text-base">{badge}</p>
-                </Badge>
+                <p className="bg-gradient-to-r from-[#807280] via-[#5C4A5B] to-[#603060] text-white px-4 py-1.5 rounded-full text-sm font-medium">
+                    {badge}
+                </p>
             )}
             <Balancer
                 as="h1"
                 className="max-w-2xl text-center font-heading text-6xl font-bold leading-none sm:text-7xl"
             >
-                {title}
+                {title.split(" ").slice(0, -2).join(" ")}
+                <span className="bg-gradient-to-r from-[#807280] via-[#5C4A5B] to-[#603060] bg-clip-text text-transparent">
+                    {" " + title.split(" ").slice(-2).join(" ")}
+                </span>
             </Balancer>
 
             {children && children}

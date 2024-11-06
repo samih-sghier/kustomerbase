@@ -32,7 +32,8 @@ export default async function HomePage() {
                     as="p"
                     className="text-center text-base text-muted-foreground sm:text-lg"
                 >
-                    Build a custom GPT, connect it to your email and let it handle customer support, lead generation, engage with your users, incoming support requests, reply to internal technical queries and more.
+                    Build a custom GPT, connect it to your email and let it handle customer support, lead generation, engage with your users,
+                    incoming support requests, reply to internal technical queries and more.
                 </Balancer>
 
                 <div className="flex items-center gap-2">
@@ -48,23 +49,23 @@ export default async function HomePage() {
                     <Link
                         href={siteUrls.auth.login}
                         className={buttonVariants({
-                            className: "bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300"
+                            className: "bg-gradient-to-r from-[#807280] via-[#5C4A5B] to-[#603060] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300"
                         })}
                     >
-                        Build your Mailbot 📧
+                        Build your mailbot 
                         <ArrowRightIcon className="ml-1 h-4 w-4" />
                     </Link>
 
                 </div>
             </WebPageHeader>
 
-            <div className="-m-2 w-full rounded-xl bg-foreground/5 p-2 ring-1 ring-inset ring-foreground/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+            <div className="-m-2 w-full rounded-xl bg-foreground/5 p-2 ring-1 ring-inset ring-foreground/10 shadow-[0_0_32px_#603060,0_0_64px_#603060] lg:-m-4 lg:rounded-2xl lg:p-4">
                 <div className="relative aspect-video w-full rounded-md bg-muted">
                     <Image
                         src="https://utfs.io/f/z1SQx2HK8PtsaFzGPt8VkwuCAY9BKDHeQtXhMpfi8qSyO5xl"
                         alt="dashboard preview"
                         fill
-                        className="block rounded-md border border-border dark:hidden"
+                        className="block rounded-md border border-border border-[0.5px] dark:hidden"
                         priority
                     />
 
@@ -72,11 +73,15 @@ export default async function HomePage() {
                         src="https://utfs.io/f/z1SQx2HK8PtsY15Q8uvaYyIlbV8gfnFD97GK6rEtwcUpWJx5"
                         alt="dashboard preview"
                         fill
-                        className="hidden rounded-md border border-border dark:block"
+                        className="hidden rounded-md border border-border border-[0.5px] dark:block"
                         priority
                     />
                 </div>
             </div>
+
+
+
+
 
             <Promotion />
             <HowItWorks />
