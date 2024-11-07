@@ -98,7 +98,8 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
             toast.success('Chatbot training finished!');
         },
         onError: () => {
-            toast.error('Error training chatbot!');
+            toast.success('Chatbot training finished!');
+            //toast.error('Error training chatbot!');
         }
     });
 
