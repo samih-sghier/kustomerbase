@@ -41,10 +41,10 @@ export function ConnectEmailForm({ defaultOpen, orgId }: { defaultOpen: boolean,
 
 
     const handleConnect = async (provider: string, data: any) => {
-        if (true) {
-            toast.error("upgrade big dog");
-            return
-        }
+        // if (true) {
+        //     toast.error("upgrade big dog");
+        //     return
+        // }
         if (provider === 'google') {
             try {
                 const authUrl = await authorizeGmailMutationSend({ ...data, orgId, provider });
