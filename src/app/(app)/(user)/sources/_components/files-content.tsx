@@ -182,7 +182,6 @@ export function FileUploadForm({ source, subscription, stats }: { source: any, s
         lastTrainedDate
     } = stats;
     const processFile = useCallback(async (file: File) => {
-
         try {
             let text = '';
 
@@ -251,6 +250,7 @@ export function FileUploadForm({ source, subscription, stats }: { source: any, s
         } catch (error) {
             console.error("Error processing document:", error);
             toast.error("Document could not be processed: " + (error as Error).message);
+            setUploadProgress(0);
         } finally {
             setUploadProgress(0);
         }
@@ -270,12 +270,14 @@ export function FileUploadForm({ source, subscription, stats }: { source: any, s
                 const documentNamesToRemove = new Set([fileToDelete]);
 
                 // Call the API to remove the documents
-                await removeDocumentsField(documentNamesToRemove);
+                removeDocumentsField(documentNamesToRemove);
 
                 toast.success(`File "${fileToDelete}" removed successfully.`);
             } catch (error) {
                 console.error("Error removing file:", error);
                 toast.error(`Failed to remove file "${fileToDelete}": ${(error as Error).message}`);
+                setIsDialogOpen(false);
+                setFileToDelete(null);
             }
         }
         setIsDialogOpen(false);
@@ -339,10 +341,10 @@ export function FileUploadForm({ source, subscription, stats }: { source: any, s
                         </div>
 
                         <div className="mt-7">
-                            <div className="relative flex items-center justify-center mb-5">
-                                <div className="border-t border-gray-300 w-full"></div>
-                                <span className="absolute px-2 text-sm text-muted-foreground">Attached Files: </span>
+                            <div className="relative flex items-center justify-center">
+                                <span className="relative px-2 text-sm text-muted-foreground bg-transparent">Attached Files</span>
                             </div>
+
                             {convertedData && convertedData.size > 0 ? (
                                 <ul className="list-disc pl-5">
                                     {Array.from(convertedData.entries()).map(([fileName, textData]) => (
@@ -371,23 +373,24 @@ export function FileUploadForm({ source, subscription, stats }: { source: any, s
                             <div className="mt-4">
                                 <div className="relative pt-1">
                                     <div className="flex mb-2 items-center justify-between">
-                                        <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-teal-600 bg-teal-200">
+                                        <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-green-700 bg-green-200">
                                             Upload Progress
                                         </div>
-                                        <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-teal-600 bg-teal-200">
+                                        <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-green-700 bg-green-200">
                                             {uploadProgress}%
                                         </div>
                                     </div>
-                                    <div className="relative flex mb-2 items-center justify-between">
+                                    <div className="relative flex items-center justify-between">
                                         <div className="flex-1 bg-gray-200 rounded-full h-2.5">
                                             <div
-                                                className="bg-teal-600 h-2.5 rounded-full"
+                                                className="bg-green-500 h-2.5 rounded-full transition-all duration-200"
                                                 style={{ width: `${uploadProgress}%` }}
                                             ></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         )}
                     </div>
                 </CardContent>

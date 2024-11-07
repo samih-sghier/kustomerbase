@@ -358,8 +358,8 @@ export default function WebsiteContent({ source, stats, subscription }: { source
 
             {/* OR Divider */}
             <div className="relative flex items-center justify-center">
-                <div className="border-t border-gray-300 w-full"></div>
-                <span className="absolute px-2 text-sm text-muted-foreground">Or</span>
+                <div className="absolute border-t border-gray-300 w-full"></div>
+                <span className="relative px-2 text-sm text-muted-foreground bg-black">Or</span>
             </div>
 
             {/* Sitemap Section */}
@@ -383,8 +383,8 @@ export default function WebsiteContent({ source, stats, subscription }: { source
 
             {/* OR Divider */}
             <div className="relative flex items-center justify-center">
-                <div className="border-t border-gray-300 w-full"></div>
-                <span className="absolute px-2 text-sm text-muted-foreground">Included Links</span>
+                <div className="absolute border-t border-gray-300 w-full"></div>
+                <span className="relative px-2 text-sm text-muted-foreground bg-black">Included Links</span>
             </div>
 
             {/* Included Links Section */}
