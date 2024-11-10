@@ -8,7 +8,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { CheckIcon, XIcon } from "lucide-react";
 import {
-    type PrincingPlan,
+    type PricingPlan,
     pricingPlans,
     pricingFeatures,
 } from "@/config/pricing";
@@ -71,9 +71,9 @@ function PricingCard({ pricing }: PricingCardProps) {
                         {pricing.currency.code} {pricing.duration}
                     </span>
                 </p>
-                <CardDescription className="font-light">
+                {/* <CardDescription className="font-light">
                     {pricing.highlight}
-                </CardDescription>
+                </CardDescription> */}
 
                 <form
                     action={async () => {
@@ -94,9 +94,13 @@ function PricingCard({ pricing }: PricingCardProps) {
                 </form>
 
                 <div className="flex flex-col gap-4 pt-10">
-                    <p className="text-sm font-medium">
-                        What’s included in {pricing.title}:
-                    </p>
+                    {/* <p className="text-sm font-medium">
+                        {pricing.title === "Free"
+                            ? null
+                            : pricing.title === "Hobby"
+                                ? "Everything in Free, plus..."
+                                : `Everything in ${pricingPlans.find(plan => plan.title === pricingPlans[pricingPlans.findIndex(p => p.title === pricing.title) - 1]?.title)?.title}, plus...`}
+                    </p> */}
                     <ul className="flex flex-col gap-2">
                         {pricing.uniqueFeatures?.map((feature, index) => (
                             <li
@@ -108,12 +112,26 @@ function PricingCard({ pricing }: PricingCardProps) {
                             </li>
                         ))}
 
-                        {pricingFeatures.map((feature) => (
-                            <li
-                                key={feature.id}
-                                className="flex items-start gap-3"
-                            >
-                                {feature.includedIn.includes(pricing.id) ? (
+                        {pricingFeatures.map(
+                            (feature) =>
+                                feature.includedIn.includes(pricing.id) && (
+                                    <li
+                                        key={feature.id}
+                                        className="flex items-start gap-3"
+                                    >
+
+
+                                        <CheckIcon className="h-5 w-5 flex-shrink-0" />
+                                        <span
+                                            className={cn(
+                                                "text-sm"
+                                            )}
+                                        >
+                                            {feature.title}
+                                        </span>
+
+
+                                        {/* {feature.includedIn.includes(pricing.id) ? (
                                     <CheckIcon className="h-5 w-5 flex-shrink-0" />
                                 ) : (
                                     <XIcon className="h-5 w-5 flex-shrink-0 text-muted-foreground/60" />
@@ -127,9 +145,9 @@ function PricingCard({ pricing }: PricingCardProps) {
                                     )}
                                 >
                                     {feature.title}
-                                </span>
-                            </li>
-                        ))}
+                                </span> */}
+                                    </li>
+                                ))}
                     </ul>
                 </div>
             </CardContent>

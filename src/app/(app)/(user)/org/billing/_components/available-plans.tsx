@@ -219,6 +219,19 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
                                 </CardHeader>
                                 <CardContent>
                                     <ul className="space-y-1">
+                                        {pricingFeatures
+                                            .filter(feature => feature.includedIn.includes(selectedPlanId))
+                                            .map((feature) => (
+                                                <li
+                                                    key={feature.id}
+                                                    className="flex items-center text-sm font-light"
+                                                >
+                                                    <CheckIcon className="mr-1 h-4 w-4" />
+                                                    {feature.title}
+                                                </li>
+                                            ))}
+                                    </ul>
+                                    {/* <ul className="space-y-1">
                                         {pricingFeatures.map((feature) => (
                                             <li
                                                 key={feature.id}
@@ -240,7 +253,7 @@ export function AvailablePlans({ subscription }: AvailablePlansProps) {
                                                 {feature.title}
                                             </li>
                                         ))}
-                                    </ul>
+                                    </ul> */}
                                 </CardContent>
                             </Card>
                             {selectedVariantId === subscription?.plan?.priceId ? (
