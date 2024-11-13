@@ -133,7 +133,7 @@ export function QnAContent({ source, stats, subscription }: { source: Source, st
                         onClick={() => append({ key: `new_${Date.now()}`, question: "", answer: "" })}
                         variant="outline"
                     >
-                        + Add Another Q&A Pair
+                        + Add Another FAQ Pair
                     </Button>
                     <Button type="submit" form="qna-form" disabled={loading}>
                         {loading ? "Processing..." : "Submit"}

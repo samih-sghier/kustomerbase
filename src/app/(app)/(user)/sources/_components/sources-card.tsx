@@ -133,7 +133,7 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
                         <p className="text-sm">{formatNumberWithCommas(linkCount)} Link{linkCount !== 1 ? 's' : ''} ({formatNumberWithCommas(linkChars)} detected chars)</p>
                     )}
                     {qaCount > 0 && (
-                        <p className="text-sm">{formatNumberWithCommas(qaCount)} Q&A ({formatNumberWithCommas(qaChars)} chars)</p>
+                        <p className="text-sm">{formatNumberWithCommas(qaCount)} FAQ ({formatNumberWithCommas(qaChars)} chars)</p>
                     )}
                     {mailCount > 0 && (
                         <p className="text-sm">{formatNumberWithCommas(mailCount)} Mail ({formatNumberWithCommas(mailChars)} chars)</p>

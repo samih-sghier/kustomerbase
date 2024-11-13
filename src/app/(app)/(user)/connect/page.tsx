@@ -29,7 +29,7 @@ function mapFrequencyToLabel(frequency: number | string | null): string {
         case 4320:
             return "After 72 hours";
         default:
-            return "Only when approved";
+            return "less than 1 minute";
     }
 }
 

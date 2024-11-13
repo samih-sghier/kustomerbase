@@ -61,7 +61,7 @@ export function TabsSection({ source, subscription, stats }: { source: any, subs
                     style={{ backgroundColor: 'var(--tab-bg-default)' }}
                 >
                     <ClipboardListIcon className="text-lg" />
-                    <span className="ml-2">Q&A</span>
+                    <span className="ml-2">FAQ</span>
                     <div
                         className={`absolute bottom-0 left-0 w-full h-1 bg-primary transition-transform transform ${activeTab === "qna" ? "scale-x-100" : "scale-x-0"} origin-left`}
                     />
