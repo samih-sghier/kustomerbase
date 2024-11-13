@@ -10,8 +10,9 @@ export const defaultMetadata: Metadata = {
     description: siteConfig.description,
     metadataBase: new URL(siteUrls.publicUrl),
     keywords: [
-        "Chatbot",
+        "Zendesk Alternative",
         "Chatbase for Gmail",
+        "Cheap Zendesk",
         "AI Email Assistant",
         "Automated Customer Support Email",
         "Intelligent Email Response System",
