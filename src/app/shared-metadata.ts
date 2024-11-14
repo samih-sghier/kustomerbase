@@ -10,9 +10,11 @@ export const defaultMetadata: Metadata = {
     description: siteConfig.description,
     metadataBase: new URL(siteUrls.publicUrl),
     keywords: [
+        "it help desk software",
         "Zendesk Alternative",
         "Chatbase for Gmail",
         "Cheap Zendesk",
+        "customer service",
         "AI Email Assistant",
         "Automated Customer Support Email",
         "Intelligent Email Response System",
@@ -61,7 +63,7 @@ export const twitterMetadata: Metadata["twitter"] = {
     description: siteConfig.description,
     card: "summary_large_image",
     images: [siteConfig.orgImage],
-    creator: "@Inboxpilot",
+    creator: "@inboxpilot",
 };
 
 export const ogMetadata: Metadata["openGraph"] = {
