@@ -3,28 +3,41 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils";
+import { format } from "date-fns";
 import { toast } from "sonner";
 import { useAwaitableTransition } from "@/hooks/use-awaitable-transition";
 import { useMutation } from '@tanstack/react-query';
 import { Icons } from '@/components/ui/icons';
 import { OrgSubscription } from '@/types/org-subscription';
 import { freePricingPlan, pricingPlans } from '@/config/pricing';
+import { createClient } from '@supabase/supabase-js';
+import { updateDocumentsField, updateLastTrainedTimeStamp } from '@/server/actions/sources/mutations';
+
+
+const supabase = createClient("https://qqrkqrdotklubogipgvh.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxcmtxcmRvdGtsdWJvZ2lwZ3ZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczMTEwMDA1MCwiZXhwIjoyMDQ2Njc2MDUwfQ.zRgNOtgSxMR65VEYdoOfpTx4TJjgdQn-nZb1Hf38tKQ");
+
 
 // Add a function to make the HTTP request to the correct endpoint
-async function trainLlamaIndexForCurrentOrg() {
-    const response = await fetch('/api/rag', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        // Add any necessary body data here
-        // body: JSON.stringify({ /* your data */ }),
-    });
+async function trainLlamaIndexForCurrentOrg(companyData: any) {
+    // pages/api/pinecone.js
+    const tableName = `data_${companyData.orgId.replace(/-/g, '_')}`;
+
+    try {
+        const { error } = await supabase.from(tableName).delete().gt('id', 0); // Assuming 'id' is numeric
+
+
     
-    if (!response.ok) {
-        throw new Error('Failed to train Llama index');
-    }
+        if (error) {
+          console.error('Error deleting records:', error);
+          throw error;
+        }
+    
+        console.log('All records deleted successfully.');
+      } catch (error) {
+        console.error('Error deleting records:', error);
+        // Handle the error appropriately
+      }
+      updateLastTrainedTimeStamp();
 }
 
 // Utility function for formatting large numbers with commas
@@ -46,7 +59,7 @@ export interface SourceStats {
     mailChars: number;
 }
 
-export function SourcesCard({ stats, subscription }: { stats: SourceStats, subscription: any }) {
+export function SourcesCard({ stats, subscription, dataSources }: { stats: SourceStats, subscription: any, dataSources: any }) {
     const {
         textInputChars,
         linkChars,
@@ -92,14 +105,13 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
     const { mutate: trainChatbotMutate, isPending: trainChatbotIsPending } = useMutation({
         mutationFn: async () => {
             // Call the API to train the chatbot
-            return await trainLlamaIndexForCurrentOrg();
+            return trainLlamaIndexForCurrentOrg(dataSources);
         },
         onSuccess: () => {
             toast.success('Chatbot training finished!');
         },
         onError: () => {
-            toast.success('Chatbot training finished!');
-            //toast.error('Error training chatbot!');
+            toast.error('Error training chatbot!');
         }
     });
 
@@ -109,7 +121,7 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
         toast.promise(
             async () => {
                 await startAwaitableTrainBotTransition(() => {
-                    trainChatbotMutate(); // Directly call the mutate function
+                    trainChatbotMutate();
                 });
             },
             {
@@ -145,7 +157,7 @@ export function SourcesCard({ stats, subscription }: { stats: SourceStats, subsc
 
                 <p className="text-sm text-muted-foreground mb-4">
                     {lastTrainedDate
-                        ? `Last trained on: ${formatDate(lastTrainedDate)}`
+                        ? `Last trained on: ${format(new Date(lastTrainedDate), "PPp")}`
                         : "Never been trained"}
                 </p>
 

@@ -25,7 +25,7 @@ export default async function UserPropertyPage() {
                     <TabsSection source={source} subscription={subscription ? subscription.plan : freePricingPlan} stats={stats} />
                 </div>
                 <div className="mt-4 lg:mt-0 lg:w-1/4">
-                    <SourcesCard stats={stats} subscription={subscription} />
+                    <SourcesCard stats={stats} subscription={subscription} dataSources={source} />
                 </div>
             </div>
         </AppPageShell>

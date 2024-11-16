@@ -7,16 +7,16 @@
 export const siteConfig = {
     name: "Inboxpilot",
     description:
-        "Custom ChatGPT for your business",
+        "Custom ChatGPT for emails",
     orgImage:
         "https://utfs.io/f/z1SQx2HK8PtsY15Q8uvaYyIlbV8gfnFD97GK6rEtwcUpWJx5",
     contactEmail: "support@inboxpilot.co",
     noReplyEmail: "no-reply@inboxpilot.co",
     catchyPhrases: [
-        "Transform Your Inbox with Inboxpilot!",
-        "Automate Responses, Elevate Customer Experience!",
-        "Your Intelligent Email Assistant!",
-        "Focus on What Matters – Let AI Handle the Rest!",
+        "Automatic Helpdesk",
+        "Automate Emails",
+        "Email Assistant",
+        "AI Email Assistant",
         "Stay Ahead with Smart Email Management!",
         "Effortless Communication with Inboxpilot!",
         "Your Partner in Email Efficiency!",

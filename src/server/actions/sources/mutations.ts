@@ -100,6 +100,38 @@ export async function updateDocumentsField(documentsUpdate: Record<string, strin
 
 }
 
+
+export async function updateLastTrainedTimeStamp() {
+    // Ensure the user is authenticated
+    // Fetch the current organization
+    const { currentOrg } = await getOrganizations();
+
+    // Ensure a default source exists for the organization
+    await ensureDefaultSourceExists(currentOrg.id);
+
+    // Fetch the existing record
+    const existingRecord = await db
+        .select()
+        .from(sources)
+        .where(eq(sources.orgId, currentOrg.id))
+        .limit(1)
+        .execute();
+
+    if (!existingRecord || existingRecord.length === 0) {
+        throw new Error("No source record found for the current organization.");
+    }
+
+    await db
+        .update(sources)
+        .set({ lastTrained: new Date(), updatedOn: new Date() })
+        .where(eq(sources.orgId, currentOrg.id))
+        .execute();
+    revalidatePath('/sources');
+
+
+}
+
+
 export async function removeDocumentsField(documentNames: Set<string>) {
     // Ensure the user is authenticated
     // Fetch the current organization
