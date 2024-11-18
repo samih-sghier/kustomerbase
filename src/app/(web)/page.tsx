@@ -16,7 +16,14 @@ import { ArrowRightIcon } from "lucide-react";
 import HowItWorks from "@/app/(web)/_components/howitworks";
 
 export const metadata: Metadata = {
-    title: "Custom ChatGPT for your data",
+    title: "AI That learns your business and responds to emails 24/7",
+    alternates: {
+        canonical: `${siteUrls.publicUrl}`,
+    },
+    openGraph: {
+        type: 'website',
+        url: `${siteUrls.publicUrl}`,
+    }
 };
 
 export const dynamic = "force-static";
