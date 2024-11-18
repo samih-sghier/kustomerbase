@@ -32,19 +32,26 @@ export default async function HomePage() {
                     as="p"
                     className="text-center text-base text-muted-foreground sm:text-lg"
                 >
-                    Build a custom GPT, connect it to your email and let it handle customer support, lead generation, engage with your users,
-                    incoming support requests, reply to internal technical queries and more.
+
+                    AI That learns your business and handles emails 24/7
+                </Balancer>
+
+                <Balancer
+                    as="p"
+                    className="text-center text-base text-muted-foreground sm:text-lg"
+                >
+                    Connect your email, train AI with your company data, and let it manage all incoming emails around the clock—delivering responses in your brand's voice and with your expertise.
                 </Balancer>
 
                 <div className="flex items-center gap-2">
-                    {/* <Link
+                    <Link
                         href={siteUrls.github}
                         className={buttonVariants({ variant: "outline" })}
                         target="_blank"
                         rel="noopener noreferrer"
                     >
                         <Icons.gitHub className="mr-2 h-4 w-4" /> Github
-                    </Link> */}
+                    </Link>
 
                     <Link
                         href={siteUrls.auth.login}
@@ -52,9 +59,10 @@ export default async function HomePage() {
                             className: "bg-gradient-to-r from-[#807280] via-[#5C4A5B] to-[#603060] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300"
                         })}
                     >
-                        Build your mailbot 
+                        Build your mailbot
                         <ArrowRightIcon className="ml-1 h-4 w-4" />
                     </Link>
+
 
                 </div>
             </WebPageHeader>
@@ -83,9 +91,10 @@ export default async function HomePage() {
 
 
 
-            <Promotion />
+
             <HowItWorks />
             <Features />
+            <Promotion />
             {/* <Testimonials /> */}
         </WebPageWrapper>
     );

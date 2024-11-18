@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Zap } from "lucide-react";
 import { type ElementType } from "react";
 import Balancer from "react-wrap-balancer";
 
@@ -40,7 +41,10 @@ export function WebPageHeader({
     return (
         <div className="flex flex-col items-center justify-center gap-5">
             {badge && (
+
                 <p className="bg-gradient-to-r from-[#807280] via-[#5C4A5B] to-[#603060] text-white px-4 py-1.5 rounded-full text-sm font-medium">
+                    <Zap className="w-4 h-4 mr-1 inline-block" />
+
                     {badge}
                 </p>
             )}

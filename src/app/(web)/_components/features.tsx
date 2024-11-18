@@ -15,7 +15,7 @@ export default function Features() {
                     as="p"
                     className="max-w-2xl text-center text-base text-muted-foreground sm:text-xl"
                 >
-                    Our AI-driven features are designed to enhance customer interactions, streamline communication, and provide accurate responses to queries.
+                    Inboxpilot is the most advanced AI agent in customer service that can handle your entire email support—on your existing email account.
                 </Balancer>
             </div>
             <div className="grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">
