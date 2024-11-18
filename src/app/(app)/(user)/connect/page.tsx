@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { getOrganizations } from "@/server/actions/organization/queries";
 import { getOrgConnectedQuery } from "@/server/actions/gmail/queries";
 import { SidebarLoading } from "../../_components/sidebar";
+import { getOrgSubscription } from "@/server/actions/stripe_subscription/query";
 
 function mapFrequencyToLabel(frequency: number | string | null): string {
     switch (frequency) {
@@ -37,6 +38,7 @@ function mapFrequencyToLabel(frequency: number | string | null): string {
 export default async function UserTenantPage() {
     const source = await getOrgConnectedQuery();
     const { currentOrg } = await getOrganizations();
+    const subscription = await getOrgSubscription();
 
     return (
         <AppPageShell
@@ -49,7 +51,7 @@ export default async function UserTenantPage() {
                         {source.length} email accounts you have added.
                     </h2>
 
-                    <ConnectEmailForm defaultOpen={false} orgId={currentOrg.id} />
+                    <ConnectEmailForm defaultOpen={false} orgId={currentOrg.id} upgradeNeeded={(subscription?.plan?.chatbots ?? 1) < source.length} />
                 </div>
 
                 <div className={source.length > 0 ? "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid gap-4"}>

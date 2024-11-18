@@ -23,7 +23,7 @@ export async function sendVerificationEmail({
             html: `
                 <div>
                     <a href="${siteUrls.subletguard}">${siteConfig.name}</a>
-                    <h1>🪄 Your magic link</h1>
+                    <h1>Verification link</h1>
                     <p>
                         Click the link below to verify your email address and
                         sign in.

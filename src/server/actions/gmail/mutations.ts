@@ -221,7 +221,7 @@ export async function createWatchMutation({ access_token, refresh_token }: { acc
         const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
         // Define the Pub/Sub topic and label to watch (e.g., "INBOX")
-        const topicName = 'projects/kava-c7f69/topics/bettereply';  // Replace with your actual Pub/Sub topic
+        const topicName = 'projects/kava-c7f69/topics/inboxpilotsub';  // Replace with your actual Pub/Sub topic
         const watchRequest = {
             labelIds: ['INBOX'],  // Monitor the INBOX for new messages
             topicName: topicName,

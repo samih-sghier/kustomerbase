@@ -39,7 +39,7 @@ export async function sendOrgInviteEmail({
             html: `
                 <div>
                     <a href="${siteUrls.subletguard}">${siteConfig.name}</a>
-                    <h1>🪄 Your Invite to ${orgName}</h1>
+                    <h1>Your Invite to ${orgName}</h1>
                     <p>
                         You have been invited to join ${orgName}
                         Click the link below to verify to join ${orgName} on ${siteConfig.name}.

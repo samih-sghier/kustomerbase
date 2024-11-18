@@ -99,70 +99,75 @@ export const pricingFeatures: PricingFeature[] = [
     {
         id: "8",
         title: "2 connected email accounts",
-        includedIn: [pricingIds.hobby, pricingIds.standard],
+        includedIn: [pricingIds.hobby],
     },
     {
         id: "9",
+        title: "5 connected email accounts",
+        includedIn: [pricingIds.standard],
+    },
+    {
+        id: "10",
         title: "10 connected email accounts",
         includedIn: [pricingIds.unlimited],
     },
     {
-        id: "10",
+        id: "11",
         title: "400,000 chars data source limit",
         includedIn: [pricingIds.free],
     },
     {
-        id: "11",
+        id: "12",
         title: "5,000,000 chars data source limit",
         includedIn: [pricingIds.hobby],
     },
     {
-        id: "12",
+        id: "13",
         title: "11,000,000 chars data source limit",
         includedIn: [pricingIds.standard],
     },
     {
-        id: "13",
+        id: "14",
         title: "20,000,000 chars data source limit",
         includedIn: [pricingIds.unlimited],
     },
     {
-        id: "14",
+        id: "15",
         title: "1 team member",
         includedIn: [pricingIds.free],
     },
     {
-        id: "15",
+        id: "16",
         title: "3 team members",
         includedIn: [pricingIds.hobby],
     },
     {
-        id: "16",
+        id: "17",
         title: "5 team members",
         includedIn: [pricingIds.standard],
     },
     {
-        id: "17",
+        id: "18",
         title: "20 team members",
         includedIn: [pricingIds.unlimited],
     },
     {
-        id: "18",
+        id: "19",
         title: "Limited to 10 links to train on",
         includedIn: [pricingIds.free],
     },
     {
-        id: "19",
+        id: "20",
         title: "Unlimited links to train on",
         includedIn: [pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "20",
+        id: "21",
         title: "Capture Email Escalations",
         includedIn: [pricingIds.free, pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     },
     {
-        id: "21",
+        id: "22",
         title: "Remove 'Powered by Inboxpilot.co'",
         includedIn: [pricingIds.hobby, pricingIds.standard, pricingIds.unlimited],
     }

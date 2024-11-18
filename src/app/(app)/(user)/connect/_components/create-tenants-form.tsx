@@ -29,7 +29,7 @@ import { authorizeGmailMutationRead, authorizeGmailMutationSend } from "@/server
 import { getOrganizations } from "@/server/actions/organization/queries";
 
 
-export function ConnectEmailForm({ defaultOpen, orgId }: { defaultOpen: boolean, orgId: string }) {
+export function ConnectEmailForm({ defaultOpen, orgId, upgradeNeeded }: { defaultOpen: boolean, orgId: string, upgradeNeeded: boolean }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const form = useForm({
@@ -41,10 +41,11 @@ export function ConnectEmailForm({ defaultOpen, orgId }: { defaultOpen: boolean,
 
 
     const handleConnect = async (provider: string, data: any) => {
-        // if (true) {
-        //     toast.error("upgrade big dog");
-        //     return
-        // }
+        if (upgradeNeeded) {
+            toast.error("You have exceeded your plan's connect accounts limit!");
+            return
+        }
+        
         if (provider === 'google') {
             try {
                 const authUrl = await authorizeGmailMutationSend({ ...data, orgId, provider });
