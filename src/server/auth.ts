@@ -225,4 +225,4 @@ export const getServerAuthSession = () => getServerSession(authOptions);
 export const getUser = async () => {
     const session = await getServerAuthSession();
     return session?.user ?? null;
-};
+}

@@ -45,12 +45,12 @@ export default async function HomePage() {
 
                 <div className="flex items-center gap-2">
                     <Link
-                        href={siteUrls.github}
+                        href={siteUrls.auth.signup}
                         className={buttonVariants({ variant: "outline" })}
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <Icons.gitHub className="mr-2 h-4 w-4" /> Github
+                        <Icons.google className="mr-2 h-4 w-4" /> Google
                     </Link>
 
                     <Link
