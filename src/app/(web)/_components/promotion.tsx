@@ -1,4 +1,8 @@
+import { Button } from "@/components/ui/button";
+import { siteUrls } from "@/config/urls";
+import Link from "next/link";
 import Balancer from "react-wrap-balancer";
+import { ArrowRightIcon } from "lucide-react";
 
 export function Promotion() {
     return (
@@ -7,18 +11,26 @@ export function Promotion() {
                 as="h2"
                 className="text-center font-heading text-3xl font-bold md:text-5xl"
             >
-                No More Ticket Pile-Ups!
+                Stop Drowning in Emails
             </Balancer>
             <Balancer
                 as="p"
-                className="text-center text-base leading-relaxed text-white sm:text-xl"
+                className="text-center text-base leading-relaxed text-white/90 sm:text-xl"
             >
-                Transform your inbox by intelligently responding to all types of emails. Whether it's customer inquiries, team communications, or important notifications, our AI assistant uses your data to provide timely and relevant replies. Simplify your email management and enhance your productivity today!
-                <br />
-                <br />
+                Let AI handle your routine emails while you focus on what matters.
+                Smart, instant responses that sound just like you.
             </Balancer>
 
+            <Link href={siteUrls.auth.signup}>
+                <Button
+                    variant="secondary"
+                    size="lg"
+                    className="mt-4 bg-white text-[#603060] hover:bg-white/90"
+                >
+                    Try for Free
+                    <ArrowRightIcon className="ml-2 h-4 w-4" />
+                </Button>
+            </Link>
         </section>
-
     );
 }

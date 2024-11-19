@@ -40,7 +40,7 @@ export default async function HomePage() {
                     className="text-center text-base text-muted-foreground sm:text-lg"
                 >
 
-                    AI That learns your business and handles emails 24/7
+                    AI that learns your business and replies to emails 24/7
                 </Balancer>
 
                 <Balancer
