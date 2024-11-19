@@ -16,7 +16,7 @@ import { ArrowRightIcon } from "lucide-react";
 import HowItWorks from "@/app/(web)/_components/howitworks";
 
 export const metadata: Metadata = {
-    title: "AI That learns your business and responds to emails 24/7",
+    title: "AI that learns your business and responds to emails 24/7 | Inboxpilot.co",
     alternates: {
         canonical: `${siteUrls.publicUrl}`,
     },
