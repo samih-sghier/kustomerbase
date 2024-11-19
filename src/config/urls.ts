@@ -11,6 +11,7 @@ export const siteUrls = {
     publicUrl: "https://inboxpilot.co",
     github: "https://github.com/inboxpilot",
     twitter: "https://x.com/inboxpilot",
+    instagram: "https://instagram.com/inboxpilot",
     home: "/",
     pricing: "/pricing",
     features: "/features",

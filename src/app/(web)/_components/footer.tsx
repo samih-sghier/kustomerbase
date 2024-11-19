@@ -83,6 +83,18 @@ export function WebFooter() {
                             <Icons.twitter className="h-4 w-4" />
                             <span className="sr-only">Inboxpilot twitter</span>
                         </Link>
+                        <Link
+                            href={siteUrls.instagram}
+                            className={buttonVariants({
+                                variant: "outline",
+                                size: "icon",
+                            })}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <Icons.instagram className="h-4 w-4" />
+                            <span className="sr-only">Inboxpilot instagram</span>
+                        </Link>
                         <ThemeToggle />
                     </div>
                 </div>
