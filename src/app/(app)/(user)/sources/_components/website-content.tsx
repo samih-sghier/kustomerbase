@@ -10,6 +10,8 @@ import { clearSourceFields, removeWebsiteDataField, updateWebsiteDataField } fro
 import { sourcesUpdateSchema } from '@/server/db/schema';
 import { freePricingPlan, PricingPlan } from '@/config/pricing';
 import { c } from 'node_modules/fumadocs-ui/dist/layout-WuS8Ab4e';
+import { Icons } from '@/components/ui/icons';
+import { RefreshCcw } from 'lucide-react';
 
 const urlSchema = z.string().url().min(1, 'URL cannot be empty');
 const sitemapSchema = z.string().url().min(1, 'Sitemap URL cannot be empty');
@@ -75,7 +77,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             const urlsToDelete = new Set([url]);
 
             // Call the mutation to delete the link from the website_data field
-            await removeWebsiteDataField(urlsToDelete);
+            removeWebsiteDataField(urlsToDelete);
 
             // Update the UI after successful deletion
             setLinks((prevLinks) => prevLinks.filter((link) => link.id !== id));
@@ -144,6 +146,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                         'Authorization': `Bearer jina_6f24aa378003483dac0d7aa671ffc4c0xHKBzEJ2gcBo-pCRqCs08sOZyQD1`,
                         'Content-Type': 'application/json',
                     },
+                    mode: 'no-cors'
                 });
                 const text = await response.text();
                 setProgress(100);
@@ -199,6 +202,58 @@ export default function WebsiteContent({ source, stats, subscription }: { source
         }
     };
 
+    const retryAddLink = async (newLink: string) => {
+        try {
+            toast.info(`Refetching ${newLink}`);
+            setFetching(true);
+            setProgress(0);
+
+            const response = await fetch(`https://r.jina.ai/${newLink}`, {
+                headers: {
+                    'Authorization': `Bearer jina_6f24aa378003483dac0d7aa671ffc4c0xHKBzEJ2gcBo-pCRqCs08sOZyQD1`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const text = await response.text();
+            setProgress(100);
+
+            // Check character limit
+            const maxChars = subscription.charactersPerChatbot;
+            const currentChars = totalChars;
+            const remainingChars = Math.max(0, maxChars - currentChars);
+
+            let truncatedText = text;
+            if (text.length > remainingChars) {
+                truncatedText = text.slice(0, remainingChars);
+                toast.warning(`The content was truncated to fit within your plan's character limit.`);
+            }
+
+            // Update the existing link's LLM data
+            setLinks(prevLinks => prevLinks.map(link =>
+                link.url === newLink
+                    ? { ...link, llmData: truncatedText }
+                    : link
+            ));
+
+            // Update the website data field
+            const websiteDataUpdate = { [newLink]: truncatedText };
+            await updateWebsiteDataField(websiteDataUpdate);
+
+            toast.success('Link refetched successfully');
+        } catch (error) {
+            // Update the link with error message
+            setLinks(prevLinks => prevLinks.map(link =>
+                link.url === newLink
+                    ? { ...link, llmData: `Failed to fetch LLM data: ${error.message}` }
+                    : link
+            ));
+            toast.error('Failed to fetch link data');
+        } finally {
+            setFetching(false);
+            setProgress(100);
+        }
+    };
     // Fetch LLM data for a given link and update its entry in the state
     const fetchLLMDataForLinks = async (linksToFetch: Link[]) => {
         try {
@@ -217,6 +272,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                             'Authorization': `Bearer jina_6f24aa378003483dac0d7aa671ffc4c0xHKBzEJ2gcBo-pCRqCs08sOZyQD1`,
                             'Content-Type': 'application/json',
                         },
+                        mode: 'cors', // or 'no-cors' if you want to suppress CORS errors
                     });
                     const text = await response.text();
                     completedLinks += 1;
@@ -437,20 +493,32 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                         <div key={link.id} className="flex items-center bg-gray-100 p-2 rounded-md">
                             <div className="flex items-center space-x-2 flex-grow">
                                 {link.llmData ? (
-                                    <Badge variant="success">Trained</Badge>
+                                    link.llmData.startsWith('Failed to fetch') ? (
+                                        <Badge variant="destructive">Error</Badge>
+                                    ) : (
+                                        <Badge variant="success">Trained</Badge>
+                                    )
                                 ) : fetching || isAddingLink ? (
                                     <Badge variant="info">Training...</Badge>
                                 ) : (
                                     <Badge variant="destructive">Error</Badge>
                                 )}
                                 <p className="text-m text-muted-foreground flex-grow">{link.url}</p>
-                                {link.llmData && (
+                                {link.llmData && link.llmData.startsWith('Failed to fetch') ? (
+                                    <button
+                                        onClick={async () => await retryAddLink(link.url)}
+                                        className="ml-4 text-muted-foreground hover:text-primary transition-colors"
+                                        title="Retry fetch"
+                                    >
+                                        <RefreshCcw className="h-4 w-4" />
+                                    </button>
+                                ) : (
                                     <p className="text-xs text-muted-foreground ml-4">
-                                        {link.llmData.length} chars
+                                        {link.llmData?.length} chars
                                     </p>
                                 )}
                             </div>
-                            <Button variant="ghost" onClick={() => handleDeleteLink(link.id, link.url)} className="text-red-500 ml-2">
+                            <Button variant="ghost" onClick={async () => await handleDeleteLink(link.id, link.url)} className="text-red-500 ml-2">
                                 🗑️
                             </Button>
                         </div>
