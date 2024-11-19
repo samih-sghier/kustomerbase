@@ -139,7 +139,12 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             setProgress(0);
 
             try {
-                const response = await fetch(`https://r.jina.ai/${urlToValidate}`);
+                const response = await fetch(`https://r.jina.ai/${urlToValidate}`, {
+                    headers: {
+                        'Authorization': `Bearer jina_6f24aa378003483dac0d7aa671ffc4c0xHKBzEJ2gcBo-pCRqCs08sOZyQD1`,
+                        'Content-Type': 'application/json',
+                    },
+                });
                 const text = await response.text();
                 setProgress(100);
 
