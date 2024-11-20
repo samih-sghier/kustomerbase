@@ -144,7 +144,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             try {
                 const response = await fetch(`https://r.jina.ai/${urlToValidate}`, {
                     headers: {
-                        'Authorization': `Bearer jina_6f24aa378003483dac0d7aa671ffc4c0xHKBzEJ2gcBo-pCRqCs08sOZyQD1`,
+                        'Authorization': `Bearer jina_847bf0c8b03142b6a45c3f2d5bfcb02aBaa6txzR3SAc1Ox9fEB9TdgK2PSV`,
                         'Content-Type': 'application/json',
                     },
                     mode: 'no-cors'
@@ -211,7 +211,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
 
             const response = await fetch(`https://r.jina.ai/${newLink}`, {
                 headers: {
-                    'Authorization': `Bearer jina_6f24aa378003483dac0d7aa671ffc4c0xHKBzEJ2gcBo-pCRqCs08sOZyQD1`,
+                    'Authorization': `Bearer jina_847bf0c8b03142b6a45c3f2d5bfcb02aBaa6txzR3SAc1Ox9fEB9TdgK2PSV`,
                     'Content-Type': 'application/json',
                 },
             });
@@ -270,7 +270,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                 try {
                     const response = await fetch(`https://r.jina.ai/${link.url}`, {
                         headers: {
-                            'Authorization': `Bearer jina_6f24aa378003483dac0d7aa671ffc4c0xHKBzEJ2gcBo-pCRqCs08sOZyQD1`,
+                            'Authorization': `Bearer jina_847bf0c8b03142b6a45c3f2d5bfcb02aBaa6txzR3SAc1Ox9fEB9TdgK2PSV`,
                             'Content-Type': 'application/json',
                         },
                         mode: 'cors', // or 'no-cors' if you want to suppress CORS errors
