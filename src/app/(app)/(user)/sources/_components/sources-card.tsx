@@ -14,12 +14,14 @@ import { createClient } from '@supabase/supabase-js';
 import { updateDocumentsField, updateLastTrainedTimeStamp } from '@/server/actions/sources/mutations';
 
 
-const supabase = createClient("https://qqrkqrdotklubogipgvh.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxcmtxcmRvdGtsdWJvZ2lwZ3ZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczMTEwMDA1MCwiZXhwIjoyMDQ2Njc2MDUwfQ.zRgNOtgSxMR65VEYdoOfpTx4TJjgdQn-nZb1Hf38tKQ");
 
 
 // Add a function to make the HTTP request to the correct endpoint
 async function trainLlamaIndexForCurrentOrg(companyData: any) {
     // pages/api/pinecone.js
+
+    const supabase = createClient("https://qqrkqrdotklubogipgvh.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxcmtxcmRvdGtsdWJvZ2lwZ3ZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczMTEwMDA1MCwiZXhwIjoyMDQ2Njc2MDUwfQ.zRgNOtgSxMR65VEYdoOfpTx4TJjgdQn-nZb1Hf38tKQ");
+
     const tableName = `data_${companyData.orgId.replace(/-/g, '_')}`;
 
     try {
