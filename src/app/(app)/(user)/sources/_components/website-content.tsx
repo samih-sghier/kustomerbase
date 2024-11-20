@@ -31,6 +31,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
     const [fetching, setFetching] = useState(false);
     const [progress, setProgress] = useState(0); // Progress state for the progress bar
     const [currentTotalChars, setTotalChars] = useState(0); // Total characters in the link URLs and LLM data
+    const [refetchingLinks, setRefetchingLinks] = useState<Set<string>>(new Set());
 
     const {
         textInputChars,
@@ -509,8 +510,14 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                                         onClick={async () => await retryAddLink(link.url)}
                                         className="ml-4 text-muted-foreground hover:text-primary transition-colors"
                                         title="Retry fetch"
+                                        disabled={fetching}
+
                                     >
-                                        <RefreshCcw className="h-4 w-4" />
+                                        {fetching ? (
+                                            <RefreshCcw className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                            <RefreshCcw className="h-4 w-4" />
+                                        )}
                                     </button>
                                 ) : (
                                     <p className="text-xs text-muted-foreground ml-4">
