@@ -5,7 +5,7 @@
  */
 
 export const siteConfig = {
-    name: "Inboxpilot",
+    name: "InboxPilot",
     description:
         "Custom ChatGPT for emails",
     orgImage:
