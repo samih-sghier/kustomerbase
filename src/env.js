@@ -30,6 +30,7 @@ export const env = createEnv({
         UPLOADTHING_SECRET: z.string(),
         UPLOADTHING_ID: z.string(),
         STRIPE_SK: z.string(),
+        CRAWLER_API_KEY: z.string(),
         STRIPE_HOOK_SECRET: z.string(),
         OPENAI_API_KEY: z.string()
     },
@@ -73,6 +74,8 @@ export const env = createEnv({
         UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
         UPLOADTHING_ID: process.env.UPLOADTHING_ID,
         STRIPE_SK: process.env.STRIPE_SK,
+        CRAWLER_API_KEY: process.env.CRAWLER_API_KEY,
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY,
         STRIPE_HOOK_SECRET: process.env.STRIPE_HOOK_SECRET,
         NEXT_PUBLIC_STRIPE_PRICE_BASIC_MONTHLY: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC_MONTHLY,
         NEXT_PUBLIC_STRIPE_PRICE_BASIC_YEARLY: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC_YEARLY,

@@ -12,6 +12,7 @@ import { freePricingPlan, PricingPlan } from '@/config/pricing';
 import { c } from 'node_modules/fumadocs-ui/dist/layout-WuS8Ab4e';
 import { Icons } from '@/components/ui/icons';
 import { RefreshCcw } from 'lucide-react';
+import { env } from '@/env';
 
 const urlSchema = z.string().url().min(1, 'URL cannot be empty');
 const sitemapSchema = z.string().url().min(1, 'Sitemap URL cannot be empty');
@@ -144,7 +145,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             try {
                 const response = await fetch(`https://r.jina.ai/${urlToValidate}`, {
                     headers: {
-                        'Authorization': `Bearer jina_847bf0c8b03142b6a45c3f2d5bfcb02aBaa6txzR3SAc1Ox9fEB9TdgK2PSV`,
+                        'Authorization': `Bearer ${env.CRAWLER_API_KEY}`,
                         'Content-Type': 'application/json',
                     },
                     mode: 'no-cors'
@@ -211,7 +212,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
 
             const response = await fetch(`https://r.jina.ai/${newLink}`, {
                 headers: {
-                    'Authorization': `Bearer jina_847bf0c8b03142b6a45c3f2d5bfcb02aBaa6txzR3SAc1Ox9fEB9TdgK2PSV`,
+                    'Authorization': `Bearer ${env.CRAWLER_API_KEY}`,
                     'Content-Type': 'application/json',
                 },
             });
@@ -270,7 +271,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                 try {
                     const response = await fetch(`https://r.jina.ai/${link.url}`, {
                         headers: {
-                            'Authorization': `Bearer jina_847bf0c8b03142b6a45c3f2d5bfcb02aBaa6txzR3SAc1Ox9fEB9TdgK2PSV`,
+                            'Authorization': `Bearer ${env.CRAWLER_API_KEY}`,
                             'Content-Type': 'application/json',
                         },
                         mode: 'cors', // or 'no-cors' if you want to suppress CORS errors
