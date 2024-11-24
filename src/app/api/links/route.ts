@@ -3,8 +3,6 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { parseStringPromise } from 'xml2js';
 import * as zlib from 'zlib';
-import { Readable } from 'stream';
-import { toast } from 'sonner';
 
 const MAX_DEPTH = 3;
 const MAX_LINKS = 1000;
@@ -165,7 +163,6 @@ async function getInternalLinksFromPage(baseUrl: string, depth: number, allLinks
 
     await Promise.all(promises);
   } catch (error) {
-    toast.error(`Failed to fetch website pages for ${baseUrl}`);
     console.error(`Failed to get links from ${baseUrl}:`, error);
   }
 }

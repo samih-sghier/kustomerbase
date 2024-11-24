@@ -12,7 +12,8 @@ import { freePricingPlan, PricingPlan } from '@/config/pricing';
 import { c } from 'node_modules/fumadocs-ui/dist/layout-WuS8Ab4e';
 import { Icons } from '@/components/ui/icons';
 import { RefreshCcw } from 'lucide-react';
-import { env } from '@/env';
+import { env } from "@/env";
+import pLimit from 'p-limit';
 
 const urlSchema = z.string().url().min(1, 'URL cannot be empty');
 const sitemapSchema = z.string().url().min(1, 'Sitemap URL cannot be empty');
@@ -104,6 +105,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
     // Add a new link to the list and start fetching its LLM data
     const handleAddLink = async () => {
         try {
+
             const trimmedLink = newLink.trim();
 
             if (trimmedLink.length === 0) {
@@ -145,10 +147,9 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             try {
                 const response = await fetch(`https://r.jina.ai/${urlToValidate}`, {
                     headers: {
-                        'Authorization': `Bearer ${env.CRAWLER_API_KEY}`,
+                        'Authorization': `Bearer jina_9097e80c82894797bf1b936be0c6eab3agq86HRaynVbsZ_yGrHmLsnj3J3o`,
                         'Content-Type': 'application/json',
-                    },
-                    mode: 'no-cors'
+                    }
                 });
                 const text = await response.text();
                 setProgress(100);
@@ -212,9 +213,9 @@ export default function WebsiteContent({ source, stats, subscription }: { source
 
             const response = await fetch(`https://r.jina.ai/${newLink}`, {
                 headers: {
-                    'Authorization': `Bearer ${env.CRAWLER_API_KEY}`,
+                    'Authorization': `Bearer jina_9097e80c82894797bf1b936be0c6eab3agq86HRaynVbsZ_yGrHmLsnj3J3o`,
                     'Content-Type': 'application/json',
-                },
+                }
             });
 
             const text = await response.text();
@@ -266,42 +267,94 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             const maxChars = Number(subscription.charactersPerChatbot);
             const initialTotalChars = totalChars;
 
-            // Fetch LLM data for all links
-            const fetchPromises = linksToFetch.map(async (link) => {
+            // Calculate optimal concurrency while respecting 200 RPM
+            const requestsPerMinute = 195;
+            const minDelayBetweenRequests = (60 * 1000) / requestsPerMinute; // in milliseconds
+            const optimalConcurrency = 10; // Process 10 requests concurrently
+            const limit = pLimit(optimalConcurrency);
+
+            // Batch size for updating UI and reducing state updates
+            const BATCH_SIZE = 5;
+            let currentBatch: Link[] = [];
+
+            const processBatch = async (batch: Link[]) => {
+                if (batch.length === 0) return;
+                setLinks(prevLinks => {
+                    const linkMap = new Map(prevLinks.map(link => [link.url, link]));
+                    batch.forEach(link => linkMap.set(link.url, link));
+                    return Array.from(linkMap.values());
+                });
+            };
+
+            const fetchWithRateLimit = async (link: Link) => {
                 try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
                     const response = await fetch(`https://r.jina.ai/${link.url}`, {
                         headers: {
-                            'Authorization': `Bearer ${env.CRAWLER_API_KEY}`,
+                            'Authorization': `Bearer jina_9097e80c82894797bf1b936be0c6eab3agq86HRaynVbsZ_yGrHmLsnj3J3o`,
                             'Content-Type': 'application/json',
                         },
-                        mode: 'cors', // or 'no-cors' if you want to suppress CORS errors
+                        signal: controller.signal
                     });
+
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
                     const text = await response.text();
-                    completedLinks += 1;
+                    completedLinks++;
 
                     const remainingChars = Math.max(0, maxChars - (initialTotalChars + totalNewChars));
-                    let truncatedText = text;
+                    const truncatedText = text.length > remainingChars ? text.slice(0, remainingChars) : text;
+
                     if (text.length > remainingChars) {
-                        truncatedText = text.slice(0, remainingChars);
                         toast.warning(`Some content was truncated to fit within your plan's character limit.`);
                     }
 
                     totalNewChars += truncatedText.length;
-                    setProgress(Math.round((completedLinks / totalLinks) * 100));
 
-                    return { ...link, llmData: truncatedText };
+                    // Update progress less frequently
+                    if (completedLinks % 5 === 0 || completedLinks === totalLinks) {
+                        setProgress(Math.round((completedLinks / totalLinks) * 100));
+                    }
+
+                    const updatedLink = { ...link, llmData: truncatedText };
+                    currentBatch.push(updatedLink);
+
+                    // Process batch when it reaches the batch size or is the last item
+                    if (currentBatch.length >= BATCH_SIZE || completedLinks === totalLinks) {
+                        await processBatch([...currentBatch]);
+                        currentBatch = [];
+                    }
+
+                    return updatedLink;
                 } catch (error) {
-                    completedLinks += 1;
-                    setProgress(Math.round((completedLinks / totalLinks) * 100));
+                    completedLinks++;
+                    if (completedLinks % 5 === 0 || completedLinks === totalLinks) {
+                        setProgress(Math.round((completedLinks / totalLinks) * 100));
+                    }
                     return { ...link, llmData: `Failed to fetch LLM data: ${error.message}` };
                 }
-            });
+            };
 
-            const updatedLinks = await Promise.all(fetchPromises);
-            setLinks(updatedLinks);
+            // Create a queue of rate-limited requests with delay
+            const queue = linksToFetch.map((link, index) =>
+                limit(async () => {
+                    await new Promise(resolve =>
+                        setTimeout(resolve, Math.floor(index / optimalConcurrency) * minDelayBetweenRequests)
+                    );
+                    return fetchWithRateLimit(link);
+                })
+            );
+
+            const updatedLinks = await Promise.all(queue);
             setTotalChars(prevTotal => Math.min(prevTotal + totalNewChars, maxChars));
 
-            // Update the website data field with the fetched LLM data
+            // Batch update website data
             const websiteDataUpdate = updatedLinks.reduce((acc: Record<string, string>, link: Link) => {
                 if (link.llmData) {
                     acc[link.url] = link.llmData;
@@ -315,7 +368,6 @@ export default function WebsiteContent({ source, stats, subscription }: { source
             toast.error(`Error: ${error.message}`);
         }
     };
-
     // Fetch links based on crawl or sitemap link
     const fetchLinks = async (type: 'page' | 'sitemap') => {
         setFetching(true);
