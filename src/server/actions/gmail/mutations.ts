@@ -301,7 +301,7 @@ export async function authorizeGmailMutationSend(metadata?: MetaData) {
         scope: [
             'https://www.googleapis.com/auth/gmail.modify',
             'https://www.googleapis.com/auth/gmail.send',  // Added write scope
-
+            'https://www.googleapis.com/auth/pubsub'
         ],
         state: JSON.stringify(metadata)
     });
@@ -319,6 +319,7 @@ export async function authorizeGmailMutationRead(metadata?: MetaData) {
         scope: [
             'https://www.googleapis.com/auth/gmail.modify',
             'https://www.googleapis.com/auth/gmail.send',
+            'https://www.googleapis.com/auth/pubsub'
 
         ],
         state: JSON.stringify(metadata)
