@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { handleOAuthCallbackMutation } from '@/server/actions/gmail/mutations';
+import { handleOAuthCallbackMutation } from '@/server/actions/outlook/mutations';
 import { siteUrls } from '@/config/urls';
 
 export async function GET(request: Request) {

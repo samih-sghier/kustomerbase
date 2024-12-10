@@ -27,6 +27,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Icons } from "@/components/ui/icons";
 import { authorizeGmailMutationRead, authorizeGmailMutationSend } from "@/server/actions/gmail/mutations";
 import { getOrganizations } from "@/server/actions/organization/queries";
+import { authorizeOutlook } from "@/server/actions/outlook/mutations";
 
 
 export function ConnectEmailForm({ defaultOpen, orgId, upgradeNeeded }: { defaultOpen: boolean, orgId: string, upgradeNeeded: boolean }) {
@@ -45,13 +46,20 @@ export function ConnectEmailForm({ defaultOpen, orgId, upgradeNeeded }: { defaul
             toast.error("You have exceeded your plan's connect accounts limit!");
             return
         }
-        
+
         if (provider === 'google') {
             try {
                 const authUrl = await authorizeGmailMutationSend({ ...data, orgId, provider });
                 window.location.href = authUrl;
             } catch (error) {
                 toast.error("Failed to authorize Gmail");
+            }
+        } else if (provider === 'outlook') {
+            try {
+                const authUrl = await authorizeOutlook({ ...data, orgId, provider });
+                window.location.href = authUrl;
+            } catch (error) {
+                toast.error("Failed to authorize Outlook");
             }
         }
     };
@@ -162,7 +170,7 @@ export function ConnectEmailForm({ defaultOpen, orgId, upgradeNeeded }: { defaul
                     </DialogClose>
                     <div className="flex flex-col space-y-2">
                         <Button
-                            onClick={form.handleSubmit(onSubmit)}
+                            onClick={form.handleSubmit((data) => handleConnect('google', data))}
                             className="w-full gap-2"
                             disabled={isLoading}
                         >
@@ -170,7 +178,20 @@ export function ConnectEmailForm({ defaultOpen, orgId, upgradeNeeded }: { defaul
                             <span>Connect Gmail</span>
                         </Button>
                     </div>
+                    <div className="flex flex-col space-y-2">
+
+                        <Button
+                            onClick={form.handleSubmit((data) => handleConnect('outlook', data))}
+                            className="w-full gap-2"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? <Icons.loader className="h-4 w-4" /> : <Icons.microsoft className="h-4 w-4 fill-foreground" />}
+                            <span>Connect Outlook</span>
+                        </Button>
+                    </div>
+
                 </DialogFooter>
+
             </DialogContent>
         </Dialog>
     );

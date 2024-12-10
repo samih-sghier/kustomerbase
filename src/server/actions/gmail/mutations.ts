@@ -14,6 +14,7 @@ import { getOrganizations } from "../organization/queries";
 import { getOrgSubscription } from "../stripe_subscription/query";
 import { pricingIds, pricingPlans } from '@/config/pricing';
 import { count } from 'console';
+import { stopOutlookWatchMutation } from '../outlook/mutations';
 
 // Replace these with your own credentials
 const CLIENT_ID = env.GOOGLE_CLIENT_ID;
@@ -25,129 +26,6 @@ const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 // const people = google.people({ version: 'v1', auth: oauth2Client });
 
 
-
-interface Email {
-    threadId: string;
-    subject: string;
-    body: string;
-    recipient: string;
-    sender: string;
-    timestamp: string;
-}
-
-export async function listEmailsMutation(tokens: any) {
-    oauth2Client.setCredentials(tokens);
-
-    try {
-        const listResponse = await gmail.users.threads.list({
-            userId: 'me',
-            maxResults: 10,
-            labelIds: ['SENT'],
-            auth: oauth2Client
-        });
-
-        if (listResponse.data.threads && listResponse.data.threads.length > 0) {
-            const threadDetailsPromises = listResponse.data.threads.map(async (thread: any) => {
-                return await fetchThreadDetailsMutation(thread.id);
-            });
-
-            const threadDetails = await Promise.all(threadDetailsPromises);
-
-            // Organize emails by threadId
-            const organizedThreads = threadDetails.map((thread: any) => {
-                const messages = thread.messages || [];
-
-                // Clean and extract messages
-                const cleanedMessages = messages.map((message: any) => ({
-                    threadId: thread.id,
-                    subject: getHeader(message, 'Subject'),
-                    body: cleanEmailBody(getBody(message)),
-                    recipient: getEmailAddress(getHeader(message, 'To')), // Cleaned sender
-                    sender: getEmailAddress(getHeader(message, 'From')), // Cleaned sender
-                    timestamp: getHeader(message, 'Date')
-                }));
-
-                // Return the cleaned thread with all its messages
-                return {
-                    threadId: thread.id,
-                    messages: cleanedMessages
-                };
-            });
-
-            return organizedThreads;
-        } else {
-            console.log('No threads found in the inbox.');
-            return [];
-        }
-    } catch (error) {
-        console.error('Error listing inbox threads:', error.response?.data || error.message);
-        throw new Error("Failed to list inbox threads: " + (error.response?.data || error.message));
-    }
-}
-
-function getEmailAddress(sender: string): string {
-    // Regular expression to match email address
-    const emailRegex = /<([^>]+)>/;
-    const match = sender.match(emailRegex);
-    return match ? match[1] || '' : ''; // Use empty string if match[1] is undefined
-}
-
-
-
-// Helper function to fetch details for a single thread
-async function fetchThreadDetailsMutation(threadId: string) {
-    try {
-        const response = await gmail.users.threads.get({
-            userId: 'me',
-            id: threadId,
-            auth: oauth2Client
-        });
-        return response.data;
-    } catch (error) {
-        console.error(`Error fetching details for thread ${threadId}:`, error.response?.data || error.message);
-        throw new Error(`Failed to fetch details for thread ${threadId}: ` + (error.response?.data || error.message));
-    }
-}
-
-// Helper function to extract header value
-function getHeader(message: any, headerName: string) {
-    const headers = message.payload?.headers || [];
-    const header = headers.find((h: any) => h.name === headerName);
-    return header ? header.value : '';
-}
-
-// Helper function to extract and clean the email body
-function getBody(message: any) {
-    const parts = message.payload?.parts || [];
-    const part = parts.find((p: any) => p.mimeType === 'text/plain');
-    if (part) {
-        // Decode base64
-        const body = Buffer.from(part.body.data, 'base64').toString('utf-8');
-        return body;
-    }
-    return '';
-}
-
-// Function to clean the email body
-function cleanEmailBody(body: string): string {
-    // Decode HTML entities
-    let cleanedBody = decode(body);
-
-    // Remove URLs
-    cleanedBody = cleanedBody.replace(/https?:\/\/[^\s]+/g, '');
-
-    // Remove email addresses
-    cleanedBody = cleanedBody.replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i, '');
-
-    // Remove typical email signatures
-    cleanedBody = cleanedBody.replace(/(?:\r?\n){2,}/g, '\n\n');
-    cleanedBody = cleanedBody.replace(/--\s*[\w\s]+\r?\n/g, '');
-
-    // Normalize whitespace
-    cleanedBody = cleanedBody.replace(/\s{2,}/g, ' ').trim();
-
-    return cleanedBody;
-}
 /**
  * Handle Gmail OAuth callback and exchange code for access token
  * @params code - The authorization code from Gmail
@@ -194,7 +72,7 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
             refresh_token: tokens.refresh_token || '',
             provider: metadata.provider,
             expires_at: tokens.expiry_date ? Math.floor(tokens.expiry_date / 10000) : undefined,
-            frequency: metadata.frequency || undefined,
+            frequency: +metadata.frequency || undefined,
             isActive: true,
             historyId: watchResponse.historyId || -1,
             expiration: BigInt(watchResponse.expiration || 0),
@@ -416,8 +294,8 @@ export async function removeConnectedItemMutation({
         throw new Error("No tokens found for the provided email");
     }
 
-    const { access_token, refresh_token } = tokenRecord[0]; // Get the first record
-
+    const { access_token, refresh_token, provider } = tokenRecord[0]; // Get the first record
+    console.log(tokenRecord[0])
     // Remove the connected item
     const result = await db.delete(connected).where(
         and(
@@ -432,14 +310,26 @@ export async function removeConnectedItemMutation({
 
     if (access_token && refresh_token) {
         // Stop the Gmail watch if the removal was successful
-        const stopWatchResult = await stopWatchMutation({
-            access_token,
-            refresh_token,
-        });
-        if (stopWatchResult.error) {
-            console.error("Error stopping the watch:", stopWatchResult.error);
-            // You might want to handle the error differently depending on your needs
+        if (provider == "google") {
+            const stopWatchResult = await stopWatchMutation({
+                access_token,
+                refresh_token,
+            });
+            if (stopWatchResult.error) {
+                console.error("Error stopping the watch:", stopWatchResult.error);
+                // You might want to handle the error differently depending on your needs
+            }
+        } else if (provider == "outlook" ){
+            const stopWatchResult = await stopOutlookWatchMutation({
+                access_token,
+                refresh_token,
+            });
+            if (stopWatchResult.error) {
+                console.error("Error stopping the watch:", stopWatchResult.error);
+                // You might want to handle the error differently depending on your needs
+            }
         }
+     
     } else {
         console.error("Error to stop gmail watch");
     }

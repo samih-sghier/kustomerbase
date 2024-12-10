@@ -398,8 +398,8 @@ export const connected = createTable("connected", {
         .unique()
         .references(() => organizations.id, { onDelete: "cascade" }),
     frequency: integer("frequency"),
-    access_token: varchar("access_token", { length: 255 }).notNull(),
-    refresh_token: varchar("refresh_token", { length: 255 }).notNull(),
+    access_token: text("access_token").notNull(),
+    refresh_token: text("refresh_token").notNull(),
     purpose: text("purpose"),
     provider: varchar("provider", { length: 255 }).notNull(),
     isActive: boolean("isActive").default(true),
@@ -408,7 +408,7 @@ export const connected = createTable("connected", {
     //gmail watchlist
     historyId: integer("historyId").notNull(),
     expiration: integer("expiration"),
-    lastThreadId: varchar("lastThreadId", { length: 255 }),
+    lastThreadId: varchar("lastThreadId"),
     updatedOn: timestamp("updatedOn", { mode: "date" }).defaultNow(),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });

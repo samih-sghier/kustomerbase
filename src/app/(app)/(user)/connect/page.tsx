@@ -12,6 +12,7 @@ import { getOrganizations } from "@/server/actions/organization/queries";
 import { getOrgConnectedQuery } from "@/server/actions/gmail/queries";
 import { SidebarLoading } from "../../_components/sidebar";
 import { getOrgSubscription } from "@/server/actions/stripe_subscription/query";
+import { Icons } from "@/components/ui/icons";
 
 function mapFrequencyToLabel(frequency: number | string | null): string {
     switch (frequency) {
@@ -65,9 +66,10 @@ export default async function UserTenantPage() {
                                         <CardDescription className="text-sm mb-2">{`Reply in ${mapFrequencyToLabel(emailConnected.frequency)}`}</CardDescription>
                                         <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
                                             <p>Added on {format(new Date(emailConnected.createdAt), "PPP")}</p>
-                                            {emailConnected.purpose && <Badge variant="background" className="w-fit">{emailConnected.purpose}</Badge>}
+                                            {/* {emailConnected.purpose && <Badge variant="background" className="w-fit">{emailConnected.purpose}</Badge>} */}
 
                                         </div>
+                                        
                                     </div>
                                     <div className="flex justify-between items-end mt-auto">
                                         <Badge
@@ -82,7 +84,10 @@ export default async function UserTenantPage() {
                                         >
                                             {emailConnected.isActive ? "active" : "disconnected"}
                                         </Badge>
+                                        {emailConnected.provider == "google" && <Icons.google className="h-6 w-6" />}
+                                        {emailConnected.provider == "outlook" && <Icons.microsoft className="h-6 w-6" />}
                                     </div>
+                                    
                                 </CardContent>
                             </Card>
                         ))
