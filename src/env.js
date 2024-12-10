@@ -32,7 +32,11 @@ export const env = createEnv({
         STRIPE_SK: z.string(),
         CRAWLER_API_KEY: z.string(),
         STRIPE_HOOK_SECRET: z.string(),
-        OPENAI_API_KEY: z.string()
+        OPENAI_API_KEY: z.string(),
+        OUTLOOK_CLIENT_ID: z.string(),
+        OUTLOOK_CLIENT_SECRET: z.string(),
+        OUTLOOK_TENANT_ID: z.string(),
+
     },
 
     /**

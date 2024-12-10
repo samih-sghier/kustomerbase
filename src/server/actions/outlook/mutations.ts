@@ -17,9 +17,9 @@ const REDIRECT_URI = `${env.NEXTAUTH_URL}/api/outlook/authorize`;
 // Replace these with your credentials
 const msalConfig = {
     auth: {
-        clientId: "9f0d7351-87d3-450a-8f64-ad664a87a7d7",
-        authority: `https://login.microsoftonline.com/${"46f71724-bc5a-41ea-b723-93544bd5a83e"}`,
-        clientSecret: "VUJ8Q~FPaHD4TMO7RhiE1WPhMxO5hlP~qmd3ndiF",
+        clientId: env.OUTLOOK_CLIENT_ID,
+        authority: `https://login.microsoftonline.com/${env.OUTLOOK_TENANT_ID}`,
+        clientSecret: env.OUTLOOK_CLIENT_SECRET,
         redirectUri: REDIRECT_URI
     },
 };
