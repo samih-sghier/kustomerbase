@@ -27,9 +27,9 @@ const msalConfig = {
 const redirectUri = `${env.NEXTAUTH_URL}/api/outlook/authorize`;
 const app = new ConfidentialClientApplication(msalConfig);
 const credential = new ClientSecretCredential(
-    '46f71724-bc5a-41ea-b723-93544bd5a83e',
-    '9f0d7351-87d3-450a-8f64-ad664a87a7d7',
-    'VUJ8Q~FPaHD4TMO7RhiE1WPhMxO5hlP~qmd3ndiF',
+    env.OUTLOOK_TENANT_ID,
+    env.OUTLOOK_CLIENT_ID,
+    env.OUTLOOK_CLIENT_SECRET,
   );
 /**
  * Generate authorization URL for Outlook
