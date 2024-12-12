@@ -7,7 +7,7 @@
 export const siteConfig = {
     name: "InboxPilot",
     description:
-        "Custom ChatGPT for emails",
+        "Auomate Inbound Emails",
     orgImage:
         "https://utfs.io/f/z1SQx2HK8PtsY15Q8uvaYyIlbV8gfnFD97GK6rEtwcUpWJx5",
     contactEmail: "support@inboxpilot.co",

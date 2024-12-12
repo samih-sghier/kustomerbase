@@ -52,9 +52,9 @@ export function WebPageHeader({
                 as="h1"
                 className="max-w-2xl text-center font-heading text-6xl font-bold leading-none sm:text-7xl"
             >
-                {title.split(" ").slice(0, -2).join(" ")}
+                {title.split(" ").slice(0, -1).join(" ")}
                 <span className="bg-gradient-to-r from-[#807280] via-[#5C4A5B] to-[#603060] bg-clip-text text-transparent">
-                    {" " + title.split(" ").slice(-2).join(" ")}
+                    {" " + title.split(" ").slice(-1).join(" ")}
                 </span>
             </Balancer>
 
