@@ -18,7 +18,7 @@ const REDIRECT_URI = `${env.NEXTAUTH_URL}/api/outlook/authorize`;
 const msalConfig = {
     auth: {
         clientId: env.OUTLOOK_CLIENT_ID,
-        authority: `https://login.microsoftonline.com/${env.OUTLOOK_TENANT_ID}`,
+        authority: `https://login.microsoftonline.com/common/${env.OUTLOOK_TENANT_ID}`,
         clientSecret: env.OUTLOOK_CLIENT_SECRET,
         redirectUri: REDIRECT_URI
     },
@@ -39,6 +39,8 @@ export async function authorizeOutlook(metadata) {
         redirectUri,
         scopes: ["User.Read", "Mail.Read", "Mail.Send", "offline_access"],
         state: JSON.stringify(metadata),
+        prompt: "consent", // Force consent screen
+
     });
     return authUrl;
 }
@@ -70,25 +72,18 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
         const metadata = state ? JSON.parse(state) : {};
         const orgId = metadata.orgId || '';
         
-        console.log("metadata.purpose " + metadata.purpose);
-        console.log("metadata.frequency " + metadata.frequency);
-        console.log("tokenResponse.expiresOn " + new Date(tokenResponse.expiresOn).getTime());
+        // console.log("metadata.purpose " + metadata.purpose);
+        // console.log("metadata.frequency " + metadata.frequency);
+        // console.log("tokenResponse.expiresOn " + new Date(tokenResponse.expiresOn).getTime());
         
         // Create subscription (watch) for the mailbox
         let subscriptionDetails;
         try {
-            const client = Client.init({
-                authProvider: async (done) => {
-                    done(null, accessToken);
-                }
-            });
 
             subscriptionDetails = await createWatchMutation({access_token: accessToken, refresh_token: refreshToken});
         } catch (subscriptionError) {
-            console.error('Failed to create Outlook subscription:', subscriptionError);
-            // Optionally, you might want to handle this error differently
+            throw new Error("Error setting up Outlook subscription (please contact support@inboxpilot.co - error details: " +  subscriptionError + " )");
         }
-        
         await createConnectedMutation({
             email,
             orgId,
@@ -97,7 +92,8 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
             provider: "outlook",
             expires_at: tokenResponse.expiresOn ? Math.floor(new Date(tokenResponse.expiresOn).getTime() / 1000) : undefined,
             frequency: +metadata.frequency || undefined,
-            historyId: subscriptionDetails?.subscriptionId || -1, // Use subscription ID as historyId
+            subscriptionId: subscriptionDetails?.subscriptionId,
+            historyId: -1, // Use subscription ID as historyId
             isActive: true,
             purpose: metadata.purpose,
         });
@@ -123,14 +119,15 @@ export async function createWatchMutation({ access_token, refresh_token }: { acc
                 done(null, access_token);
             }
         });
+        const expirationDate = new Date(Date.now() + 10070 * 60 * 1000);
 
         // Create a subscription (equivalent to Gmail's watch)
         const subscription = await client.api('/subscriptions')
             .post({
                 changeType: 'created,updated', // Watch for new and updated messages
-                notificationUrl: 'https://souk-app-api-v2-prod.us-east-2.elasticbeanstalk.com/health', // Your webhook endpoint
+                notificationUrl: 'https://4860-2601-8c-4a7e-e830-2563-80aa-72e9-2776.ngrok-free.app/outlook/hook', // Your webhook endpoint
                 resource: 'me/mailFolders/inbox/messages',
-                expirationDateTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days from now
+                expirationDateTime: expirationDate.toISOString()
             });
 
         return { 
@@ -140,7 +137,8 @@ export async function createWatchMutation({ access_token, refresh_token }: { acc
 
     } catch (error) {
         console.error('Error setting up Outlook subscription:', error);
-        return { error: error.message };
+        throw new Error("Error setting up Outlook subscription (please contact support@inboxpilot.co - error details: " +  error.message + " )");
+
     }
 }
 
