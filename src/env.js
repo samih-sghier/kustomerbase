@@ -36,6 +36,7 @@ export const env = createEnv({
         OUTLOOK_CLIENT_ID: z.string(),
         OUTLOOK_CLIENT_SECRET: z.string(),
         OUTLOOK_TENANT_ID: z.string(),
+        OUTLOOK_WEBHOOK: z.string(),
 
     },
 
@@ -84,6 +85,7 @@ export const env = createEnv({
         OUTLOOK_CLIENT_ID: process.env.OUTLOOK_CLIENT_ID,
         OUTLOOK_CLIENT_SECRET: process.env.OUTLOOK_CLIENT_SECRET,
         OUTLOOK_TENANT_ID: process.env.OUTLOOK_TENANT_ID,
+        OUTLOOK_WEBHOOK: process.env.OUTLOOK_WEBHOOK,
         NEXT_PUBLIC_STRIPE_PRICE_BASIC_MONTHLY: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC_MONTHLY,
         NEXT_PUBLIC_STRIPE_PRICE_BASIC_YEARLY: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC_YEARLY,
         NEXT_PUBLIC_STRIPE_PRICE_STANDARD_MONTHLY: process.env.NEXT_PUBLIC_STRIPE_PRICE_STANDARD_MONTHLY,
