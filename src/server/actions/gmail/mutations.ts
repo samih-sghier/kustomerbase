@@ -295,7 +295,6 @@ export async function removeConnectedItemMutation({
     }
 
     const { access_token, refresh_token, provider } = tokenRecord[0]; // Get the first record
-    console.log(tokenRecord[0])
     // Remove the connected item
     const result = await db.delete(connected).where(
         and(

@@ -104,15 +104,11 @@ export function MailContent({ source, stats, subscription }: { source: Source, s
                 console.warn('Stats or subscription data is missing. Skipping character limit check.');
             }
 
-            console.log('Updating mail source field:', mailSourceUpdate);
             const updateResult = await updateMailSourceField(mailSourceUpdate);
-            console.log('Update result:', updateResult);
 
             // Process removals
             if (removedKeys.size > 0) {
-                console.log('Removing keys:', Array.from(removedKeys));
                 const removeResult = await removeMailSourceField(removedKeys);
-                console.log('Remove result:', removeResult);
                 setRemovedKeys(new Set());
             }
 
