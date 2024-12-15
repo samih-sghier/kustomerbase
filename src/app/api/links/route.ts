@@ -53,7 +53,6 @@ async function fetchWithRetry(url: string, options: any, retries = MAX_RETRIES):
     return await axios(url, options);
   } catch (error) {
     if (retries > 0 && (error.code === 'ECONNABORTED' || error.response?.status >= 500)) {
-      console.log(`Retrying ${url}, ${retries} attempts left`);
       return fetchWithRetry(url, options, retries - 1);
     }
     throw error;
@@ -63,7 +62,6 @@ async function fetchWithRetry(url: string, options: any, retries = MAX_RETRIES):
 async function checkForSitemap(baseUrl: string): Promise<string | null> {
   for (const option of SITEMAP_OPTIONS) {
     const sitemapUrl = new URL(option, baseUrl).toString();
-    console.log(`Checking URL: ${sitemapUrl}`);
     try {
       const response = await fetchWithRetry(sitemapUrl, { 
         headers: { 
@@ -73,14 +71,11 @@ async function checkForSitemap(baseUrl: string): Promise<string | null> {
         timeout: TIMEOUT,
         maxRedirects: 5,
       });
-      console.log(`Response Status: ${response.status}`);
-      console.log(`Content-Type: ${response.headers['content-type']}`);
       const contentType = response.headers['content-type']?.toLowerCase() || '';
       if (response.status === 200 && 
           (contentType.includes('xml') || 
            contentType.includes('text/plain') ||
            contentType.includes('application/x-gzip'))) {
-        console.log(`Sitemap found at ${sitemapUrl}`);
         return sitemapUrl;
       }
     } catch (error) {
@@ -181,12 +176,10 @@ export async function GET(request: Request) {
     const sitemapUrl = linkType === 'sitemap' ? pageUrl : await checkForSitemap(pageUrl);
     
     if (sitemapUrl) {
-      console.log(`Sitemap found at ${sitemapUrl}. Using sitemap for crawling.`);
       await getLinksFromSitemap(sitemapUrl, allLinks);
     }
     
     if (allLinks.size === 0) {
-      console.log(`No links found from sitemap. Falling back to recursive crawling.`);
       await getInternalLinksFromPage(pageUrl, 0, allLinks);
     }
 

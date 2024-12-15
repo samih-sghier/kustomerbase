@@ -17,6 +17,7 @@ const nextConfig = {
     // Optionally, add any other Next.js config below
     experimental: {
         optimizePackageImports: ["lucide-react"],
+        sri: { algorithm: 'sha256' }, // Enable Subresource Integrity (SRI)
     },
     images: {
         remotePatterns: [{ hostname: "images.unsplash.com" }, { hostname: "utfs.io" }],
