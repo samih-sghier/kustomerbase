@@ -51,14 +51,14 @@ export default async function HomePage() {
                 </Balancer>
 
                 <div className="flex items-center gap-2">
-                    <Link
+                    {/* <Link
                         href={siteUrls.auth.signup}
                         className={buttonVariants({ variant: "outline" })}
                         target="_blank"
                         rel="noopener noreferrer"
                     >
                         <Icons.google className="mr-2 h-4 w-4" /> Google
-                    </Link>
+                    </Link> */}
 
                     <Link
                         href={siteUrls.auth.login}

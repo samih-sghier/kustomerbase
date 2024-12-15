@@ -71,7 +71,21 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
         const email = tokenResponse?.account?.username;
         const metadata = state ? JSON.parse(state) : {};
         const orgId = metadata.orgId || '';
+
+        // Fetch user ID from Microsoft Graph
+        const userResponse = await fetch('https://graph.microsoft.com/v1.0/me', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
         
+        if (!userResponse.ok) {
+            throw new Error('Failed to fetch user details');
+        }
+        
+        const userData = await userResponse.json();
+        const userId = userData.id; // Microsoft Graph user ID
         // console.log("metadata.purpose " + metadata.purpose);
         // console.log("metadata.frequency " + metadata.frequency);
         // console.log("tokenResponse.expiresOn " + new Date(tokenResponse.expiresOn).getTime());
@@ -93,6 +107,7 @@ export async function handleOAuthCallbackMutation({ code, state }: { code: strin
             expires_at: tokenResponse.expiresOn ? Math.floor(new Date(tokenResponse.expiresOn).getTime() / 1000) : undefined,
             frequency: +metadata.frequency || undefined,
             subscriptionId: subscriptionDetails?.subscriptionId,
+            userId: userId,
             historyId: -1, // Use subscription ID as historyId
             isActive: true,
             purpose: metadata.purpose,
@@ -125,7 +140,7 @@ export async function createWatchMutation({ access_token, refresh_token }: { acc
         const subscription = await client.api('/subscriptions')
             .post({
                 changeType: 'created,updated', // Watch for new and updated messages
-                notificationUrl: 'https://4860-2601-8c-4a7e-e830-2563-80aa-72e9-2776.ngrok-free.app/outlook/hook', // Your webhook endpoint
+                notificationUrl: `${env.OUTLOOK_WEBHOOK}/outlook/hook`, // Your webhook endpoint
                 resource: 'me/mailFolders/inbox/messages',
                 expirationDateTime: expirationDate.toISOString()
             });
