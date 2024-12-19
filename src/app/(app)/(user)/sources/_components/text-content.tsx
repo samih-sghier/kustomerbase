@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +12,7 @@ const textSchema = z.object({
     text: z.string().optional(),
 });
 
-export function TextContent({ source, subscription, stats }: { source: any, subscription: any, stats: any }) {
+export function TextContent({ source, subscription, stats, onSourceChange }: { source: any, subscription: any, stats: any, onSourceChange: (newSource: any) => void }) {
     const [loading, setLoading] = useState(false);
 
     const {
@@ -45,7 +43,9 @@ export function TextContent({ source, subscription, stats }: { source: any, subs
                 toast.error(`File exceeds the character limit for your subscription. Current total: ${totalChars}, New file: ${data.text.length}, Limit: ${subscription?.charactersPerChatbot}`);
                 return;
             }
+            onSourceChange({ ...source, text_source: data.text });
             await updateTextSourceField(data.text);
+
             toast.success("Text Source Updated");
         } catch (error) {
             toast.error("Error Submitting Text Source");
