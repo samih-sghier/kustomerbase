@@ -10,6 +10,7 @@ import { TokenCredentialAuthenticationProvider } from "@microsoft/microsoft-grap
 import { ConfidentialClientApplication } from "@azure/msal-node";
 import { getOrganizations } from '../organization/queries';
 import { ClientSecretCredential } from "@azure/identity";
+import { headers } from 'next/headers';
 
 
 const REDIRECT_URI = `${env.NEXTAUTH_URL}/api/outlook/authorize`;
@@ -136,12 +137,11 @@ export async function createWatchMutation({ access_token, refresh_token }: { acc
         });
         const expirationDate = new Date(Date.now() + 10070 * 60 * 1000);
 
-        // Create a subscription (equivalent to Gmail's watch)
         const subscription = await client.api('/subscriptions')
             .post({
                 changeType: 'created,updated', // Watch for new and updated messages
                 notificationUrl: `${env.OUTLOOK_WEBHOOK}/outlook/hook`, // Your webhook endpoint
-                resource: 'me/mailFolders/inbox/messages',
+                resource: `/me/mailfolders('Inbox')/messages`,
                 expirationDateTime: expirationDate.toISOString()
             });
 
