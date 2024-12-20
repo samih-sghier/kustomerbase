@@ -1,4 +1,3 @@
-// QnAContent.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -12,7 +11,6 @@ import * as z from "zod";
 import { removeQaSourceField, updateQaSourceField } from '@/server/actions/sources/mutations';
 import { toast } from 'sonner';
 
-// Define schema for validation
 const qnaSchema = z.object({
     qnaPairs: z.array(z.object({
         key: z.string(),
@@ -27,7 +25,7 @@ interface Source {
     qa_source: Record<string, string> | null;
 }
 
-export function QnAContent({ source, stats, subscription }: { source: Source, stats: any, subscription: any }) {
+export function QnAContent({ source, stats, subscription, onSourceChange }: { source: Source, stats: any, subscription: any, onSourceChange: (newSource: any) => void }) {
     const [loading, setLoading] = useState(false);
     const [removedKeys, setRemovedKeys] = useState<Set<string>>(new Set());
 
@@ -67,8 +65,14 @@ export function QnAContent({ source, stats, subscription }: { source: Source, st
 
     // Initialize form with existing data on component mount
     useEffect(() => {
-        form.reset({ qnaPairs: transformedInitialData });
-    }, [transformedInitialData, form]);
+        // Only reset if the transformedInitialData has actually changed
+        const currentValues = form.getValues().qnaPairs;
+        const hasChanged = JSON.stringify(currentValues) !== JSON.stringify(transformedInitialData);
+
+        if (hasChanged) {
+            form.reset({ qnaPairs: transformedInitialData });
+        }
+    }, [transformedInitialData, form.reset]);
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
@@ -78,50 +82,54 @@ export function QnAContent({ source, stats, subscription }: { source: Source, st
     const onSubmit = async (data: z.infer<typeof qnaSchema>) => {
         setLoading(true);
         try {
-            // Prepare the update object with simple key-value pairs
             const qaSourceUpdate: Record<string, string> = {};
             let newQaChars = 0;
             data.qnaPairs.forEach(pair => {
                 qaSourceUpdate[pair.question] = pair.answer;
                 newQaChars += pair.question.length + pair.answer.length;
             });
+
             const newTotalChars = (totalChars - qaChars) + newQaChars;
             if (newTotalChars > subscription?.charactersPerChatbot) {
                 toast.error(`Q&A content exceeds the character limit for your subscription. Current total: ${totalChars}, New Q&A total: ${newQaChars}, Limit: ${subscription?.charactersPerChatbot}`);
-                setLoading(false);
                 return;
             }
+
+            // Update source state
+            onSourceChange({ ...source, qa_source: qaSourceUpdate });
+
+            // Send update request to the backend
             await updateQaSourceField(qaSourceUpdate);
 
-            // Prepare keys for removal
+            // Handle removed keys
             if (removedKeys.size > 0) {
                 const keysToRemove = Array.from(removedKeys);
                 await removeQaSourceField(keysToRemove);
-                setRemovedKeys(new Set()); // Clear the removedKeys after processing
+                setRemovedKeys(new Set());
             }
 
             toast.success("Q&A pairs updated successfully!");
         } catch (error) {
             console.error("Error updating questions and answers:", error);
+            toast.error("Failed to update Q&A pairs");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleRemove = (index: number, key: string) => {
-        // Update removedKeys state
-        setRemovedKeys(prev => {
-            const updated = new Set(prev);
-            updated.add(key);
-            return updated;
-        });
 
-        // Remove item from the form array
+    const handleRemove = async (index: number, key: string) => {
+        const updatedQaSource = { ...source?.qa_source };
         remove(index);
         removeQaSourceField(new Set([key]));
+        // onSourceChange({ ...source, qa_source: qaSourceUpdate });
 
+        // Update the source after removal
+        delete updatedQaSource[key];
+
+        // Call the onSourceChange to persist the changes
+        onSourceChange({ ...source, qa_source: updatedQaSource });
     };
-
 
     return (
         <div className="space-y-6">

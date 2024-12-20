@@ -11,9 +11,9 @@ import * as z from "zod";
 import { toast } from "sonner";
 import { updateMailSourceField, removeMailSourceField } from '@/server/actions/sources/mutations';
 
-// Update the schema
 const mailSchema = z.object({
     mailSamples: z.array(z.object({
+        key: z.string(),
         description: z.string().min(1, "Brief description is required"),
         value: z.string().min(1, "Email value is required"),
     })),
@@ -25,11 +25,18 @@ interface Source {
     mail_source: Record<string, string> | null;
 }
 
-export function MailContent({ source, stats, subscription }: { source: Source, stats: any, subscription: any }) {
+interface MailContentProps {
+    source: Source;
+    stats: any;
+    subscription: any;
+    onSourceChange: (updatedSource: any) => void;
+}
+
+export function MailContent({ source, stats, subscription, onSourceChange }: MailContentProps) {
     const [loading, setLoading] = useState(false);
     const [removedKeys, setRemovedKeys] = useState<Set<string>>(new Set());
+    const [initialLoad, setInitialLoad] = useState(true);
 
-    // Transform source.mail_source into the format expected by the form
     const transformedInitialData = React.useMemo(() => {
         if (!source?.mail_source) {
             return [];
@@ -42,7 +49,6 @@ export function MailContent({ source, stats, subscription }: { source: Source, s
         }));
     }, [source?.mail_source]);
 
-    // Initialize the form with validation schema
     const form = useForm<z.infer<typeof mailSchema>>({
         resolver: zodResolver(mailSchema),
         defaultValues: {
@@ -50,10 +56,13 @@ export function MailContent({ source, stats, subscription }: { source: Source, s
         },
     });
 
-    // Initialize form with existing data on component mount
+    // Only reset the form on initial load or when source changes
     useEffect(() => {
-        form.reset({ mailSamples: transformedInitialData });
-    }, [transformedInitialData, form]);
+        if (initialLoad) {
+            form.reset({ mailSamples: transformedInitialData });
+            setInitialLoad(false);
+        }
+    }, [transformedInitialData, form, initialLoad]);
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
@@ -63,79 +72,51 @@ export function MailContent({ source, stats, subscription }: { source: Source, s
     const onSubmit = async (data: z.infer<typeof mailSchema>) => {
         setLoading(true);
         try {
-            if (!data.mailSamples || !Array.isArray(data.mailSamples)) {
-                throw new Error('Invalid form data: mailSamples is not an array');
-            }
-
             const mailSourceUpdate: Record<string, string> = {};
             let newMailChars = 0;
-
-            data.mailSamples.forEach((sample, index) => {
-                if (!sample || typeof sample !== 'object') {
-                    console.error(`Invalid sample at index ${index}:`, sample);
-                    return; // Skip this invalid sample
-                }
-
-                const { description, value } = sample;
-
-                if (typeof description !== 'string' || typeof value !== 'string') {
-                    console.error(`Invalid description or value at index ${index}:`, { description, value });
-                    return; // Skip this invalid sample
-                }
-
-                mailSourceUpdate[description] = value;
-                newMailChars += description.length + value.length;
+            
+            data.mailSamples.forEach(sample => {
+                mailSourceUpdate[sample.description] = sample.value;
+                newMailChars += sample.description.length + sample.value.length;
             });
 
-
-            // Check if stats and subscription are defined
-            if (stats && subscription) {
-                // Check character limit
-                const currentTotalChars = stats.totalChars || 0;
-                const currentMailChars = stats.mailChars || 0;
-                const newTotalChars = (currentTotalChars - currentMailChars) + newMailChars;
-                
-                if (newTotalChars > subscription.charactersPerChatbot) {
-                    toast.error(`Mail content exceeds the character limit for your subscription. Current total: ${currentTotalChars}, New mail total: ${newMailChars}, Limit: ${subscription.charactersPerChatbot}`);
-                    setLoading(false);
-                    return;
-                }
-            } else {
-                console.warn('Stats or subscription data is missing. Skipping character limit check.');
+            const newTotalChars = (stats.totalChars - stats.mailChars) + newMailChars;
+            if (newTotalChars > subscription?.charactersPerChatbot) {
+                toast.error(`Mail content exceeds the character limit for your subscription. Current total: ${stats.totalChars}, New mail total: ${newMailChars}, Limit: ${subscription?.charactersPerChatbot}`);
+                return;
             }
 
+<<<<<<< HEAD
             const updateResult = await updateMailSourceField(mailSourceUpdate);
+=======
+            onSourceChange({ ...source, mail_source: mailSourceUpdate });
+            await updateMailSourceField(mailSourceUpdate);
+>>>>>>> origin/master
 
-            // Process removals
             if (removedKeys.size > 0) {
+<<<<<<< HEAD
                 const removeResult = await removeMailSourceField(removedKeys);
+=======
+                await removeMailSourceField(removedKeys);
+>>>>>>> origin/master
                 setRemovedKeys(new Set());
             }
 
             toast.success("Sample emails updated successfully!");
         } catch (error) {
-            console.error("Detailed error updating sample emails:", error);
-            if (error instanceof Error) {
-                toast.error(`Error updating sample emails: ${error.message}`);
-            } else {
-                toast.error("An unexpected error occurred while updating sample emails.");
-            }
+            console.error("Error updating sample emails:", error);
+            toast.error("Failed to update sample emails");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleRemove = (index: number, description: string) => {
-        // Update removedKeys state
-        setRemovedKeys(prev => {
-            const updated = new Set(prev);
-            updated.add(description); 
-            return updated;
-        });
-
-        // Remove item from the form array
+    const handleRemove = async (index: number, description: string) => {
+        const updatedMailSource = { ...source?.mail_source };
         remove(index);
         removeMailSourceField(new Set([description]));
+        delete updatedMailSource[description];
+        onSourceChange({ ...source, mail_source: updatedMailSource });
     };
 
     return (
@@ -145,7 +126,13 @@ export function MailContent({ source, stats, subscription }: { source: Source, s
                 <div className="flex space-x-2">
                     <Button
                         type="button"
-                        onClick={() => append({ key: `new_${Date.now()}`, subject: "", value: "" })}
+                        onClick={() => {
+                            append({ 
+                                key: `new_${Date.now()}`, 
+                                description: "", 
+                                value: "" 
+                            });
+                        }}
                         variant="outline"
                     >
                         + Add Sample Email
@@ -159,9 +146,7 @@ export function MailContent({ source, stats, subscription }: { source: Source, s
             <Form {...form}>
                 <form
                     id="mail-form"
-                    onSubmit={form.handleSubmit(onSubmit, (errors) => {
-                        console.error('Form validation errors:', errors);
-                    })}
+                    onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-4"
                 >
                     {fields.map((field, index) => (

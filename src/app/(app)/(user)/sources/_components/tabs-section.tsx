@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
-import {
-    FileIcon,
-    BookTextIcon,
-    Building2Icon,
-    ClipboardListIcon,
-    MailIcon,
-} from "lucide-react";
+import { FileIcon, BookTextIcon, Building2Icon, ClipboardListIcon, MailIcon } from "lucide-react";
 import WebsiteContent from "./website-content";
 import { TextContent } from "./text-content";
 import { QnAContent } from "./qa-content";
@@ -18,6 +12,11 @@ import { MailContent } from "./mail-content";
 // Remove async
 export function TabsSection({ source, subscription, stats }: { source: any, subscription: any, stats: any }) {
     const [activeTab, setActiveTab] = useState<string>("files");
+    const [currentSource, setCurrentSource] = useState(source); // Store source in state
+
+    const handleSourceChange = (newSource: any) => {
+        setCurrentSource(newSource); // Update the source whenever it changes
+    };
 
     return (
         <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col">
@@ -82,27 +81,32 @@ export function TabsSection({ source, subscription, stats }: { source: any, subs
             {/* Lazy load tab contents */}
             {activeTab === "files" && (
                 <Tabs.Content value="files" className="p-4">
-                    <FileUploadForm source={source} subscription={subscription} stats={stats} />
+                    <FileUploadForm source={currentSource} subscription={subscription} stats={stats} />
                 </Tabs.Content>
             )}
             {activeTab === "text" && (
                 <Tabs.Content value="text" className="p-4">
-                    <TextContent source={source} subscription={subscription} stats={stats}/>
+                    <TextContent 
+                        source={currentSource} 
+                        subscription={subscription} 
+                        stats={stats}
+                        onSourceChange={handleSourceChange} // Pass down the setter function
+                    />
                 </Tabs.Content>
             )}
             {activeTab === "website" && (
                 <Tabs.Content value="website" className="p-4">
-                    <WebsiteContent source={source} subscription={subscription} stats={stats}/>
+                    <WebsiteContent source={currentSource} subscription={subscription} stats={stats} onSourceChange={handleSourceChange}/>
                 </Tabs.Content>
             )}
             {activeTab === "qna" && (
                 <Tabs.Content value="qna" className="p-4">
-                    <QnAContent source={source} subscription={subscription} stats={stats}/>
+                    <QnAContent source={currentSource} subscription={subscription} stats={stats} onSourceChange={handleSourceChange} />
                 </Tabs.Content>
             )}
             {activeTab === "mail" && (
                 <Tabs.Content value="mail" className="p-4">
-                    <MailContent source={source} stats={stats} subscription={subscription} />
+                    <MailContent source={currentSource} stats={stats} subscription={subscription} onSourceChange={handleSourceChange}/>
                 </Tabs.Content>
             )}
         </Tabs.Root>
