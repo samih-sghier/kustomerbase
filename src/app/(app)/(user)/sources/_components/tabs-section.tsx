@@ -96,7 +96,7 @@ export function TabsSection({ source, subscription, stats }: { source: any, subs
             )}
             {activeTab === "website" && (
                 <Tabs.Content value="website" className="p-4">
-                    <WebsiteContent source={currentSource} subscription={subscription} stats={stats} />
+                    <WebsiteContent source={currentSource} subscription={subscription} stats={stats} onSourceChange={handleSourceChange}/>
                 </Tabs.Content>
             )}
             {activeTab === "qna" && (
@@ -106,7 +106,7 @@ export function TabsSection({ source, subscription, stats }: { source: any, subs
             )}
             {activeTab === "mail" && (
                 <Tabs.Content value="mail" className="p-4">
-                    <MailContent source={currentSource} stats={stats} subscription={subscription} />
+                    <MailContent source={currentSource} stats={stats} subscription={subscription} onSourceChange={handleSourceChange}/>
                 </Tabs.Content>
             )}
         </Tabs.Root>

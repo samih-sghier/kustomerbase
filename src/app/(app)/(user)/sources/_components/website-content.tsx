@@ -24,7 +24,7 @@ interface Link {
     llmData?: string; // Optional field for LLM data
 }
 
-export default function WebsiteContent({ source, stats, subscription }: { source: any, stats: any, subscription: PricingPlan }) {
+export default function WebsiteContent({ source, stats, subscription, onSourceChange }: { source: any, stats: any, subscription: PricingPlan, onSourceChange: (newSource: any) => void }) {
     const [links, setLinks] = useState<Link[]>([]);
     const [crawlLink, setCrawlLink] = useState('');
     const [sitemapLink, setSitemapLink] = useState('');
@@ -95,6 +95,7 @@ export default function WebsiteContent({ source, stats, subscription }: { source
                 }
                 return acc;
             }, {});
+            onSourceChange({ ...source, website_data: websiteDataUpdate });
             await updateWebsiteDataField(websiteDataUpdate);
 
         } catch (error) {
@@ -173,6 +174,9 @@ export default function WebsiteContent({ source, stats, subscription }: { source
 
                 // Update the website data field with the new link and its LLM data
                 const websiteDataUpdate = { [urlToValidate]: truncatedText };
+                      // Trigger onSourceChange to notify parent about the update
+                const newWebsiteData = { ...source.website_data, [urlToValidate]: truncatedText };
+                onSourceChange({ ...source, website_data: newWebsiteData });
                 await updateWebsiteDataField(websiteDataUpdate);
 
                 toast.success('Link added and LLM data fetched successfully.');
